@@ -325,8 +325,80 @@
       padding: 1.15rem;
       box-shadow: 0 20px 30px -6px rgba(0, 0, 0, 0.25);
     }
-    .modal-dialog-wide { max-width: 840px; width: 96vw; }
+.modal-dialog-wide { max-width: 840px; width: 96vw; }
 
+    /* MOBILE BOTTOM-SHEET MODALS */
+    @media (max-width: 600px) {
+      .modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+      .modal-dialog, .modal-dialog-wide {
+        max-width: 100%;
+        width: 100%;
+        max-height: 90vh;
+        border-radius: 20px 20px 0 0;
+        border-bottom: none;
+        padding: 1rem 1rem calc(1.25rem + env(safe-area-inset-bottom, 12px)) 1rem;
+        transform: translateY(24px);
+        transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .modal-overlay.active .modal-dialog,
+      .modal-overlay.active .modal-dialog-wide {
+        transform: translateY(0);
+      }
+      .modal-dialog::before {
+        content: '';
+        display: block;
+        width: 38px;
+        height: 4px;
+        background: var(--border-strong);
+        border-radius: 9999px;
+        margin: -0.25rem auto 0.65rem auto;
+        opacity: 0.6;
+      }
+    }
+
+    /* HEADER STT STATUS PILL */
+    .stt-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0.22rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.62rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .stt-status-pill.pending {
+      background: var(--warning-surface);
+      color: var(--warning);
+      border-color: var(--warning);
+    }
+    .stt-status-pill.synced {
+      background: var(--success-surface);
+      color: var(--success);
+      border-color: var(--success);
+    }
+
+   /* CLIENT DETAIL SUB-BAR */
+    .client-sticky-subbar {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.4rem 0.6rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+      box-shadow: var(--shadow-sm);
+    }
     input, select, textarea {
       width: 100%;
       background: var(--bg-subtle);
@@ -684,15 +756,20 @@
     }
 
     .timetable-slot-cell {
-      border-right: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-      padding: 2px;
-      min-height: 44px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      background: var(--bg-surface);
-    }
+   border-right: 1px solid var(--border-color);
+   border-bottom: 1px solid var(--border-color);
+   padding: 2px;
+   min-height: 44px;
+   display: flex;
+   flex-direction: column;
+   gap: 2px;
+   background: var(--bg-surface);
+ }
+
+ .timetable-slot-cell.slot-collision {
+   background: var(--warning-surface);
+   box-shadow: inset 0 0 0 1.5px var(--warning);
+ }
 
     .tt-event-card {
       background: var(--brand-surface);
@@ -845,14 +922,19 @@
         </div>
       </div>
       
-      <div style="display: flex; gap: 0.3rem; align-items: center;">
-        <select id="header-profile-switcher" onchange="switchUserProfile(this.value)" style="width: auto; max-width: 110px; font-size: 0.68rem; font-weight: 800; padding: 0.3rem 0.4rem; background: var(--brand-surface); color: var(--brand-primary); border-color: var(--brand-primary);"></select>
+  <div style="display: flex; gap: 0.3rem; align-items: center;">
+        <button type="button" id="header-stt-status-pill" onclick="openSttSyncModal()" class="stt-status-pill" title="Sync Simple Time Tracker Backup">
+          <span id="header-stt-dot" style="width: 6px; height: 6px; border-radius: 50%; background: currentColor;"></span>
+          <span id="header-stt-label">STT Sync</span>
+        </button>
+        <select id="header-profile-switcher" onchange="switchUserProfile(this.value)" style="width: auto; max-width: 100px; font-size: 0.68rem; font-weight: 800; padding: 0.3rem 0.4rem; background: var(--brand-surface); color: var(--brand-primary); border-color: var(--brand-primary);"></select>
         <button type="button" onclick="openClientModal('new')" class="btn btn-primary" style="padding: 0.35rem 0.6rem; font-size: 0.7rem; flex-shrink: 0;">
           + Client
         </button>
-        <button type="button" onclick="showMainView('settings')" class="btn btn-subtle" style="padding: 0.35rem 0.45rem;" title="Settings">
-          ⚙️
-        </button>
+       <button type="button" id="header-settings-btn" onclick="showMainView('settings')" class="btn btn-subtle" style="padding: 0.35rem 0.45rem; position: relative;" title="Settings">
+       ⚙️
+       <span id="header-unsaved-badge" style="display: none; position: absolute; top: -4px; right: -4px; min-width: 15px; height: 15px; padding: 0 3px; border-radius: 9999px; background: var(--warning); color: #fff; font-size: 0.55rem; font-weight: 800; align-items: center; justify-content: center;">0</span>
+     </button>
       </div>
     </div>
   </header>
@@ -880,13 +962,14 @@
         <select id="drawer-profile-switcher" onchange="switchUserProfile(this.value)" style="font-size: 0.72rem; font-weight: 800; padding: 0.35rem;"></select>
       </div>
 
-      <!-- GROUP 1: QUICK ACTIONS -->
+     <!-- GROUP 1: QUICK ACTIONS -->
       <div class="card" style="padding: 0.5rem; display: flex; flex-direction: column; gap: 0.3rem;">
         <span style="font-size: 0.62rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Quick Actions</span>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem;">
           <button type="button" onclick="toggleDrawer(false); openClientModal('new');" class="btn btn-primary" style="width: 100%;">+ Client</button>
           <button type="button" onclick="toggleDrawer(false); openMassImportModal();" class="btn btn-subtle" style="width: 100%;">Batch Import</button>
         </div>
+        <button type="button" onclick="toggleDrawer(false); openSttSyncModal();" class="btn btn-purple" style="width: 100%;">STT Sync</button>
       </div>
 
       <!-- GROUP 2: WORKSPACE & SCHEDULING -->
@@ -935,12 +1018,23 @@
   <!-- MAIN CONTENT VIEWS -->
   <main class="main-content">
 
-    <!-- VIEW 1: HOME & ROSTER -->
+<!-- VIEW 1: HOME & ROSTER -->
     <section id="view-home" style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <!-- END-OF-DAY STT REMINDER BANNER -->
+      <div id="stt-eod-reminder-banner" class="card" style="display: none; background: var(--warning-surface); border-color: var(--warning); padding: 0.55rem 0.7rem; align-items: center; justify-content: space-between; gap: 0.4rem;">
+        <div style="min-width: 0;">
+          <strong style="font-size: 0.72rem; color: var(--warning); display: block;">⏰ Evening STT Sync Reminder</strong>
+          <span style="font-size: 0.64rem; color: var(--text-main);">You haven't synced today's Simple Time Tracker logs yet.</span>
+        </div>
+       <button type="button" onclick="openSttSyncModal()" class="btn btn-subtle" style="font-size: 0.7rem; padding: 0.3rem 0.6rem; border-color: var(--brand-primary); color: var(--brand-primary);">Sync</button>
+      </div>
+
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
-        <button type="button" onclick="openModal('modal-reminders')" class="btn btn-purple" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;">🔔 Reminders</button>
-        <div style="display: flex; align-items: center; gap: 0.35rem;">
-          <input type="text" id="roster-search-input" placeholder="Filter student..." oninput="renderRosterPage()" style="font-size: 0.68rem; padding: 0.25rem 0.45rem; width: 120px;">
+        <div style="display: flex; gap: 0.3rem; align-items: center;">
+          <button type="button" onclick="openModal('modal-reminders')" class="btn btn-purple" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;">🔔 Reminders</button>
+        <button type="button" onclick="openSttSyncModal()" class="btn btn-subtle" style="font-size: 0.7rem; padding: 0.3rem 0.6rem; border-color: var(--brand-primary); color: var(--brand-primary);">Sync</button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.35rem;">          <input type="text" id="roster-search-input" placeholder="Filter student..." oninput="renderRosterPage()" style="font-size: 0.68rem; padding: 0.25rem 0.45rem; width: 120px;">
           <select id="roster-sort-select" onchange="renderRosterPage()" style="width: auto; font-size: 0.68rem; padding: 0.2rem 0.4rem;">
             <option value="name">Name (A-Z)</option>
             <option value="progress">Progress</option>
@@ -956,8 +1050,8 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.35rem; margin-bottom: 0.5rem;">
           <div>
-            <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.1rem;">Date</label>
-            <input type="date" id="quicklog-date" style="font-size: 0.68rem; padding: 0.35rem;">
+          <label for="quicklog-date" style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.1rem;">Date</label>
+<input type="date" id="quicklog-date" style="font-size: 0.68rem; padding: 0.35rem;">
           </div>
           <div>
             <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.1rem;">Start</label>
@@ -975,14 +1069,17 @@
         </div>
 
         <div>
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem;">
-            <label style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Students:</label>
-            <span style="font-size: 0.62rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.2rem;">
-              <span class="pulse-dot pulse-dot-success"></span> Scheduled Today
-            </span>
-          </div>
-          <div id="quicklog-clients-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.35rem; max-height: 220px; overflow-y: auto;"></div>
-        </div>
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.3rem; gap: 0.3rem; flex-wrap: wrap;">
+         <div style="display: flex; align-items: center; gap: 0.35rem;">
+           <label style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Students:</label>
+           <button type="button" id="btn-toggle-roster-multiselect" onclick="toggleRosterMultiSelectMode()" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.45rem;">☑️ Multi-Select</button>
+           <button type="button" id="btn-execute-roster-batch" onclick="executeRosterBatchLog()" class="btn btn-success" style="display: none; font-size: 0.6rem; padding: 0.15rem 0.5rem;">✓ Log Selected (0)</button>
+         </div>
+         <span style="font-size: 0.62rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.2rem;">
+           <span class="pulse-dot pulse-dot-success"></span> Scheduled Today
+         </span>
+       </div>
+       <div id="quicklog-clients-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.35rem; max-height: 220px; overflow-y: auto;"></div>        </div>
       </div>
 
      <div class="card">
@@ -1036,13 +1133,21 @@
       </div>
     </section>
 
-    <!-- VIEW 3: CLIENT DETAIL -->
+ <!-- VIEW 3: CLIENT DETAIL -->
     <section id="view-client-detail" style="display: none; flex-direction: column; gap: 0.75rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem;">
-        <button type="button" onclick="showMainView('clients')" class="btn btn-subtle" style="font-size: 0.72rem; padding: 0.35rem 0.55rem;">&larr; Back</button>
-        <div style="display: flex; gap: 0.3rem;">
-          <button type="button" onclick="openInsertPastMonthModal()" class="btn btn-purple" style="font-size: 0.72rem; padding: 0.35rem 0.55rem;">+ Past</button>
-          <button type="button" onclick="startNewMonthPrompt()" class="btn btn-primary" style="font-size: 0.72rem; padding: 0.35rem 0.55rem;">+ Month</button>
+      <!-- STICKY CLIENT SUB-BAR -->
+      <div id="client-detail-sticky-bar" class="client-sticky-subbar">
+        <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0;">
+          <button type="button" onclick="showMainView('clients')" class="btn btn-subtle" style="font-size: 0.68rem; padding: 0.25rem 0.45rem;">&larr;</button>
+          <div style="min-width: 0;">
+            <strong id="sticky-client-name" class="truncate-text" style="font-size: 0.76rem; display: block;">Student</strong>
+            <span id="sticky-client-meta" style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700;">M1: 0/4</span>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.25rem; flex-shrink: 0;">
+          <button type="button" onclick="openInsertPastMonthModal()" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">+ Past</button>
+          <button type="button" onclick="startNewMonthPrompt()" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">+ Month</button>
+          <button type="button" id="sticky-log-class-btn" class="btn btn-primary" style="font-size: 0.65rem; padding: 0.25rem 0.5rem;">+ Log Class</button>
         </div>
       </div>
       
@@ -1118,8 +1223,34 @@
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem;" id="analytics-kpi-grid"></div>
+<div class="card card-accent-brand" style="padding: 0.65rem; display: flex; flex-direction: column; gap: 0.45rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.3rem;">
+        <span style="font-size: 0.72rem; font-weight: 800; color: var(--brand-primary); text-transform: uppercase;">Income &amp; Workload Summary</span>
+        <div style="display: flex; gap: 0.25rem; align-items: center;">
+          <select id="income-range-preset" onchange="applyIncomeDatePreset()" style="width: auto; font-size: 0.64rem; padding: 0.2rem 0.4rem;">
+            <option value="this_month" selected>This Month</option>
+            <option value="last_month">Last Month</option>
+            <option value="this_year">This Year (Annual)</option>
+            <option value="all_time">All Time</option>
+            <option value="custom">Custom Range</option>
+          </select>
+          <button type="button" onclick="exportDateRangeIncomeSummaryCSV()" class="btn btn-primary" style="font-size: 0.64rem; padding: 0.22rem 0.5rem;">📥 Export CSV</button>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+        <div>
+          <label style="font-size: 0.58rem; font-weight: 700; color: var(--text-muted);">From Date</label>
+          <input type="date" id="income-range-start" onchange="onCustomIncomeDateChanged()" style="font-size: 0.66rem; padding: 0.25rem 0.4rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.58rem; font-weight: 700; color: var(--text-muted);">To Date</label>
+          <input type="date" id="income-range-end" onchange="onCustomIncomeDateChanged()" style="font-size: 0.66rem; padding: 0.25rem 0.4rem;">
+        </div>
+      </div>
+      <div id="monthly-workload-summary-card"></div>
+    </div>
 
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.35rem;" id="analytics-kpi-grid"></div>
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
           <h3 style="font-size: 0.75rem; font-weight: 800;">Activity Heatmap</h3>
@@ -1182,10 +1313,10 @@
           </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; margin-bottom: 0.4rem;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; margin-bottom: 0.4rem;">
           <div>
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.1rem;">Amount *</label>
-            <input type="number" id="quick-receipt-amount" placeholder="e.g. 500" min="1">
+            <input type="number" id="quick-receipt-amount" placeholder="e.g. 500" min="1" oninput="updateQuickReceiptBalancesDisplay()">
           </div>
           <div>
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.1rem;">Date</label>
@@ -1193,7 +1324,14 @@
           </div>
         </div>
 
-        <div style="margin-top: 0.5rem; text-align: right;">
+        <div id="qr-allocation-preview-box" style="display: none; padding: 0.4rem 0.55rem; background: var(--success-surface); border: 1px solid var(--success); border-radius: 6px; font-size: 0.66rem; color: var(--text-main); margin-bottom: 0.4rem;"></div>
+
+        <label style="display: flex; align-items: center; gap: 0.35rem; font-size: 0.68rem; font-weight: 700; cursor: pointer; margin-bottom: 0.45rem;">
+          <input type="checkbox" id="qr-auto-settle-checkbox" checked onchange="updateQuickReceiptBalancesDisplay()" style="width: 15px; height: 15px;">
+          Auto-settle oldest due months on submit
+        </label>
+
+        <div style="text-align: right;">
           <button type="button" onclick="executeQuickReceipt()" class="btn btn-success" style="padding: 0.45rem 0.8rem; font-size: 0.72rem; width: 100%;">Submit Payment Entry</button>
         </div>
       </div>
@@ -1366,8 +1504,9 @@
           <div style="display: flex; align-items: center; gap: 0.25rem; flex-wrap: wrap;">
             <button type="button" onclick="navigateTimetableWeek(-1)" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;">&larr; Prev</button>
             <button type="button" onclick="resetTimetableToCurrentWeek()" class="btn btn-primary" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;">Today</button>
-            <button type="button" onclick="navigateTimetableWeek(1)" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;">Next &rarr;</button>
-            <button type="button" onclick="toggleTimetableOrientation()" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;" title="Rotate Table">🔄 Rotate</button>
+<button type="button" onclick="navigateTimetableWeek(1)" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;">Next &rarr;</button>
+         <button type="button" onclick="copyPreviousWeekToCurrentTimetable()" class="btn btn-success" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;" title="Clone previous week slots">📋 Copy Prev</button>
+         <button type="button" onclick="toggleTimetableOrientation()" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;" title="Rotate Table">🔄 Rotate</button>
           </div>
         </div>
         <div class="timetable-wrapper">
@@ -1403,8 +1542,8 @@
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
             <div>
-              <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Currency Code</label>
-              <input type="text" id="settings-currency-input" placeholder="e.g. AED, USD, INR" maxlength="6" onchange="saveAppSettings()" style="font-size: 0.72rem;">
+              <label for="settings-currency-input" style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Currency Code</label>
+<input type="text" id="settings-currency-input" placeholder="e.g. AED, USD, INR" maxlength="6" onchange="saveAppSettings()" style="font-size: 0.72rem;">
             </div>
            <div>
               <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Time Format</label>
@@ -1446,6 +1585,26 @@
         </div>
       </div>
 
+    <!-- STT SYNC QUEUE & REJECTED LOGS -->
+      <div class="card card-accent-brand">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+          <div>
+            <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">🔄 STT Sync Queue & Rejected Logs</h3>
+            <p style="font-size: 0.63rem; color: var(--text-muted);">Manage unimported pending logs or restore permanently rejected logs</p>
+          </div>
+        <button type="button" onclick="openSttSyncModal()" class="btn btn-primary" style="font-size: 0.66rem; padding: 0.3rem 0.55rem;">Load File</button>
+   </div>
+
+<div style="display: flex; gap: 0.35rem; margin-bottom: 0.5rem; border-bottom: 1.5px solid var(--border-color); padding-bottom: 0.4rem;">
+     <button type="button" id="stt-tab-btn-pending" onclick="switchSettingsSttTab('pending')" class="btn btn-primary" style="flex: 1; font-size: 0.68rem;">Pending (<span id="stt-pending-tab-count">0</span>)</button>
+     <button type="button" id="stt-tab-btn-rejected" onclick="switchSettingsSttTab('rejected')" class="btn btn-subtle" style="flex: 1; font-size: 0.68rem;">Rejected (<span id="stt-rejected-tab-count">0</span>)</button>
+     <button type="button" id="stt-tab-btn-deleted" onclick="switchSettingsSttTab('deleted')" class="btn btn-subtle" style="flex: 1; font-size: 0.68rem;">🗑️ Trash (<span id="stt-deleted-tab-count">0</span>)</button>
+        </div>
+
+        <div id="stt-settings-tab-pending" style="display: flex; flex-direction: column; gap: 0.35rem; max-height: 280px; overflow-y: auto;"></div>
+        <div id="stt-settings-tab-rejected" style="display: none; flex-direction: column; gap: 0.35rem; max-height: 280px; overflow-y: auto;"></div>
+        <div id="stt-settings-tab-deleted" style="display: none; flex-direction: column; gap: 0.35rem; max-height: 280px; overflow-y: auto;"></div>      </div>
+
       <!-- BACKUP, RESTORE & EXPORT -->
       <div class="card">
         <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--purple); margin-bottom: 0.5rem;">Backup & Data</h3>
@@ -1466,13 +1625,27 @@
             <button type="button" onclick="openModal('modal-export-options')" class="btn btn-purple" style="padding: 0.5rem;">📤 Export Data</button>
           </div>
 
-          <label class="btn btn-subtle" style="cursor: pointer; width: 100%; padding: 0.5rem; text-align: center; border: 1.5px dashed var(--border-strong);">
+<label class="btn btn-subtle" style="cursor: pointer; width: 100%; padding: 0.5rem; text-align: center; border: 1.5px dashed var(--border-strong);">
             <span>📂 Restore Backup (.JSON)</span>
             <input type="file" accept=".json" onchange="handleRestoreFromFile(event)" style="display: none;">
           </label>
+
+          <!-- UNLIMITED INDEXEDDB + AUTO-PRUNE STORAGE METER -->
+          <div style="padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color); display: flex; flex-direction: column; gap: 0.3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 800; font-size: 0.68rem;">Offline Storage Engine (Unlimited DB)</span>
+              <span id="settings-storage-usage-text" class="num-tabular" style="font-size: 0.64rem; font-weight: 800; color: var(--success);">0 KB</span>
+            </div>
+            <div style="width: 100%; height: 6px; background: var(--border-color); border-radius: 9999px; overflow: hidden;">
+              <div id="settings-storage-bar" style="width: 5%; height: 100%; background: var(--success); border-radius: 9999px;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.6rem; color: var(--text-muted);">Auto-prunes old daily cache; full DB backed by IndexedDB</span>
+              <button type="button" onclick="pruneOldLocalStorageBackups(true)" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.4rem;">Prune Cache</button>
+            </div>
+          </div>
         </div>
       </div>
-
       <!-- DANGER ZONE -->
       <div class="card" style="border-color: var(--danger);">
         <h3 style="font-size: 0.8rem; font-weight: 800; color: var(--danger); margin-bottom: 0.35rem;">Reset</h3>
@@ -1558,11 +1731,14 @@
       <input type="hidden" id="edit-month-client-id">
       <input type="hidden" id="edit-month-id">
       <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-        <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Manual Fee Override</label>
-          <input type="number" id="edit-month-fee-override" placeholder="Auto-calculated if blank">
-          <p style="font-size: 0.6rem; color: var(--text-muted); margin-top: 0.2rem;">Custom fee override if classes exceeded/undercut quota.</p>
-        </div>
+       <div>
+       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;">
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Manual Fee Override</label>
+         <button type="button" id="btn-apply-prorata-fee" onclick="applyProRataToEditMonth()" class="btn btn-purple" style="font-size: 0.6rem; padding: 0.15rem 0.45rem;">⚡ Pro-Rata</button>
+       </div>
+       <input type="number" id="edit-month-fee-override" placeholder="Auto-calculated if blank">
+       <p style="font-size: 0.6rem; color: var(--text-muted); margin-top: 0.2rem;">Custom fee override or tap Pro-Rata to bill only attended classes.</p>
+     </div>
         <div style="display: flex; align-items: center; gap: 0.35rem;">
           <input type="checkbox" id="edit-month-force-complete" style="width:auto;">
           <label for="edit-month-force-complete" style="font-size: 0.72rem; font-weight: 700;">Force Month Completed (Triggers Due Fee)</label>
@@ -1745,8 +1921,9 @@
       </div>
       <input type="hidden" id="logclass-client-id">
       <input type="hidden" id="logclass-month-id">
-      <input type="hidden" id="logclass-session-id">
+     <input type="hidden" id="logclass-session-id">
       <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <div id="logclass-last-topic-banner" style="display: none; padding: 0.35rem 0.5rem; background: var(--brand-surface); border: 1px solid var(--brand-primary); border-radius: 6px; font-size: 0.66rem; color: var(--text-main);"></div>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.35rem;">
           <div>
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Date *</label>
@@ -1765,17 +1942,25 @@
             </select>
           </div>
         </div>
-        <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Class Tag</label>
-          <select id="logclass-tag">
-            <option value="normal">Normal Class (Standard Fee)</option>
-            <option value="extra">Extra / Free / Trial (Exempt from Fees)</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Notes</label>
-          <input type="text" id="logclass-notes" placeholder="Class notes...">
-        </div>
+      <div>
+       <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Attendance / Class Tag</label>
+       <select id="logclass-tag">
+         <option value="normal">Attended (Standard Quota)</option>
+         <option value="noshow">Student No-Show (Counts in Quota)</option>
+         <option value="makeup_due">Cancelled - Makeup Due (No Quota Used)</option>
+         <option value="extra">Extra / Free / Trial (Exempt)</option>
+       </select>
+     </div>
+     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Topic Covered</label>
+         <input type="text" id="logclass-notes" placeholder="e.g. Algebra Ch.4">
+       </div>
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--brand-primary); display: block; margin-bottom: 0.15rem;">Homework / Next Focus</label>
+         <input type="text" id="logclass-homework" placeholder="e.g. Ex 4.2 Q1-10">
+       </div>
+     </div>
         <div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
           <button type="button" onclick="closeModal('modal-log-class')" class="btn btn-subtle" style="flex: 1;">Cancel</button>
           <button type="button" onclick="executeLogClassModal()" class="btn btn-primary" style="flex: 1;">Save</button>
@@ -1814,9 +1999,10 @@
         <button type="button" onclick="closeModal('modal-quick-add')" class="btn btn-subtle" style="padding: 0.2rem 0.4rem;">✕</button>
       </div>
       <div style="display: flex; flex-direction: column; gap: 0.45rem;">
-        <div>
+       <div>
           <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Student *</label>
           <select id="quickmodal-client-select" onchange="onQuickModalClientChanged()"></select>
+          <div id="quickmodal-last-topic-banner" style="display: none; margin-top: 0.3rem; padding: 0.35rem 0.5rem; background: var(--brand-surface); border: 1px solid var(--brand-primary); border-radius: 6px; font-size: 0.66rem; color: var(--text-main);"></div>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.35rem;">
           <div>
@@ -1837,17 +2023,25 @@
             </select>
           </div>
         </div>
-        <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Class Tag</label>
-          <select id="quickmodal-tag">
-            <option value="normal">Normal Class (Standard Fee)</option>
-            <option value="extra">Extra / Free / Trial (Exempt from Fees)</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Notes</label>
-          <input type="text" id="quickmodal-notes" placeholder="Class notes...">
-        </div>
+       <div>
+       <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Attendance / Class Tag</label>
+       <select id="quickmodal-tag">
+         <option value="normal">Attended (Standard Quota)</option>
+         <option value="noshow">Student No-Show (Counts in Quota)</option>
+         <option value="makeup_due">Cancelled - Makeup Due (No Quota Used)</option>
+         <option value="extra">Extra / Free / Trial (Exempt)</option>
+       </select>
+     </div>
+     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Topic Covered</label>
+         <input type="text" id="quickmodal-notes" placeholder="e.g. Fractions">
+       </div>
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--brand-primary);">Homework / Next</label>
+         <input type="text" id="quickmodal-homework" placeholder="e.g. Worksheet 3">
+       </div>
+     </div>
         <div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
           <button type="button" onclick="closeModal('modal-quick-add')" class="btn btn-subtle" style="flex: 1;">Cancel</button>
           <button type="button" onclick="handleSaveQuickModalSession()" class="btn btn-primary" style="flex: 1;">Save</button>
@@ -1918,9 +2112,9 @@
 
       <div id="invoice-preview-container" style="max-height: 48vh; overflow-y: auto; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); background: #ffffff; padding: 0.6rem; margin-bottom: 0.5rem;"></div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.35rem;">
-        <button type="button" onclick="downloadOrShareCustomInvoice('download')" class="btn btn-subtle">📥 Download</button>
-        <button type="button" onclick="downloadOrShareCustomInvoice('share')" class="btn btn-primary">📤 Share</button>
+    <div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 0.35rem;">
+        <button type="button" onclick="downloadOrShareCustomInvoice('download')" class="btn btn-subtle">📥 Save</button>
+        <button type="button" onclick="shareInvoiceDirectlyToWhatsApp()" class="btn btn-whatsapp">💬 WhatsApp</button>
         <button type="button" onclick="printCustomInvoice()" class="btn btn-subtle">🖨️ Print</button>
       </div>
     </div>
@@ -2002,11 +2196,8 @@
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Quota (Classes)</label>
             <input type="number" id="form-client-quota" min="1" value="4">
           </div>
-          <div>
-         <div style="display: flex; justify-content: space-between; align-items: center;">
-           <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Fee Amount</label>
-           <button type="button" onclick="openFeeCalculatorModal(true)" style="background: transparent; border: none; color: var(--brand-primary); font-size: 0.62rem; font-weight: 800; cursor: pointer; padding: 0;">🧮 Calc</button>
-         </div>
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Fee Amount</label>
          <input type="number" id="form-client-fee" min="0" value="500">
        </div>
           <div>
@@ -2019,8 +2210,19 @@
             </select>
           </div>
         </div>
-        <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Scheduled Days</label>
+        <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.35rem;">
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Exam / Milestone Label</label>
+         <input type="text" id="form-client-exam-label" placeholder="e.g. Math Finals">
+       </div>
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Exam Date</label>
+         <input type="date" id="form-client-exam-date">
+       </div>
+     </div>
+
+     <div>
+       <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Scheduled Days (Class Days)</label>
           <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="form-days-picker">
             <button type="button" data-day="Mon" onclick="toggleFormDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">M</button>
             <button type="button" data-day="Tue" onclick="toggleFormDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">T</button>
@@ -2029,6 +2231,19 @@
             <button type="button" data-day="Fri" onclick="toggleFormDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">F</button>
             <button type="button" data-day="Sat" onclick="toggleFormDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
             <button type="button" data-day="Sun" onclick="toggleFormDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.65rem; font-weight: 700; color: var(--danger); display: block; margin-bottom: 0.15rem;">Unavailable Days (Busy / No Class)</label>
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="form-blocked-days-picker">
+            <button type="button" data-day="Mon" onclick="toggleFormBlockedDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">M</button>
+            <button type="button" data-day="Tue" onclick="toggleFormBlockedDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">T</button>
+            <button type="button" data-day="Wed" onclick="toggleFormBlockedDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">W</button>
+            <button type="button" data-day="Thu" onclick="toggleFormBlockedDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">T</button>
+            <button type="button" data-day="Fri" onclick="toggleFormBlockedDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">F</button>
+            <button type="button" data-day="Sat" onclick="toggleFormBlockedDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
+            <button type="button" data-day="Sun" onclick="toggleFormBlockedDayPicker(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
           </div>
         </div>
         
@@ -2172,9 +2387,61 @@
     </div>
   </div>
 
+ <!-- STT SYNC & CHANGE REVIEW MODAL -->
+  <div id="modal-stt-sync" class="modal-overlay" style="z-index: 85;">
+    <div class="modal-dialog modal-dialog-wide">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+        <div>
+          <h3 style="font-size: 0.92rem; font-weight: 800; color: var(--brand-primary);">🔄 Sync from Simple Time Tracker</h3>
+          <p id="stt-sync-subtitle" style="font-size: 0.65rem; color: var(--text-muted);">Select your <code>stt_automatic.backup</code> file to scan for new clients &amp; sessions</p>
+        </div>
+        <button type="button" onclick="closeModal('modal-stt-sync')" class="btn btn-subtle" style="padding: 0.2rem 0.45rem;">✕</button>
+      </div>
+
+<div style="display: flex; gap: 0.35rem; align-items: center; margin-bottom: 0.55rem; flex-wrap: wrap;">
+        <button type="button" id="btn-stt-quick-handle-sync" onclick="syncFromRememberedSttHandle()" class="btn btn-success" style="display: none; flex: 1.2; padding: 0.5rem;">⚡ Quick Sync</button>
+        <button type="button" onclick="pickAndRememberSttFile()" class="btn btn-primary" style="flex: 1; padding: 0.5rem;">📂 Pick File</button>
+     <input type="file" id="stt-sync-file-input" multiple onchange="handleSttSyncFileSelect(event)" style="display: none;">
+        <button type="button" onclick="toggleAllSttDiffCheckboxes(true)" class="btn btn-subtle" style="font-size: 0.66rem;">All</button>
+        <button type="button" onclick="toggleAllSttDiffCheckboxes(false)" class="btn btn-subtle" style="font-size: 0.66rem;">None</button>
+      </div>
+      <div id="stt-sync-summary-bar" style="display: none; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.4rem 0.6rem; margin-bottom: 0.5rem; font-size: 0.68rem; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem;">
+        <span id="stt-sync-stats-text" style="font-weight: 700;"></span>
+        <span id="stt-last-sync-label" style="font-size: 0.62rem; color: var(--text-muted);"></span>
+      </div>
+
+      <div id="stt-sync-diff-container" style="max-height: 50vh; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.6rem;">
+        <div style="text-align: center; padding: 1.5rem 0.5rem; color: var(--text-muted); font-size: 0.72rem;">
+          Tap <strong>📂 Pick File</strong> above to load your latest backup from Android storage.
+        </div>
+      </div>
+
+     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
+<button type="button" onclick="rejectSelectedSttItems()" class="btn btn-danger" style="padding: 0.5rem;">Reject</button>
+        <button type="button" onclick="applySelectedSttChanges()" class="btn btn-success" style="padding: 0.5rem;">Save</button>
+      </div>
+    </div>
+  </div>
+
+<!-- EXIT BACKUP PROMPT MODAL -->
+  <div id="modal-exit-backup" class="modal-overlay" style="z-index: 130;">
+    <div class="modal-dialog" style="max-width: 360px;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem;">
+        <span style="width: 30px; height: 30px; border-radius: 50%; background: var(--brand-surface); color: var(--brand-primary); display: flex; align-items: center; justify-content: center; font-size: 0.95rem;">💾</span>
+        <h3 style="font-size: 0.92rem; font-weight: 800; color: var(--brand-primary);">Backup Before Exiting?</h3>
+      </div>
+      <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.75rem; line-height: 1.4;">
+        You made changes since your last backup. Save a backup file now so your records stay safe?
+      </p>
+     <div style="display: flex; gap: 0.4rem;">
+        <button type="button" onclick="dismissExitBackupModal()" class="btn btn-subtle" style="flex: 1; padding: 0.5rem;">Exit</button>
+        <button type="button" onclick="executeOneClickExitBackup()" class="btn btn-primary" style="flex: 1; padding: 0.5rem;">Backup Now</button>
+      </div>
+    </div>
+  </div>
+
   <!-- CONFIRMATION ACTION MODAL -->
-  <div id="modal-confirm-action" class="modal-overlay">
-    <div class="modal-dialog">
+  <div id="modal-confirm-action" class="modal-overlay">    <div class="modal-dialog">
       <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
         <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--danger-surface); color: var(--danger); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;">!</span>
         <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--danger);">Confirm Action</h3>
@@ -2324,9 +2591,10 @@
       if (prof) showToast(`Switched to ${prof.name}`);
     }
 
-    let clientDetailSortOrder = 'newest';
-    let timetableWeekOffset = 0;
-    let activeWhatsAppContext = null;
+   let clientDetailSortOrder = 'newest';
+ let timetableWeekOffset = 0;
+ let rosterScheduledDayOffset = 0;
+ let activeWhatsAppContext = null;
 
     const DURATION_TO_MINUTES = {
       '0.5h': 30,
@@ -2348,8 +2616,9 @@
       return `${hh}:${mm}`;
     }
 
-    let appState = { clients: [] };
-    let selectedFormDays = [];
+   let appState = { clients: [] };
+ let selectedFormDays = [];
+ let selectedBlockedDays = [];
     let currentActiveMatrixFilters = {};
     let pastMonthDatesList = [];
     let calendarSelectedDate = new Date().toISOString().split('T')[0];
@@ -2746,9 +3015,12 @@ window.openModal = function(id) {
       processAdvanceBalances();
     }
 
+  let hasUnsavedChangesSinceBackup = false;
+
     function saveState() {
       processAdvanceBalances();
       localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));
+      hasUnsavedChangesSinceBackup = true;
     }
 
     function processAdvanceBalances() {
@@ -2758,34 +3030,34 @@ window.openModal = function(id) {
 
         let totalCashIn = 0;
 
-        (c.months || []).forEach((m, index) => {
-          const quota = m.quota || c.quota || 4;
-          const sessionCount = (m.sessions || []).length;
-          const isQuotaFull = sessionCount >= quota;
-          const hasNewerMonth = index < (c.months || []).length - 1;
-          const isForceCompleted = !!m.forceCompleted;
+    (c.months || []).forEach((m, index) => {
+       const quota = m.quota || c.quota || 4;
+       const billableSessions = (m.sessions || []).filter(s => (s.tag || 'normal') !== 'makeup_due');
+       const sessionCount = billableSessions.length;
+       const isQuotaFull = sessionCount >= quota;
+       const hasNewerMonth = index < (c.months || []).length - 1;
+       const isForceCompleted = !!m.forceCompleted;
 
-          // STRICT RULE: Monthly fees only become due after the quota is full, or a new month is present or created
-          const isDue = isQuotaFull || hasNewerMonth || isForceCompleted;
-          
-          m.isDue = isDue;
-          m.calculatedDueFee = 0;
+       const isDue = isQuotaFull || hasNewerMonth || isForceCompleted;
 
-          if (isDue) {
-            let calculatedFee = (m.feeAmount !== undefined) ? m.feeAmount : c.fee;
-            if (m.manualFeeOverride !== undefined) {
-              calculatedFee = m.manualFeeOverride;
-            } else {
-              if (c.pricingModel === 'per_class') {
-                const normalCount = (m.sessions || []).filter(s => (s.tag || 'normal') === 'normal').length;
-                const unitCost = quota > 0 ? (c.fee / quota) : c.fee;
-                calculatedFee = normalCount * unitCost;
-              }
-              const hasNormal = (m.sessions || []).some(s => (s.tag || 'normal') === 'normal');
-              if (m.sessions.length > 0 && !hasNormal) calculatedFee = 0;
-            }
-            m.calculatedDueFee = calculatedFee;
-          }
+       m.isDue = isDue;
+       m.calculatedDueFee = 0;
+
+       if (isDue) {
+         let calculatedFee = (m.feeAmount !== undefined) ? m.feeAmount : c.fee;
+         if (m.manualFeeOverride !== undefined) {
+           calculatedFee = m.manualFeeOverride;
+         } else {
+           if (c.pricingModel === 'per_class') {
+             const chargeableCount = (m.sessions || []).filter(s => ['normal', 'noshow'].includes(s.tag || 'normal')).length;
+             const unitCost = quota > 0 ? (c.fee / quota) : c.fee;
+             calculatedFee = chargeableCount * unitCost;
+           }
+           const hasChargeable = (m.sessions || []).some(s => ['normal', 'noshow'].includes(s.tag || 'normal'));
+           if (m.sessions.length > 0 && !hasChargeable) calculatedFee = 0;
+         }
+         m.calculatedDueFee = calculatedFee;
+       }
 
           const monthPaid = (m.installments || []).reduce((acc, inst) => acc + Number(inst.amount || 0), 0);
           totalCashIn += monthPaid;
@@ -2983,19 +3255,19 @@ window.openModal = function(id) {
       const todayDate = new Date().toISOString().split('T')[0];
       const lastBackupDate = localStorage.getItem('last_auto_backup_date');
       if (lastBackupDate !== todayDate) {
-        let backupList = [];
-        try {
-          backupList = JSON.parse(localStorage.getItem(DAILY_BACKUP_KEY) || '[]');
-          if (!Array.isArray(backupList)) backupList = [];
-        } catch(e) { backupList = []; }
+       let backupList = [];
+     try {
+       backupList = JSON.parse(localStorage.getItem(getProfileDailyBackupKey()) || '[]');
+       if (!Array.isArray(backupList)) backupList = [];
+     } catch(e) { backupList = []; }
 
-        backupList.unshift({
-          backupDate: todayDate,
-          state: appState
-        });
-        if (backupList.length > 7) backupList = backupList.slice(0, 7);
+     backupList.unshift({
+       backupDate: todayDate,
+       state: appState
+     });
+     if (backupList.length > 7) backupList = backupList.slice(0, 7);
 
-        localStorage.setItem(DAILY_BACKUP_KEY, JSON.stringify(backupList));
+     localStorage.setItem(getProfileDailyBackupKey(), JSON.stringify(backupList));
         localStorage.setItem('last_auto_backup_date', todayDate);
         const statusEl = document.getElementById('daily-backup-status');
         if (statusEl) statusEl.textContent = `Saved (${todayDate})`;
@@ -3040,14 +3312,25 @@ window.openModal = function(id) {
       showToast("Text report exported!");
     }
 
-    async function promptSaveBackupFile(mode) {
-      const payload = JSON.stringify({
-        app: "ClassMonthTracker",
-        version: "12.0",
-        timestamp: new Date().toISOString(),
-        data: appState
-      }, null, 2);
+function buildFullBackupPayloadString() {
+ return JSON.stringify({
+   app: "ClassMonthTracker",
+   version: "13.0_full",
+   timestamp: new Date().toISOString(),
+   data: appState,
+   extras: {
+     settings: getAppSettings(),
+     waTemplates: getSavedWhatsAppTemplatesList(),
+     waCategories: getSavedWhatsAppCategories(),
+     sttPending: getPendingSttLogs(),
+     sttRejected: getRejectedSttLogs(),
+     deletedTrash: typeof getDeletedSessionsList === 'function' ? getDeletedSessionsList() : []
+   }
+ }, null, 2);
+}
 
+async function promptSaveBackupFile(mode) {
+const payload = buildFullBackupPayloadString();
       const fileName = `ClassTracker_Backup_${new Date().toISOString().split('T')[0]}.json`;
 
       if ('showSaveFilePicker' in window) {
@@ -3069,10 +3352,11 @@ window.openModal = function(id) {
       const blob = new Blob([payload], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = fileName;
-      a.click();
-      showToast("Backup downloaded!");
-    }
+    a.download = fileName;
+  a.click();
+  resetUnsavedBackupCounter();
+  showToast("Backup downloaded!");
+}
 
     function handleRestoreFromFile(e) {
       const file = e.target.files[0];
@@ -3080,16 +3364,24 @@ window.openModal = function(id) {
       const reader = new FileReader();
       reader.onload = ev => {
         try {
-          const parsed = JSON.parse(ev.target.result);
-          const restored = parsed.data ? parsed.data : parsed;
-          if (restored && Array.isArray(restored.clients)) {
-            appState = restored;
-            appState.clients.forEach(c => {
-              if (!c.status) c.status = 'active';
-            });
-            saveState();
-            showToast("Database restored successfully!");
-            renderAll();
+const parsed = JSON.parse(ev.target.result);
+     const restored = parsed.data ? parsed.data : parsed;
+     if (restored && Array.isArray(restored.clients)) {
+       appState = restored;
+       appState.clients.forEach(c => {
+         if (!c.status) c.status = 'active';
+       });
+       if (parsed.extras) {
+         if (parsed.extras.settings) localStorage.setItem(getProfileSettingsKey(), JSON.stringify(parsed.extras.settings));
+         if (Array.isArray(parsed.extras.waTemplates)) saveWhatsAppTemplatesList(parsed.extras.waTemplates);
+         if (Array.isArray(parsed.extras.waCategories)) saveWhatsAppCategories(parsed.extras.waCategories);
+         if (Array.isArray(parsed.extras.sttPending)) savePendingSttLogs(parsed.extras.sttPending);
+         if (Array.isArray(parsed.extras.sttRejected)) saveRejectedSttLogs(parsed.extras.sttRejected);
+         if (Array.isArray(parsed.extras.deletedTrash) && typeof saveDeletedSessionsList === 'function') saveDeletedSessionsList(parsed.extras.deletedTrash);
+       }
+       saveState();
+       showToast("Full database, templates & queues restored!");
+       renderAll();
           } else {
             showToast("Invalid backup format.");
           }
@@ -3115,7 +3407,7 @@ window.openModal = function(id) {
       showToast("CSV Export downloaded!");
     }
 
-    function updateQuickReceiptBalancesDisplay() {
+ function updateQuickReceiptBalancesDisplay() {
       const cSelect = document.getElementById('quick-receipt-client-select');
       const clientId = Number(cSelect?.value);
       const client = appState.clients.find(c => c.id === clientId);
@@ -3123,12 +3415,38 @@ window.openModal = function(id) {
 
       const dueBalEl = document.getElementById('qr-due-bal');
       const advBalEl = document.getElementById('qr-adv-bal');
+      const previewBox = document.getElementById('qr-allocation-preview-box');
+      const autoSettle = document.getElementById('qr-auto-settle-checkbox')?.checked ?? true;
+      const enteredAmt = Math.max(0, Number(document.getElementById('quick-receipt-amount')?.value) || 0);
 
       const bal = Math.max(0, client.advanceBalance || 0);
-      const due = (client.months || []).filter(m => !m.isPaid).reduce((sum, m) => sum + (m.calculatedDueFee || 0), 0);
+      const unpaidDueMonths = (client.months || []).filter(m => !m.isPaid && m.isDue && (m.calculatedDueFee || 0) > 0);
+      const due = unpaidDueMonths.reduce((sum, m) => sum + (m.calculatedDueFee || 0), 0);
 
       if (dueBalEl) dueBalEl.textContent = `${due} ${getCurrency()}`;
       if (advBalEl) advBalEl.textContent = `${bal} ${getCurrency()}`;
+
+      if (previewBox) {
+        if (enteredAmt <= 0) {
+          previewBox.style.display = 'none';
+          return;
+        }
+        let pool = bal + enteredAmt;
+        const clearedLabels = [];
+        if (autoSettle) {
+          unpaidDueMonths.forEach(m => {
+            const fee = Number(m.calculatedDueFee || 0);
+            if (pool >= fee) {
+              pool -= fee;
+              clearedLabels.push(`M${m.monthNumber} (${fee})`);
+            }
+          });
+        }
+        previewBox.style.display = 'block';
+        previewBox.innerHTML = clearedLabels.length > 0
+          ? `<strong>Auto-Allocation Preview:</strong> Settles ${clearedLabels.join(', ')} &bull; Remaining Advance: <strong>${pool} ${getCurrency()}</strong>`
+          : `<strong>Allocation Preview:</strong> Total Available Advance becomes <strong>${pool} ${getCurrency()}</strong>${unpaidDueMonths.length > 0 ? ` (Next due: M${unpaidDueMonths[0].monthNumber} — ${unpaidDueMonths[0].calculatedDueFee} ${getCurrency()})` : ''}`;
+      }
     }
 
     function renderRemindersModalList() {
@@ -3196,6 +3514,104 @@ window.openModal = function(id) {
       renderAll();
     }
 
+let rosterMultiSelectActive = false;
+    let rosterSelectedClientIds = new Set();
+
+    function toggleRosterMultiSelectMode() {
+      rosterMultiSelectActive = !rosterMultiSelectActive;
+      rosterSelectedClientIds.clear();
+      const toggleBtn = document.getElementById('btn-toggle-roster-multiselect');
+      const batchBtn = document.getElementById('btn-execute-roster-batch');
+      if (toggleBtn) toggleBtn.className = rosterMultiSelectActive ? 'btn btn-primary' : 'btn btn-subtle';
+      if (batchBtn) {
+        batchBtn.style.display = rosterMultiSelectActive ? 'inline-flex' : 'none';
+        batchBtn.textContent = '✓ Log Selected (0)';
+      }
+      renderRosterPage();
+    }
+
+    function toggleRosterClientSelection(clientId) {
+      const key = String(clientId);
+      if (rosterSelectedClientIds.has(key)) rosterSelectedClientIds.delete(key);
+      else rosterSelectedClientIds.add(key);
+
+      const batchBtn = document.getElementById('btn-execute-roster-batch');
+      if (batchBtn) batchBtn.textContent = `✓ Log Selected (${rosterSelectedClientIds.size})`;
+      renderRosterPage();
+    }
+
+    function executeRosterBatchLog() {
+      if (rosterSelectedClientIds.size === 0) {
+        showToast("Select at least one student first.");
+        return;
+      }
+      const dateVal = document.getElementById('quicklog-date')?.value || new Date().toISOString().split('T')[0];
+      const timeVal = `${getTimePickerValue('quicklog-time') || '16:00'} (${document.getElementById('quicklog-duration-select')?.value || '1h'})`;
+
+      let count = 0;
+      rosterSelectedClientIds.forEach(cid => {
+        const client = appState.clients.find(c => String(c.id) === cid);
+        if (client) {
+          addSessionToClientMonth(client, dateVal, timeVal, "Batch class", "normal");
+          count++;
+        }
+      });
+
+      saveState();
+      toggleRosterMultiSelectMode();
+      showToast(`Logged session for ${count} student(s)!`);
+      renderAll();
+    }
+
+    function getClientMakeupDueCount(client) {
+      let owed = 0;
+      (client.months || []).forEach(m => {
+        (m.sessions || []).forEach(s => {
+          if (s.tag === 'makeup_due') owed++;
+        });
+      });
+      return owed;
+    }
+
+    function getClientAgingDueDays(client) {
+      let oldestTs = null;
+      (client.months || []).forEach(m => {
+        if (!m.isPaid && m.isDue && (m.calculatedDueFee || 0) > 0) {
+          const sessions = m.sessions || [];
+          const refDateStr = sessions.length > 0 ? sessions[sessions.length - 1].date : null;
+          if (refDateStr) {
+            const ts = new Date(refDateStr + 'T12:00:00').getTime();
+            if (!isNaN(ts) && (oldestTs === null || ts < oldestTs)) oldestTs = ts;
+          }
+        }
+      });
+      if (!oldestTs) return 0;
+      return Math.max(0, Math.floor((Date.now() - oldestTs) / 86400000));
+    }
+
+    function getExamCountdownBadgeHtml(client) {
+      if (!client.examDate) return '';
+      const todayMid = new Date(new Date().toISOString().split('T')[0] + 'T12:00:00');
+      const examMid = new Date(client.examDate + 'T12:00:00');
+      const diffDays = Math.round((examMid - todayMid) / 86400000);
+      if (diffDays < 0 || diffDays > 45) return '';
+      const label = diffDays === 0 ? `${client.examLabel || 'Exam'} TODAY` : `${client.examLabel || 'Exam'} in ${diffDays}d`;
+      return `<span style="font-size:0.55rem; font-weight:800; background:var(--purple-surface); color:var(--purple); border:1px solid var(--purple); padding:0px 4px; border-radius:4px; margin-left:3px;">🎯 ${label}</span>`;
+    }
+
+    let rosterTouchStartX = 0;
+    function handleRosterCardTouchStart(e) {
+      rosterTouchStartX = e.changedTouches[0].screenX;
+    }
+    function handleRosterCardTouchEnd(e, clientId, targetDateStr) {
+      const deltaX = e.changedTouches[0].screenX - rosterTouchStartX;
+      if (deltaX > 65) {
+        executeScheduledTodayAdd(clientId, targetDateStr);
+      } else if (deltaX < -65) {
+        prepareWhatsAppClassReminder(clientId);
+      }
+    }
+
     function renderRosterPage() {
       const todayDay = getTodayWeekday();
       const todayDateStr = new Date().toISOString().split('T')[0];
@@ -3235,29 +3651,38 @@ window.openModal = function(id) {
       if (grid) {
         grid.innerHTML = activeClients.map(c => {
           const isScheduledToday = (c.scheduledDays || []).includes(todayDay);
+          const isBlockedToday = (c.blockedDays || []).includes(todayDay);
           const activeMonth = c.months && c.months.length > 0 ? c.months[c.months.length - 1] : null;
-          const count = activeMonth ? activeMonth.sessions.length : 0;
+          const count = activeMonth ? activeMonth.sessions.filter(s => (s.tag || 'normal') !== 'makeup_due').length : 0;
           const quota = activeMonth ? activeMonth.quota : c.quota;
           const extraCount = Math.max(0, count - quota);
+          const makeupDue = getClientMakeupDueCount(c);
           const alreadyLogged = (c.months || []).some(m => (m.sessions || []).some(s => s.date === todayDateStr));
           const showDot = isScheduledToday && !alreadyLogged;
+          const isChecked = rosterSelectedClientIds.has(String(c.id));
 
           return `
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: var(--bg-surface); border: 1.5px solid ${showDot ? 'var(--brand-primary)' : 'var(--border-color)'}; border-radius: var(--radius-sm);">
-              <div onclick="openQuickAddModalPreselect('${c.id}')" style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; cursor: pointer; flex: 1;">
-                ${showDot ? '<span class="pulse-dot"></span>' : '<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--border-color); flex-shrink: 0;"></span>'}
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: ${isChecked ? 'var(--brand-surface)' : 'var(--bg-surface)'}; border: 1.5px solid ${isChecked || showDot ? 'var(--brand-primary)' : 'var(--border-color)'}; border-radius: var(--radius-sm);">
+              <div onclick="${rosterMultiSelectActive ? `toggleRosterClientSelection('${c.id}')` : `openQuickAddModalPreselect('${c.id}')`}" style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; cursor: pointer; flex: 1;">
+                ${rosterMultiSelectActive
+                  ? `<input type="checkbox" ${isChecked ? 'checked' : ''} style="width:15px; height:15px; pointer-events:none;">`
+                  : (showDot ? '<span class="pulse-dot"></span>' : '<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--border-color); flex-shrink: 0;"></span>')}
                 <div style="min-width: 0;">
-                  <p class="truncate-text" style="font-size: 0.72rem; font-weight: 800;">${c.name}</p>
+                  <p class="truncate-text" style="font-size: 0.72rem; font-weight: 800;">
+                    ${c.name}
+                    ${isBlockedToday ? '<span style="font-size:0.55rem; font-weight:800; background:var(--danger-surface); color:var(--danger); border:1px solid var(--danger); padding:0px 4px; border-radius:4px; margin-left:2px;">Busy</span>' : ''}
+                    ${makeupDue > 0 ? `<span style="font-size:0.55rem; font-weight:800; background:var(--warning-surface); color:var(--warning); border:1px solid var(--warning); padding:0px 4px; border-radius:4px; margin-left:2px;">${makeupDue} Makeup</span>` : ''}
+                  </p>
                   <p style="font-size: 0.62rem; color: var(--text-muted);">M${activeMonth ? activeMonth.monthNumber : 1}: <strong>${count}/${quota}</strong> ${extraCount > 0 ? `<span style="color:var(--purple); font-weight:700;">*${extraCount} extra*</span>` : ''}</p>
                 </div>
               </div>
-              <button type="button" onclick="executeQuickAddDirect('${c.id}')" class="btn btn-success" style="font-size: 0.62rem; padding: 0.2rem 0.45rem; flex-shrink: 0;">${durLabel}</button>
+              ${!rosterMultiSelectActive ? `<button type="button" onclick="executeQuickAddDirect('${c.id}')" class="btn btn-success" style="font-size: 0.62rem; padding: 0.2rem 0.45rem; flex-shrink: 0;">${durLabel}</button>` : ''}
             </div>
           `;
         }).join('');
       }
 
-const scheduledBlock = document.getElementById('roster-block-scheduled');
+      const scheduledBlock = document.getElementById('roster-block-scheduled');
       const schedTitleEl = document.getElementById('roster-scheduled-header-title');
       if (scheduledBlock) {
         const targetDate = new Date();
@@ -3267,7 +3692,7 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
 
         if (schedTitleEl) {
           if (rosterScheduledDayOffset === 0) {
-            schedTitleEl.textContent = `Scheduled Today (${targetWeekday})`;
+            schedTitleEl.textContent = `Scheduled Today (${targetWeekday}) • Swipe → Log / ← WA`;
           } else {
             schedTitleEl.textContent = `Schedule: ${targetWeekday}, ${formatDisplayDate(targetDateStr, false)}`;
           }
@@ -3280,9 +3705,9 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
           scheduledBlock.innerHTML = scheduledClients.map(c => {
             const alreadyLogged = (c.months || []).some(m => (m.sessions || []).some(s => s.date === targetDateStr));
             return `
-              <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); gap: 0.4rem;">
+              <div ontouchstart="handleRosterCardTouchStart(event)" ontouchend="handleRosterCardTouchEnd(event, '${c.id}', '${targetDateStr}')" style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); gap: 0.4rem;">
                 <div style="min-width: 0; cursor:pointer; flex: 1;" onclick="viewClientDetail('${c.id}')">
-                  <p class="truncate-text" style="font-size: 0.72rem; font-weight: 800;">${c.name}</p>
+                  <p class="truncate-text" style="font-size: 0.72rem; font-weight: 800;">${c.name}${getExamCountdownBadgeHtml(c)}</p>
                   <p style="font-size: 0.62rem; color: var(--text-muted);">${c.grade || '1-on-1'} ${c.phone ? '• ' + c.phone : ''}</p>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
@@ -3328,17 +3753,29 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
 
         classProgBlock.innerHTML = sortedForProgress.map(c => {
           const activeMonth = c.months && c.months.length > 0 ? c.months[c.months.length - 1] : null;
-          const count = activeMonth ? activeMonth.sessions.length : 0;
+          const count = activeMonth ? activeMonth.sessions.filter(s => (s.tag || 'normal') !== 'makeup_due').length : 0;
           const quota = activeMonth ? activeMonth.quota : c.quota;
           const extraCount = Math.max(0, count - quota);
           const pct = Math.min(100, Math.round((count / quota) * 100));
           const barColor = pct >= 100 ? 'var(--success)' : (pct > 50 ? 'var(--brand-primary)' : 'var(--warning)');
 
+          const unpaidDue = (c.months || []).filter(m => !m.isPaid && m.isDue).reduce((sum, m) => sum + (m.calculatedDueFee || 0), 0);
+          const agingDays = unpaidDue > 0 ? getClientAgingDueDays(c) : 0;
+          const makeupDue = getClientMakeupDueCount(c);
+
           return `
-            <div style="display: flex; flex-direction: column; gap: 0.25rem; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color);">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.72rem; font-weight: 800; cursor: pointer;" onclick="viewClientDetail('${c.id}')">${c.name} ${extraCount > 0 ? `<span style="color:var(--purple); font-weight:700;">*${extraCount} extra classes*</span>` : ''}</span>
-                <span class="num-tabular" style="font-size: 0.65rem; font-weight: 700;">${count}/${quota} (${pct}%)</span>
+            <div style="display: flex; flex-direction: column; gap: 0.3rem; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid ${unpaidDue > 0 ? 'var(--danger)' : 'var(--border-color)'};">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem;">
+                <div style="display: flex; align-items: center; gap: 0.3rem; min-width: 0; flex: 1; flex-wrap: wrap;">
+                  <span class="truncate-text" style="font-size: 0.74rem; font-weight: 800; cursor: pointer;" onclick="viewClientDetail('${c.id}')">${c.name} ${extraCount > 0 ? `<span style="color:var(--purple); font-weight:700;">*${extraCount} extra*</span>` : ''}</span>
+                  ${getExamCountdownBadgeHtml(c)}
+                  ${makeupDue > 0 ? `<span style="font-size: 0.58rem; font-weight: 800; background: var(--warning-surface); color: var(--warning); border: 1px solid var(--warning); padding: 1px 5px; border-radius: 9999px;">${makeupDue} Makeup</span>` : ''}
+                  ${unpaidDue > 0 ? `<span class="num-tabular" style="font-size: 0.58rem; font-weight: 800; background: var(--danger-surface); color: var(--danger); border: 1px solid var(--danger); padding: 1px 5px; border-radius: 9999px; flex-shrink: 0;">${unpaidDue} ${getCurrency()} Due${agingDays > 0 ? ` • ${agingDays}d` : ''}</span>` : ''}
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
+                  <span class="num-tabular" style="font-size: 0.65rem; font-weight: 700;">${count}/${quota} (${pct}%)</span>
+                  <button type="button" onclick="prepareWhatsAppClassReminder('${c.id}')" class="btn btn-whatsapp" style="font-size: 0.6rem; padding: 0.15rem 0.4rem;" title="WhatsApp">💬</button>
+                </div>
               </div>
               <div style="width: 100%; height: 6px; background: var(--border-color); border-radius: 9999px; overflow: hidden;">
                 <div style="width: ${pct}%; height: 100%; background: ${barColor}; border-radius: 9999px;"></div>
@@ -3369,8 +3806,29 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       renderAll();
     }
 
-    function addSessionToClientMonth(client, dateVal, timeVal, notes, tag) {
-      const profileDurCode = client.sessionDuration || '1h';
+function addSessionToClientMonth(client, dateVal, timeVal, notes, tag, sttRecordId = null) {
+if (dateVal && timeVal) {
+const targetHr = parseInt(formatTo24Hour(timeVal).split(':')[0], 10);
+const overlappingStudents = [];
+appState.clients.forEach(other => {
+  if (other.id === client.id) return;
+  const hasSameSlot = (other.months || []).some(m =>
+    (m.sessions || []).some(s => s.date === dateVal && parseInt(formatTo24Hour(s.time).split(':')[0], 10) === targetHr)
+  );
+  if (hasSameSlot) overlappingStudents.push(other.name);
+});
+if (overlappingStudents.length > 0) {
+  setTimeout(() => showToast(`Schedule note: Overlaps with ${overlappingStudents.join(', ')} at ${String(targetHr).padStart(2, '0')}:00`), 450);
+}
+}
+if (dateVal && Array.isArray(client.blockedDays) && client.blockedDays.length > 0) {
+   const dObj = new Date(dateVal + 'T12:00:00');
+   const dayName = WEEKDAYS[dObj.getDay()];
+   if (client.blockedDays.includes(dayName)) {
+     setTimeout(() => showToast(`Note: ${client.name} is marked Unavailable on ${dayName}s!`), 300);
+   }
+ }
+ const profileDurCode = client.sessionDuration || '1h';
       const profileMins = DURATION_TO_MINUTES[profileDurCode] || 60;
 
       let startStr = '16:00';
@@ -3394,68 +3852,104 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
           client.months.push(activeMonth);
         }
 
-        if ((activeMonth.sessions || []).length >= (activeMonth.quota || client.quota)) {
-          activeMonth.isCompleted = true;
-          const nextNum = activeMonth.monthNumber + 1;
-          activeMonth = { id: generateId(), monthNumber: nextNum, quota: client.quota, feeAmount: client.fee, isCompleted: false, isPaid: false, installments: [], sessions: [] };
-          client.months.push(activeMonth);
+      const activeBillableCount = (activeMonth.sessions || []).filter(s => (s.tag || 'normal') !== 'makeup_due').length;
+     if (activeBillableCount >= (activeMonth.quota || client.quota)) {
+       activeMonth.isCompleted = true;
+       const nextNum = activeMonth.monthNumber + 1;
+       activeMonth = { id: generateId(), monthNumber: nextNum, quota: client.quota, feeAmount: client.fee, isCompleted: false, isPaid: false, installments: [], sessions: [] };
+       client.months.push(activeMonth);
+     }
+
+     const slotTime = `${minsToTimeStr(curMins)} (${profileDurCode})`;
+     const splitNote = splitCount > 1 ? `${notes ? notes + ' ' : ''}[Part ${i + 1}/${splitCount}]` : notes;
+
+     const sessObj = {
+       id: generateId() + i,
+       date: dateVal,
+       time: slotTime,
+       notes: splitNote,
+       homework: window._pendingSessionHomework || '',
+       tag: tag || 'normal'
+     };
+        if (sttRecordId !== null) {
+          sessObj.sttRecordId = sttRecordId;
+          sessObj.sttPart = i + 1;
         }
 
-        const slotTime = `${minsToTimeStr(curMins)} (${profileDurCode})`;
-        const splitNote = splitCount > 1 ? `${notes ? notes + ' ' : ''}[Part ${i + 1}/${splitCount}]` : notes;
-
-        activeMonth.sessions.push({
-          id: generateId() + i,
-          date: dateVal,
-          time: slotTime,
-          notes: splitNote,
-          tag: tag || 'normal'
-        });
-
+        activeMonth.sessions.push(sessObj);
         curMins += profileMins;
       }
     }
+ function getLastSessionTopicSummary(client) {
+   if (!client || !client.months) return null;
+   const allSess = [];
+   client.months.forEach(m => {
+     (m.sessions || []).forEach(s => allSess.push(s));
+   });
+   if (allSess.length === 0) return null;
+   allSess.sort((a, b) => new Date(b.date) - new Date(a.date));
+   return allSess[0];
+ }
 
-    function openQuickAddModal() {
-      const select = document.getElementById('quickmodal-client-select');
-      if (!select) return;
-      const activeClients = appState.clients.filter(c => (c.status || 'active') !== 'archived');
-      select.innerHTML = activeClients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      document.getElementById('quickmodal-date').value = new Date().toISOString().split('T')[0];
-      document.getElementById('quickmodal-notes').value = '';
-      document.getElementById('quickmodal-tag').value = 'normal';
-      openModal('modal-quick-add');
-    }
+ function openQuickAddModal() {
+   const select = document.getElementById('quickmodal-client-select');
+   if (!select) return;
+   const activeClients = appState.clients.filter(c => (c.status || 'active') !== 'archived');
+   select.innerHTML = activeClients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+   document.getElementById('quickmodal-date').value = new Date().toISOString().split('T')[0];
+   document.getElementById('quickmodal-notes').value = '';
+   if (document.getElementById('quickmodal-homework')) document.getElementById('quickmodal-homework').value = '';
+   document.getElementById('quickmodal-tag').value = 'normal';
+   onQuickModalClientChanged();
+   openModal('modal-quick-add');
+ }
 
-    function openQuickAddModalPreselect(clientId) {
-      openQuickAddModal();
-      const select = document.getElementById('quickmodal-client-select');
-      if (select) {
-        select.value = String(clientId);
-        onQuickModalClientChanged();
-      }
-    }
+ function openQuickAddModalPreselect(clientId) {
+   openQuickAddModal();
+   const select = document.getElementById('quickmodal-client-select');
+   if (select) {
+     select.value = String(clientId);
+     onQuickModalClientChanged();
+   }
+ }
 
-    function onQuickModalClientChanged() {
-      const clientId = document.getElementById('quickmodal-client-select')?.value;
-      const client = appState.clients.find(c => String(c.id) === String(clientId));
-      if (client) {
-        const timeInput = document.getElementById('quickmodal-time');
-        if (timeInput) setTimePickerValue('quickmodal-time', getLastStudentClassTime(client));
-      }
-    }
+ function onQuickModalClientChanged() {
+   const clientId = document.getElementById('quickmodal-client-select')?.value;
+   const client = appState.clients.find(c => String(c.id) === String(clientId));
+   const banner = document.getElementById('quickmodal-last-topic-banner');
+   if (client) {
+     const timeInput = document.getElementById('quickmodal-time');
+     if (timeInput) setTimePickerValue('quickmodal-time', getLastStudentClassTime(client));
+     const durSel = document.getElementById('quickmodal-duration');
+     if (durSel && client.sessionDuration) durSel.value = client.sessionDuration;
+
+     const lastSess = getLastSessionTopicSummary(client);
+     if (banner) {
+       if (lastSess) {
+         const nextFocus = lastSess.homework ? ` • Next Focus: <strong>${lastSess.homework}</strong>` : '';
+         banner.style.display = 'block';
+         banner.innerHTML = `<strong>Last (${formatDisplayDate(lastSess.date, false)}):</strong> ${lastSess.notes || 'No topic'}${nextFocus}`;
+       } else {
+         banner.style.display = 'none';
+       }
+     }
+   }
+ }
 
     function handleSaveQuickModalSession() {
       const clientId = document.getElementById('quickmodal-client-select')?.value;
       const dateVal = document.getElementById('quickmodal-date')?.value || new Date().toISOString().split('T')[0];
       const timeVal = `${getTimePickerValue('quickmodal-time') || '16:00'} (${document.getElementById('quickmodal-duration')?.value || '1h'})`;
-      const notes = (document.getElementById('quickmodal-notes')?.value || '').trim();
-      const tag = document.getElementById('quickmodal-tag')?.value || 'normal';
+const notes = (document.getElementById('quickmodal-notes')?.value || '').trim();
+ const homework = (document.getElementById('quickmodal-homework')?.value || '').trim();
+ const tag = document.getElementById('quickmodal-tag')?.value || 'normal';
 
-      const client = appState.clients.find(c => String(c.id) === String(clientId));
-      if (!client) return;
+ const client = appState.clients.find(c => String(c.id) === String(clientId));
+ if (!client) return;
 
-      addSessionToClientMonth(client, dateVal, timeVal, notes, tag);
+ window._pendingSessionHomework = homework;
+ addSessionToClientMonth(client, dateVal, timeVal, notes, tag);
+ window._pendingSessionHomework = '';
       saveState();
       closeModal('modal-quick-add');
       showToast(`Class logged for ${client.name}!`);
@@ -3638,7 +4132,18 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       if (!client) { showMainView('clients'); return; }
 
       document.getElementById('header-context-label').textContent = client.name;
-
+const latestMonth = client.months && client.months.length > 0 ? client.months[client.months.length - 1] : null;
+      const stickyName = document.getElementById('sticky-client-name');
+      const stickyMeta = document.getElementById('sticky-client-meta');
+      const stickyLogBtn = document.getElementById('sticky-log-class-btn');
+      if (stickyName) stickyName.textContent = client.name;
+      if (stickyMeta && latestMonth) {
+        const dueSum = (client.months || []).filter(m => !m.isPaid).reduce((sum, m) => sum + (m.calculatedDueFee || 0), 0);
+        stickyMeta.textContent = `M${latestMonth.monthNumber}: ${latestMonth.sessions.length}/${latestMonth.quota || client.quota}${dueSum > 0 ? ` • Due: ${dueSum} ${getCurrency()}` : ''}`;
+      }
+      if (stickyLogBtn && latestMonth) {
+        stickyLogBtn.onclick = () => openLogClassModal(client.id, latestMonth.id);
+      }
       let totalClassesDone = 0;
       let totalPaymentReceived = 0;
       let totalNormalClass = 0;
@@ -3664,7 +4169,13 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
               <h2 class="truncate-text" style="font-size: 0.95rem; font-weight: 800;">${client.name}</h2>
               ${isArchived ? '<span style="font-size:0.6rem; padding:0.1rem 0.35rem; background:var(--warning-surface); color:var(--warning); border-radius:4px; font-weight:700;">Archived</span>' : ''}
             </div>
-            <p style="font-size: 0.7rem; color: var(--text-muted);">${client.grade || '1-on-1'} • Model: ${client.pricingModel === 'per_class' ? 'Per-Class' : 'Retainer'} ${client.phone ? '• ' + client.phone : ''}</p>
+         <p style="font-size: 0.7rem; color: var(--text-muted);">${client.grade || '1-on-1'} • Model: ${client.pricingModel === 'per_class' ? 'Per-Class' : 'Retainer'} ${client.phone ? '• ' + client.phone : ''}</p>
+         ${(client.scheduledDays && client.scheduledDays.length > 0) || (client.blockedDays && client.blockedDays.length > 0) ? `
+           <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.3rem; align-items:center;">
+             ${(client.scheduledDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--brand-surface); color:var(--brand-primary); border:1px solid var(--brand-primary);">${d}</span>`).join('')}
+             ${(client.blockedDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--danger-surface); color:var(--danger); border:1px solid var(--danger); text-decoration:line-through;" title="Unavailable / Busy">${d}</span>`).join('')}
+           </div>
+         ` : ''}
           </div>
          <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
             ${(totalDueAmount > 0 && (client.advanceBalance || 0) > 0) ? `<button type="button" onclick="autoSettleClientDues('${client.id}')" class="btn btn-success" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">⚡ Auto-Settle</button>` : ''}
@@ -3777,8 +4288,8 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
                   <div>
                     <span style="font-weight: 700;">${originalIdx + 1}. ${formatDisplayDate(s.date, false)}</span>
                     <span style="color: var(--text-muted); font-size: 0.65rem;"> | ${s.time} ${s.tag === 'extra' ? '• <span style="color:var(--purple); font-weight:700;">[Extra]</span>' : ''}</span>
-                    ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${s.notes}</p>` : ''}
-                  </div>
+${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${s.notes}</p>` : ''}
+                ${s.homework ? `<p style="font-size: 0.62rem; color: var(--brand-primary); font-weight: 700; margin-top: 1px;">Next: ${s.homework}</p>` : ''}                  </div>
                   <div style="display: flex; gap: 0.2rem;">
                     <button type="button" onclick="openLogClassModal('${client.id}', '${month.id}', '${s.id}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Edit</button>
                     <button type="button" onclick="openReassignModal('${client.id}', '${s.id}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Move</button>
@@ -3887,16 +4398,35 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       renderAll();
     }
 
-    function openEditMonthModal(clientId, monthId) {
-      const client = appState.clients.find(c => String(c.id) === String(clientId));
-      const month = client.months.find(m => String(m.id) === String(monthId));
 
-      document.getElementById('edit-month-client-id').value = clientId;
-      document.getElementById('edit-month-id').value = monthId;
-      document.getElementById('edit-month-fee-override').value = month.manualFeeOverride !== undefined ? month.manualFeeOverride : '';
-      document.getElementById('edit-month-force-complete').checked = month.isCompleted || false;
-      openModal('modal-edit-month');
-    }
+
+
+function openEditMonthModal(clientId, monthId) {
+ const client = appState.clients.find(c => String(c.id) === String(clientId));
+ const month = client.months.find(m => String(m.id) === String(monthId));
+
+ document.getElementById('edit-month-client-id').value = clientId;
+ document.getElementById('edit-month-id').value = monthId;
+ document.getElementById('edit-month-fee-override').value = month.manualFeeOverride !== undefined ? month.manualFeeOverride : '';
+ document.getElementById('edit-month-force-complete').checked = month.isCompleted || false;
+ openModal('modal-edit-month');
+}
+
+function applyProRataToEditMonth() {
+ const clientId = document.getElementById('edit-month-client-id').value;
+ const monthId = document.getElementById('edit-month-id').value;
+ const client = appState.clients.find(c => String(c.id) === String(clientId));
+ const month = client?.months.find(m => String(m.id) === String(monthId));
+ if (!client || !month) return;
+
+ const quota = month.quota || client.quota || 4;
+ const baseFee = Number(month.feeAmount || client.fee || 0);
+ const attendedCount = (month.sessions || []).filter(s => ['normal', 'noshow'].includes(s.tag || 'normal')).length;
+ const proRataFee = Math.round((attendedCount / quota) * baseFee);
+
+ document.getElementById('edit-month-fee-override').value = proRataFee;
+ showToast(`Pro-Rata calculated: ${attendedCount}/${quota} = ${proRataFee} ${getCurrency()}`);
+}
 
     function saveEditedMonth() {
       const clientId = document.getElementById('edit-month-client-id').value;
@@ -3984,15 +4514,44 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       renderAll();
     }
 
+ function getDeletedSessionsStorageKey() {
+      return `month_tracker_v12_deleted_sessions_${activeProfileId}`;
+    }
+
+    function getDeletedSessionsList() {
+      try {
+        return JSON.parse(localStorage.getItem(getDeletedSessionsStorageKey()) || '[]');
+      } catch (e) { return []; }
+    }
+
+    function saveDeletedSessionsList(list) {
+      localStorage.setItem(getDeletedSessionsStorageKey(), JSON.stringify(list));
+    }
+
     function confirmDeleteSession(clientId, monthId, sessId) {
-      requestConfirmation("Delete this class record?", () => {
+      requestConfirmation("Move this class record to Trash (can be restored later in Settings)?", () => {
         const client = appState.clients.find(c => String(c.id) === String(clientId));
-        if(!client) return;
+        if (!client) return;
         const month = client.months.find(m => String(m.id) === String(monthId));
-        if(!month) return;
+        if (!month) return;
+
+        const targetSess = month.sessions.find(s => String(s.id) === String(sessId));
+        if (targetSess) {
+          const trash = getDeletedSessionsList();
+          trash.unshift({
+            clientId: client.id,
+            clientName: client.name,
+            monthId: month.id,
+            monthNumber: month.monthNumber,
+            session: { ...targetSess },
+            deletedAt: new Date().toISOString()
+          });
+          saveDeletedSessionsList(trash);
+        }
+
         month.sessions = month.sessions.filter(s => String(s.id) !== String(sessId));
         saveState();
-        showToast("Class removed.");
+        showToast("Moved to Trash (Settings → Trash to restore).");
         if (document.getElementById('view-client-detail')?.style.display === 'flex') {
           renderClientDetailView();
         } else if (document.getElementById('view-calendar')?.style.display === 'flex') {
@@ -4419,19 +4978,32 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
         setTimePickerValue('logclass-time', start);
         document.getElementById('logclass-duration').value = dur;
         
-        document.getElementById('logclass-tag').value = sess.tag || 'normal';
-        document.getElementById('logclass-notes').value = sess.notes || '';
-      } else {
-        document.getElementById('logclass-session-id').value = '';
-        document.getElementById('logclass-modal-title').textContent = "Log Class";
-        document.getElementById('logclass-date').value = new Date().toISOString().split('T')[0];
-        setTimePickerValue('logclass-time', getLastStudentClassTime(client));
-        document.getElementById('logclass-duration').value = '1h';
-        document.getElementById('logclass-tag').value = 'normal';
-        document.getElementById('logclass-notes').value = '';
-      }
-      openModal('modal-log-class');
-    }
+       document.getElementById('logclass-tag').value = sess.tag || 'normal';
+   document.getElementById('logclass-notes').value = sess.notes || '';
+   if (document.getElementById('logclass-homework')) document.getElementById('logclass-homework').value = sess.homework || '';
+ } else {
+   document.getElementById('logclass-session-id').value = '';
+   document.getElementById('logclass-modal-title').textContent = "Log Class";
+   document.getElementById('logclass-date').value = new Date().toISOString().split('T')[0];
+   setTimePickerValue('logclass-time', getLastStudentClassTime(client));
+   document.getElementById('logclass-duration').value = '1h';
+   document.getElementById('logclass-tag').value = 'normal';
+   document.getElementById('logclass-notes').value = '';
+   if (document.getElementById('logclass-homework')) document.getElementById('logclass-homework').value = '';
+ }
+    const logBanner = document.getElementById('logclass-last-topic-banner');
+   if (logBanner) {
+     const lastSess = getLastSessionTopicSummary(client);
+     if (!sessionId && lastSess) {
+       const nextFocus = lastSess.homework ? ` • Next Focus: <strong>${lastSess.homework}</strong>` : '';
+       logBanner.style.display = 'block';
+       logBanner.innerHTML = `<strong>Last (${formatDisplayDate(lastSess.date, false)}):</strong> ${lastSess.notes || 'No topic'}${nextFocus}`;
+     } else {
+       logBanner.style.display = 'none';
+     }
+   }
+   openModal('modal-log-class');
+ }
 
     function executeLogClassModal() {
       const clientId = document.getElementById('logclass-client-id').value;
@@ -4439,32 +5011,46 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       const sessionId = document.getElementById('logclass-session-id').value;
       const dateVal = document.getElementById('logclass-date').value || new Date().toISOString().split('T')[0];
       const timeVal = `${getTimePickerValue('logclass-time') || '16:00'} (${document.getElementById('logclass-duration').value || '1h'})`;
-      const tag = document.getElementById('logclass-tag').value;
-      const notes = document.getElementById('logclass-notes').value.trim();
+const tag = document.getElementById('logclass-tag').value;
+ const notes = document.getElementById('logclass-notes').value.trim();
+ const homework = (document.getElementById('logclass-homework')?.value || '').trim();
 
-      const client = appState.clients.find(c => String(c.id) === String(clientId));
-      const month = client.months.find(m => String(m.id) === String(monthId));
+ const client = appState.clients.find(c => String(c.id) === String(clientId));
+ const month = client.months.find(m => String(m.id) === String(monthId));
 
-      if (sessionId) {
-        const sess = month.sessions.find(s => String(s.id) === String(sessionId));
-        sess.date = dateVal;
-        sess.time = timeVal;
-        sess.tag = tag;
-        sess.notes = notes;
-        showToast("Class updated successfully!");
-      } else {
-        const profileDurCode = client.sessionDuration || '1h';
-        const profileMins = DURATION_TO_MINUTES[profileDurCode] || 60;
-        const loggedDurCode = document.getElementById('logclass-duration').value || profileDurCode;
-        const loggedMins = DURATION_TO_MINUTES[loggedDurCode] || profileMins;
-        const splitCount = Math.max(1, Math.round(loggedMins / profileMins));
+ if (sessionId) {
+   const sess = month.sessions.find(s => String(s.id) === String(sessionId));
+   sess.date = dateVal;
+   sess.time = timeVal;
+   sess.tag = tag;
+   sess.notes = notes;
+   sess.homework = homework;
+   showToast("Class updated successfully!");
+ } else {
+   const profileDurCode = client.sessionDuration || '1h';
+   const profileMins = DURATION_TO_MINUTES[profileDurCode] || 60;
+   const loggedDurCode = document.getElementById('logclass-duration').value || profileDurCode;
+   const loggedMins = DURATION_TO_MINUTES[loggedDurCode] || profileMins;
+   const splitCount = Math.max(1, Math.round(loggedMins / profileMins));
 
-        if (splitCount > 1) {
-          addSessionToClientMonth(client, dateVal, timeVal, notes, tag);
-          showToast(`${splitCount} split sessions added for ${client.name}!`);
-        } else {
-          month.sessions.push({ id: generateId(), date: dateVal, time: timeVal, notes, tag });
-          showToast(`1 class added for ${client.name}!`);
+   const dObj = new Date(dateVal + 'T12:00:00');
+   const dayName = WEEKDAYS[dObj.getDay()];
+   const isBlockedDay = Array.isArray(client.blockedDays) && client.blockedDays.includes(dayName);
+
+   if (splitCount > 1) {
+     window._pendingSessionHomework = homework;
+     addSessionToClientMonth(client, dateVal, timeVal, notes, tag);
+     window._pendingSessionHomework = '';
+     showToast(isBlockedDay
+       ? `${splitCount} sessions added (Note: ${client.name} is usually busy on ${dayName}s)`
+       : `${splitCount} split sessions added for ${client.name}!`
+     );
+   } else {
+     month.sessions.push({ id: generateId(), date: dateVal, time: timeVal, notes, homework, tag });
+          showToast(isBlockedDay
+            ? `Class added (Note: ${client.name} is usually busy on ${dayName}s)`
+            : `1 class added for ${client.name}!`
+          );
         }
       }
 
@@ -4997,7 +5583,7 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
         pMonthSel.innerHTML = `<option value="all">All Months</option>` + Array.from({length: 12}, (_, i) => `<option value="${i+1}">Month ${i+1}</option>`).join('');
       }
 
-      let totalBilled = 0, totalPaid = 0;
+let totalBilled = 0, totalPaid = 0, unbilledMidCycle = 0, unbilledSessionsCount = 0;
 
       const filtered = appState.clients.filter(c => {
         if (hideArchived && (c.status || 'active') === 'archived') return false;
@@ -5010,10 +5596,86 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
           const fee = Number(m.calculatedDueFee || 0);
           totalBilled += fee;
           if (m.isPaid) totalPaid += fee;
+
+          if (!m.isDue) {
+            const quota = m.quota || c.quota || 4;
+            const monthFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount || c.fee || 0);
+            const normalSessions = (m.sessions || []).filter(s => (s.tag || 'normal') === 'normal').length;
+            if (normalSessions > 0 && quota > 0) {
+              unbilledSessionsCount += normalSessions;
+              unbilledMidCycle += (normalSessions / quota) * monthFee;
+            }
+          }
         });
       });
 
-      const kpiGrid = document.getElementById('analytics-kpi-grid');
+      unbilledMidCycle = Math.round(unbilledMidCycle);
+
+const startIn = document.getElementById('income-range-start');
+   const endIn = document.getElementById('income-range-end');
+   if (startIn && endIn && !startIn.value && !endIn.value) {
+     const now = new Date();
+     const y = now.getFullYear();
+     const m = String(now.getMonth() + 1).padStart(2, '0');
+     const lastDay = new Date(y, now.getMonth() + 1, 0).getDate();
+     startIn.value = `${y}-${m}-01`;
+     endIn.value = `${y}-${m}-${String(lastDay).padStart(2, '0')}`;
+   }
+
+   const workloadCard = document.getElementById('monthly-workload-summary-card');
+   if (workloadCard) {
+     const rStart = startIn?.value || '0000-01-01';
+     const rEnd = endIn?.value || '9999-12-31';
+
+     let rangeMins = 0, rangeClasses = 0, rangeEarned = 0, rangeCashReceived = 0;
+
+     filtered.forEach(c => {
+       const defDur = c.sessionDuration || '1h';
+       (c.months || []).forEach(m => {
+         const quota = m.quota || c.quota || 4;
+         const mFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount || c.fee || 0);
+         const perClassVal = quota > 0 ? (mFee / quota) : 0;
+
+         (m.sessions || []).forEach(s => {
+           if (s.date && s.date >= rStart && s.date <= rEnd) {
+             rangeClasses++;
+             const durMatch = (s.time || '').match(/\((.*?)\)/);
+             const dCode = durMatch ? durMatch[1].trim() : defDur;
+             rangeMins += (DURATION_TO_MINUTES[dCode] || 60);
+             if (['normal', 'noshow'].includes(s.tag || 'normal')) {
+               rangeEarned += perClassVal;
+             }
+           }
+         });
+
+         (m.installments || []).forEach(inst => {
+           if (inst.date && inst.date >= rStart && inst.date <= rEnd) {
+             rangeCashReceived += Number(inst.amount || 0);
+           }
+         });
+       });
+     });
+
+     const totalHrs = +(rangeMins / 60).toFixed(1);
+     workloadCard.innerHTML = `
+       <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.35rem; text-align: center;">
+         <div style="background: var(--bg-surface); padding: 0.4rem; border-radius: 6px; border: 1px solid var(--border-color);">
+           <span style="font-size: 0.6rem; color: var(--text-muted); display: block;">Hours Taught (${rangeClasses} cls)</span>
+           <strong class="num-tabular" style="font-size: 0.9rem; color: var(--brand-primary);">${totalHrs} hrs</strong>
+         </div>
+         <div style="background: var(--bg-surface); padding: 0.4rem; border-radius: 6px; border: 1px solid var(--border-color);">
+           <span style="font-size: 0.6rem; color: var(--text-muted); display: block;">Earned Value</span>
+           <strong class="num-tabular" style="font-size: 0.9rem; color: var(--purple);">${Math.round(rangeEarned)} ${getCurrency()}</strong>
+         </div>
+         <div style="background: var(--bg-surface); padding: 0.4rem; border-radius: 6px; border: 1px solid var(--border-color); grid-column: span 2;">
+           <span style="font-size: 0.6rem; color: var(--text-muted); display: block;">Actual Cash Collected in Period</span>
+           <strong class="num-tabular" style="font-size: 0.95rem; color: var(--success);">${Math.round(rangeCashReceived)} ${getCurrency()}</strong>
+         </div>
+       </div>
+     `;
+   }
+
+   const kpiGrid = document.getElementById('analytics-kpi-grid');
       if (kpiGrid) {
         kpiGrid.innerHTML = `
           <div class="card" style="padding: 0.5rem;">
@@ -5028,9 +5690,12 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
             <span style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700;">Due (${getCurrency()})</span>
             <p class="num-tabular" style="font-size: 0.95rem; font-weight: 800; color: var(--danger);">${Math.max(0, totalBilled - totalPaid)}</p>
           </div>
+          <div class="card" style="padding: 0.5rem;">
+            <span style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700;">In-Progress (${unbilledSessionsCount} cls)</span>
+            <p class="num-tabular" style="font-size: 0.95rem; font-weight: 800; color: var(--purple);">${unbilledMidCycle} ${getCurrency()}</p>
+          </div>
         `;
       }
-
       renderHeatmap7Row('system-heatmap-grid', null, 'system-heatmap-inspector', true);
       renderAnalyticsPivotTable(filtered);
 
@@ -5114,133 +5779,167 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       }, 40);
     }
 
-    function toggleFormDayPicker(btn) {
-      const day = btn.getAttribute('data-day');
-      if (selectedFormDays.includes(day)) {
-        selectedFormDays = selectedFormDays.filter(d => d !== day);
-      } else {
-        selectedFormDays.push(day);
-      }
-      updateFormDaysPickerUI();
-    }
+ function toggleFormDayPicker(btn) {
+   const day = btn.getAttribute('data-day');
+   if (selectedFormDays.includes(day)) {
+     selectedFormDays = selectedFormDays.filter(d => d !== day);
+   } else {
+     selectedFormDays.push(day);
+     // Automatically remove from Unavailable Days if marked as Scheduled
+     selectedBlockedDays = selectedBlockedDays.filter(d => d !== day);
+   }
+   updateFormDaysPickerUI();
+ }
 
-    function updateFormDaysPickerUI() {
-      document.querySelectorAll('#form-days-picker button').forEach(b => {
-        const d = b.getAttribute('data-day');
-        b.className = selectedFormDays.includes(d) ? "btn btn-primary" : "btn btn-subtle";
-      });
-    }
+ function toggleFormBlockedDayPicker(btn) {
+   const day = btn.getAttribute('data-day');
+   if (selectedBlockedDays.includes(day)) {
+     selectedBlockedDays = selectedBlockedDays.filter(d => d !== day);
+   } else {
+     selectedBlockedDays.push(day);
+     // Automatically remove from Scheduled Days if marked as Unavailable
+     selectedFormDays = selectedFormDays.filter(d => d !== day);
+   }
+   updateFormDaysPickerUI();
+ }
 
-    function openClientModal(clientId = 'new') {
-      const isNew = (clientId === 'new' || !clientId);
-      document.getElementById('client-modal-title').textContent = isNew ? "New Client Profile" : "Edit Client Profile";
-      document.getElementById('btn-delete-client').style.display = isNew ? "none" : "inline-flex";
+ function updateFormDaysPickerUI() {
+   document.querySelectorAll('#form-days-picker button').forEach(b => {
+     const d = b.getAttribute('data-day');
+     b.className = selectedFormDays.includes(d) ? "btn btn-primary" : "btn btn-subtle";
+   });
+   document.querySelectorAll('#form-blocked-days-picker button').forEach(b => {
+     const d = b.getAttribute('data-day');
+     b.className = selectedBlockedDays.includes(d) ? "btn btn-danger" : "btn btn-subtle";
+   });
+ }
 
-      if (isNew) {
-        document.getElementById('form-client-id').value = '';
-        document.getElementById('form-client-name').value = '';
-        document.getElementById('form-client-grade').value = '';
-        document.getElementById('form-client-phone').value = '';
-        document.getElementById('form-client-model').value = 'retainer';
-        document.getElementById('form-client-quota').value = 4;
-        document.getElementById('form-client-fee').value = 500;
-        document.getElementById('form-client-duration').value = '1h';
-        document.getElementById('form-client-status').value = 'active';
-        selectedFormDays = [];
-      } else {
-        const client = appState.clients.find(c => String(c.id) === String(clientId));
-        if (!client) return;
-        document.getElementById('form-client-id').value = client.id;
-        document.getElementById('form-client-name').value = client.name || '';
-        document.getElementById('form-client-grade').value = client.grade || '';
-        document.getElementById('form-client-phone').value = client.phone || '';
-        document.getElementById('form-client-model').value = client.pricingModel || 'retainer';
-        document.getElementById('form-client-quota').value = client.quota || 4;
-        document.getElementById('form-client-fee').value = client.fee || 500;
-        document.getElementById('form-client-duration').value = client.sessionDuration || '1h';
-        document.getElementById('form-client-status').value = client.status || 'active';
-        selectedFormDays = [...(client.scheduledDays || [])];
-      }
+ function openClientModal(clientId = 'new') {
+   const isNew = (clientId === 'new' || !clientId);
+   document.getElementById('client-modal-title').textContent = isNew ? "New Client Profile" : "Edit Client Profile";
+   document.getElementById('btn-delete-client').style.display = isNew ? "none" : "inline-flex";
 
-      updateFormDaysPickerUI();
-      openModal('modal-client');
-    }
+   if (isNew) {
+     document.getElementById('form-client-id').value = '';
+     document.getElementById('form-client-name').value = '';
+     document.getElementById('form-client-grade').value = '';
+     document.getElementById('form-client-phone').value = '';
+     document.getElementById('form-client-model').value = 'retainer';
+     document.getElementById('form-client-quota').value = 4;
+     document.getElementById('form-client-fee').value = 500;
+     document.getElementById('form-client-duration').value = '1h';
+   document.getElementById('form-client-status').value = 'active';
+   if (document.getElementById('form-client-exam-label')) document.getElementById('form-client-exam-label').value = '';
+   if (document.getElementById('form-client-exam-date')) document.getElementById('form-client-exam-date').value = '';
+   selectedFormDays = [];
+   selectedBlockedDays = [];
+ } else {
+   const client = appState.clients.find(c => String(c.id) === String(clientId));
+   if (!client) return;
+   document.getElementById('form-client-id').value = client.id;
+   document.getElementById('form-client-name').value = client.name || '';
+   document.getElementById('form-client-grade').value = client.grade || '';
+   document.getElementById('form-client-phone').value = client.phone || '';
+   document.getElementById('form-client-model').value = client.pricingModel || 'retainer';
+   document.getElementById('form-client-quota').value = client.quota || 4;
+   document.getElementById('form-client-fee').value = client.fee || 500;
+   document.getElementById('form-client-duration').value = client.sessionDuration || '1h';
+   document.getElementById('form-client-status').value = client.status || 'active';
+   if (document.getElementById('form-client-exam-label')) document.getElementById('form-client-exam-label').value = client.examLabel || '';
+   if (document.getElementById('form-client-exam-date')) document.getElementById('form-client-exam-date').value = client.examDate || '';
+   selectedFormDays = [...(client.scheduledDays || [])];
+   selectedBlockedDays = [...(client.blockedDays || [])];
+ }
 
-    function handleSaveClientForm() {
-      const idVal = document.getElementById('form-client-id').value;
-      const name = document.getElementById('form-client-name').value.trim();
-      if (!name) {
-        showToast("Please enter client name.");
-        document.getElementById('form-client-name').focus();
-        return;
-      }
+   updateFormDaysPickerUI();
+   openModal('modal-client');
+ }
 
-      const grade = document.getElementById('form-client-grade').value.trim();
-      const phone = document.getElementById('form-client-phone').value.trim();
-      const pricingModel = document.getElementById('form-client-model').value;
-      const quota = Number(document.getElementById('form-client-quota').value) || 4;
-      const fee = Number(document.getElementById('form-client-fee').value) || 500;
-      const sessionDuration = document.getElementById('form-client-duration').value || '1h';
-      const status = document.getElementById('form-client-status').value || "active";
+ function handleSaveClientForm() {
+   const idVal = document.getElementById('form-client-id').value;
+   const name = document.getElementById('form-client-name').value.trim();
+   if (!name) {
+     showToast("Please enter client name.");
+     document.getElementById('form-client-name').focus();
+     return;
+   }
 
-      if (idVal) {
-        const c = appState.clients.find(x => String(x.id) === String(idVal));
-        if (!c) return;
+   const grade = document.getElementById('form-client-grade').value.trim();
+   const phone = document.getElementById('form-client-phone').value.trim();
+   const pricingModel = document.getElementById('form-client-model').value;
+   const quota = Number(document.getElementById('form-client-quota').value) || 4;
+   const fee = Number(document.getElementById('form-client-fee').value) || 500;
+const sessionDuration = document.getElementById('form-client-duration').value || '1h';
+ const status = document.getElementById('form-client-status').value || "active";
+ const examLabel = (document.getElementById('form-client-exam-label')?.value || '').trim();
+ const examDate = document.getElementById('form-client-exam-date')?.value || '';
 
-        const quotaChanged = (c.quota !== quota);
-        const feeChanged = (c.fee !== fee);
+ if (idVal) {
+   const c = appState.clients.find(x => String(x.id) === String(idVal));
+   if (!c) return;
 
-        pendingProfileUpdate = {
-          clientId: c.id,
-          name, grade, phone, pricingModel, quota, fee, sessionDuration, status,
-          scheduledDays: [...selectedFormDays]
-        };
+   const quotaChanged = (c.quota !== quota);
+   const feeChanged = (c.fee !== fee);
 
-        if (quotaChanged || feeChanged) {
-          closeModal('modal-client');
-          openModal('modal-profile-update-scope');
-          return;
-        }
+   pendingProfileUpdate = {
+     clientId: c.id,
+     name, grade, phone, pricingModel, quota, fee, sessionDuration, status, examLabel, examDate,
+     scheduledDays: [...selectedFormDays],
+     blockedDays: [...selectedBlockedDays]
+   };
 
-        c.name = name;
-        c.grade = grade;
-        c.phone = phone;
-        c.pricingModel = pricingModel;
-        c.quota = quota;
-        c.fee = fee;
-        c.sessionDuration = sessionDuration;
-        c.status = status;
-        c.scheduledDays = [...selectedFormDays];
-        showToast(`Updated profile for ${name}!`);
-      } else {
-        appState.clients.push({
-          id: generateId(),
-          name, grade, phone, status, pricingModel, quota, fee, sessionDuration, advanceBalance: 0, scheduledDays: [...selectedFormDays],
-          months: [{ id: generateId(), monthNumber: 1, quota, feeAmount: fee, isCompleted: false, isPaid: false, installments: [], sessions: [] }]
-        });
-        showToast(`Client ${name} added successfully!`);
-      }
+   if (quotaChanged || feeChanged) {
+     closeModal('modal-client');
+     openModal('modal-profile-update-scope');
+     return;
+   }
 
-      closeModal('modal-client');
-      saveState();
-      renderAll();
-    }
+   c.name = name;
+   c.grade = grade;
+   c.phone = phone;
+   c.pricingModel = pricingModel;
+   c.quota = quota;
+   c.fee = fee;
+   c.sessionDuration = sessionDuration;
+   c.status = status;
+   c.examLabel = examLabel;
+   c.examDate = examDate;
+   c.scheduledDays = [...selectedFormDays];
+   c.blockedDays = [...selectedBlockedDays];
+   showToast(`Updated profile for ${name}!`);
+ } else {
+   appState.clients.push({
+     id: generateId(),
+     name, grade, phone, status, pricingModel, quota, fee, sessionDuration, examLabel, examDate, advanceBalance: 0,
+     scheduledDays: [...selectedFormDays],
+     blockedDays: [...selectedBlockedDays],
+     months: [{ id: generateId(), monthNumber: 1, quota, feeAmount: fee, isCompleted: false, isPaid: false, installments: [], sessions: [] }]
+   });     showToast(`Client ${name} added successfully!`);
+   }
 
-    function applyClientProfileUpdates(targetScope) {
-      if (!pendingProfileUpdate) return;
-      const update = pendingProfileUpdate;
-      const c = appState.clients.find(x => String(x.id) === String(update.clientId));
-      if (!c) return;
+   closeModal('modal-client');
+   saveState();
+   renderAll();
+ }
 
-      c.name = update.name;
-      c.grade = update.grade;
-      c.phone = update.phone;
-      c.pricingModel = update.pricingModel;
-      c.status = update.status;
-      c.scheduledDays = update.scheduledDays;
-      c.quota = update.quota;
-      c.fee = update.fee;
-      c.sessionDuration = update.sessionDuration || '1h';
+ function applyClientProfileUpdates(targetScope) {
+   if (!pendingProfileUpdate) return;
+   const update = pendingProfileUpdate;
+   const c = appState.clients.find(x => String(x.id) === String(update.clientId));
+   if (!c) return;
+
+   c.name = update.name;
+   c.grade = update.grade;
+   c.phone = update.phone;
+   c.pricingModel = update.pricingModel;
+   c.status = update.status;
+  c.scheduledDays = update.scheduledDays;
+c.blockedDays = update.blockedDays || [];
+c.examLabel = update.examLabel || '';
+c.examDate = update.examDate || '';
+   c.quota = update.quota;
+   c.fee = update.fee;
+   c.sessionDuration = update.sessionDuration || '1h';
 
       if (targetScope === 'all_months') {
         (c.months || []).forEach(m => {
@@ -5294,9 +5993,32 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
         note: "Direct Payment Entry"
       });
 
+     const shouldAutoSettle = document.getElementById('qr-auto-settle-checkbox')?.checked ?? true;
       document.getElementById('quick-receipt-amount').value = '';
       saveState();
-      showToast(`Payment of ${amount} ${getCurrency()} recorded for ${client.name}!`);
+
+      if (shouldAutoSettle) {
+        let pool = Math.max(0, client.advanceBalance || 0);
+        let settledCount = 0;
+        (client.months || []).forEach(m => {
+          if (!m.isPaid && m.isDue) {
+            const fee = Number(m.calculatedDueFee || 0);
+            if (fee > 0 && pool >= fee) {
+              m.isPaid = true;
+              pool -= fee;
+              settledCount++;
+            }
+          }
+        });
+        if (settledCount > 0) {
+          saveState();
+          showToast(`Recorded ${amount} ${getCurrency()} & settled ${settledCount} month(s)!`);
+        } else {
+          showToast(`Payment of ${amount} ${getCurrency()} added to Advance!`);
+        }
+      } else {
+        showToast(`Payment of ${amount} ${getCurrency()} recorded for ${client.name}!`);
+      }
       renderPaymentsView();
       renderAll();
     }
@@ -6088,10 +6810,57 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       renderWeeklyTimetable();
     }
 
-    function resetTimetableToCurrentWeek() {
-      timetableWeekOffset = 0;
-      renderWeeklyTimetable();
-    }
+   function resetTimetableToCurrentWeek() {
+ timetableWeekOffset = 0;
+ renderWeeklyTimetable();
+}
+
+function copyPreviousWeekToCurrentTimetable() {
+ const today = new Date();
+ const dayOfWeek = today.getDay();
+ const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+ const curWeekStart = new Date(today);
+ curWeekStart.setDate(today.getDate() + diffToMonday + (timetableWeekOffset * 7));
+
+ const prevWeekStart = new Date(curWeekStart);
+ prevWeekStart.setDate(curWeekStart.getDate() - 7);
+
+ const prevStartStr = prevWeekStart.toISOString().split('T')[0];
+ const prevEnd = new Date(prevWeekStart);
+ prevEnd.setDate(prevWeekStart.getDate() + 6);
+ const prevEndStr = prevEnd.toISOString().split('T')[0];
+
+ let clonedCount = 0;
+ appState.clients.filter(c => (c.status || 'active') !== 'archived').forEach(c => {
+   const prevSessions = [];
+   (c.months || []).forEach(m => {
+     (m.sessions || []).forEach(s => {
+       if (s.date >= prevStartStr && s.date <= prevEndStr) prevSessions.push(s);
+     });
+   });
+
+   prevSessions.forEach(ps => {
+     const oldDate = new Date(ps.date + 'T12:00:00');
+     oldDate.setDate(oldDate.getDate() + 7);
+     const newDateStr = oldDate.toISOString().split('T')[0];
+
+     const alreadyExists = (c.months || []).some(m => (m.sessions || []).some(s => s.date === newDateStr));
+     if (!alreadyExists) {
+       addSessionToClientMonth(c, newDateStr, ps.time || '16:00 (1h)', ps.notes || 'Copied from prev week', 'normal');
+       clonedCount++;
+     }
+   });
+ });
+
+ if (clonedCount === 0) {
+   showToast("No new sessions from previous week to copy.");
+   return;
+ }
+ saveState();
+ renderAll();
+ showToast(`Copied ${clonedCount} session(s) from previous week!`);
+}
 
     function renderWeeklyTimetable() {
       const grid = document.getElementById('weekly-timetable-grid');
@@ -6203,11 +6972,19 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       hourRows.forEach(hrObj => {
         html += `<div class="timetable-time-cell timetable-sticky-col num-tabular">${hrObj.label}</div>`;
         weekDays.forEach(wd => {
-          const events = getSlotEvents(wd.dateStr, wd.dayName, hrObj.hour);
-          html += `<div class="timetable-slot-cell">`;
-          events.forEach(ev => {
+       const events = getSlotEvents(wd.dateStr, wd.dayName, hrObj.hour);
+       const hasCollision = events.length > 1;
+       html += `<div class="timetable-slot-cell ${hasCollision ? 'slot-collision' : ''}" ${hasCollision ? `title="Schedule overlap: ${events.length} classes in this hour"` : ''}>`;
+       if (hasCollision) {
+         html += `<span style="font-size: 0.52rem; font-weight: 800; color: var(--warning); line-height: 1;">⚠️ ${events.length} Overlap</span>`;
+       }
+      events.forEach(ev => {
+            const accent = getStudentAccentColor(ev.client.name);
+            const cardStyle = ev.projected
+              ? `background:${accent.bg}; border-left:2.5px dashed ${accent.border}; color:${accent.text};`
+              : `background:${accent.bg}; border-left:2.5px solid ${accent.border}; color:${accent.text};`;
             html += `
-              <div onclick="if(isScheduleRotated) toggleTimetableOrientation(); viewClientDetail('${ev.client.id}');" class="tt-event-card ${ev.projected ? 'projected' : ''}" title="${ev.client.name}">
+              <div onclick="if(isScheduleRotated) toggleTimetableOrientation(); viewClientDetail('${ev.client.id}');" class="tt-event-card" style="${cardStyle}" title="${ev.client.name}">
                 ${ev.client.name}
               </div>
             `;
@@ -6317,14 +7094,1186 @@ const scheduledBlock = document.getElementById('roster-block-scheduled');
       showToast(`Applied ${quota} classes & ${singleStudentFee} ${getCurrency()}!`);
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-   initTheme();
-   initData();
-   populateAllTimePickers();
+   /* ==========================================================================
+       SIMPLE TIME TRACKER (STT) SYNC ENGINE, DURATION SPLITTER & REJECTION QUEUE
+       ========================================================================== */
+    let currentSttDiffState = { newClients: [], newSessions: [] };
+    let activeSettingsSttTab = 'pending';
+
+    function getSttRejectedStorageKey() {
+      return `month_tracker_v12_stt_rejected_${activeProfileId}`;
+    }
+    function getSttPendingStorageKey() {
+      return `month_tracker_v12_stt_pending_${activeProfileId}`;
+    }
+    function getSttLastSyncStorageKey() {
+      return `month_tracker_v12_stt_last_sync_${activeProfileId}`;
+    }
+
+    function getRejectedSttLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(getSttRejectedStorageKey()) || '[]');
+      } catch (e) { return []; }
+    }
+    function saveRejectedSttLogs(list) {
+      localStorage.setItem(getSttRejectedStorageKey(), JSON.stringify(list));
+    }
+
+    function getPendingSttLogs() {
+      try {
+        return JSON.parse(localStorage.getItem(getSttPendingStorageKey()) || '[]');
+      } catch (e) { return []; }
+    }
+    function savePendingSttLogs(list) {
+      localStorage.setItem(getSttPendingStorageKey(), JSON.stringify(list));
+    }
+
+    function getStudentAccentColor(name) {
+      const palettes = [
+        { bg: '#eff6ff', border: '#2563eb', text: '#1e40af' },
+        { bg: '#ecfdf5', border: '#059669', text: '#065f46' },
+        { bg: '#f5f3ff', border: '#7c3aed', text: '#5b21b6' },
+        { bg: '#fffbeb', border: '#d97706', text: '#92400e' },
+        { bg: '#fef2f2', border: '#dc2626', text: '#991b1b' },
+        { bg: '#f0f9ff', border: '#0284c7', text: '#075985' },
+        { bg: '#fdf4ff', border: '#c026d3', text: '#86198f' }
+      ];
+      let hash = 0;
+      for (let i = 0; i < (name || '').length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      return palettes[Math.abs(hash) % palettes.length];
+    }
+
+    function normalizeSttName(raw) {
+      return (raw || '').replace(/^~/, '').trim().toLowerCase();
+    }
+
+    function updateHeaderSttPillAndEodBanner() {
+      const pill = document.getElementById('header-stt-status-pill');
+      const label = document.getElementById('header-stt-label');
+      const banner = document.getElementById('stt-eod-reminder-banner');
+
+      const pendingList = getPendingSttLogs();
+      const todayStr = new Date().toISOString().split('T')[0];
+      const lastSync = localStorage.getItem(getSttLastSyncStorageKey()) || '';
+      const isSyncedToday = lastSync.startsWith(todayStr);
+      const currentHour = new Date().getHours();
+
+      if (pill && label) {
+        pill.classList.remove('pending', 'synced');
+      if (pendingList.length > 0) {
+     pill.classList.add('pending');
+     label.textContent = `${pendingList.length} Pending`;
+   } else if (isSyncedToday) {
+     pill.classList.add('synced');
+     label.textContent = 'Synced';
+   } else if (currentHour >= 19) {
+     pill.classList.add('pending');
+     label.textContent = 'Sync Due';
+   } else {
+     label.textContent = 'Sync';
+   }
+      }
+
+      if (banner) {
+        const shouldShowBanner = (currentHour >= 19 && !isSyncedToday) || pendingList.length > 0;
+        banner.style.display = shouldShowBanner ? 'flex' : 'none';
+      }
+    }
+
+    function openSttSyncModal() {
+      const pending = getPendingSttLogs();
+      const lastSync = localStorage.getItem(getSttLastSyncStorageKey());
+      const lastSyncEl = document.getElementById('stt-last-sync-label');
+      if (lastSyncEl) {
+        lastSyncEl.textContent = lastSync ? `Last synced: ${new Date(lastSync).toLocaleString()}` : 'Never synced yet';
+      }
+
+      if (pending.length > 0) {
+        currentSttDiffState = {
+          newClients: [],
+          newSessions: pending.map(p => ({ ...p, checked: true }))
+        };
+        renderSttSyncDiffUI();
+      }
+      openModal('modal-stt-sync');
+    }
+
+    function handleSttSyncFileSelect(event) {
+      const files = Array.from(event.target.files || []);
+      if (files.length === 0) return;
+
+      files.sort((a, b) => b.lastModified - a.lastModified);
+      const newestFile = files[0];
+
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          parseAndCompareSttBackup(ev.target.result);
+          showToast(`Loaded "${newestFile.name}"!`);
+        } catch (err) {
+          showToast("Could not parse STT backup file.");
+        }
+      };
+      reader.readAsText(newestFile);
+      event.target.value = '';
+    }
+    function parseAndCompareSttBackup(rawText) {
+      const lines = rawText.split(/\r?\n/);
+      const rtMap = {};
+      const parsedRecords = [];
+
+      lines.forEach(line => {
+        const parts = line.split('\t');
+        if (parts[0] === 'recordType') {
+          const rtId = parseInt(parts[1], 10);
+          const rawName = (parts[2] || '').trim();
+          const isArchived = rawName.startsWith('~');
+          const cleanName = rawName.replace(/^~/, '').trim();
+          const defaultSec = parseInt(parts[11], 10) || 3600;
+          const noteStr = (parts[12] || '').replace(/␤/g, '\n').trim();
+
+          let extractedFee = getAppSettings().defaultFee || 500;
+          const feeMatch = noteStr.match(/\b([2-9]\d{2,3})\b/);
+          if (feeMatch) extractedFee = parseInt(feeMatch[1], 10);
+
+          let durCode = '1h';
+          if (defaultSec <= 1800) durCode = '0.5h';
+          else if (defaultSec >= 7200) durCode = '2h';
+          else if (defaultSec >= 5400) durCode = '1.5h';
+
+          rtMap[rtId] = {
+            rtId,
+            cleanName,
+            normName: normalizeSttName(cleanName),
+            status: isArchived ? 'archived' : 'active',
+            sessionDuration: durCode,
+            fee: extractedFee
+          };
+        } else if (parts[0] === 'record') {
+          const recId = parseInt(parts[1], 10);
+          const rtId = parseInt(parts[2], 10);
+          const startTs = parseInt(parts[3], 10);
+          const endTs = parseInt(parts[4], 10);
+          const note = (parts[5] || '').replace(/␤/g, '\n').trim();
+          if (!isNaN(recId) && !isNaN(startTs)) {
+            parsedRecords.push({ recId, rtId, startTs, endTs, note });
+          }
+        }
+      });
+
+      // Build existing duplicate prevention indexes
+      const existingRecordIds = new Set();
+      const existingSignatures = new Set();
+      appState.clients.forEach(c => {
+        const normC = normalizeSttName(c.name);
+        (c.months || []).forEach(m => {
+          (m.sessions || []).forEach(s => {
+            if (s.sttRecordId !== undefined && s.sttRecordId !== null) {
+              existingRecordIds.add(Number(s.sttRecordId));
+            }
+            const timeOnly = (s.time || '').split(' ')[0];
+            existingSignatures.add(`${normC}|${s.date}|${timeOnly}`);
+          });
+        });
+      });
+
+  const rejectedList = getRejectedSttLogs();
+ const rejectedIds = new Set(rejectedList.map(r => Number(r.recId)));
+ getDeletedSessionsList().forEach(d => {
+   if (d.session && d.session.sttRecordId !== undefined && d.session.sttRecordId !== null) {
+     rejectedIds.add(Number(d.session.sttRecordId));
+   }
+ });
+
+      // 1. Detect new clients
+      const detectedClients = [];
+      Object.values(rtMap).forEach(rt => {
+        if (!rt.cleanName) return;
+        const matched = appState.clients.find(c =>
+          c.sttActivityId === rt.rtId || normalizeSttName(c.name) === rt.normName
+        );
+        if (!matched) {
+          detectedClients.push({
+            ...rt,
+            quota: getAppSettings().defaultQuota || 4,
+            checked: true
+          });
+        }
+      });
+
+      // 2. Detect new sessions (Dubai UTC+4)
+      parsedRecords.sort((a, b) => a.startTs - b.startTs);
+      const detectedSessions = [];
+
+      parsedRecords.forEach(rec => {
+        if (existingRecordIds.has(rec.recId) || rejectedIds.has(rec.recId)) return;
+        const rt = rtMap[rec.rtId];
+        if (!rt || !rt.cleanName) return;
+
+        const dObj = new Date(rec.startTs + 4 * 3600000);
+        const dateStr = `${dObj.getUTCFullYear()}-${String(dObj.getUTCMonth() + 1).padStart(2, '0')}-${String(dObj.getUTCDate()).padStart(2, '0')}`;
+        const startStr = `${String(dObj.getUTCHours()).padStart(2, '0')}:${String(dObj.getUTCMinutes()).padStart(2, '0')}`;
+        const sig = `${rt.normName}|${dateStr}|${startStr}`;
+        if (existingSignatures.has(sig)) return;
+
+        const durMins = Math.max(30, Math.round((rec.endTs - rec.startTs) / 60000));
+        let durCode = '1h';
+        if (durMins <= 40) durCode = '0.5h';
+        else if (durMins >= 105) durCode = '2h';
+        else if (durMins >= 75) durCode = '1.5h';
+
+        const matchedClient = appState.clients.find(c =>
+          c.sttActivityId === rt.rtId || normalizeSttName(c.name) === rt.normName
+        );
+        const profileDurCode = matchedClient ? (matchedClient.sessionDuration || '1h') : rt.sessionDuration;
+        const profileMins = DURATION_TO_MINUTES[profileDurCode] || 60;
+        const loggedMins = DURATION_TO_MINUTES[durCode] || 60;
+        const splitParts = Math.max(1, Math.round(loggedMins / profileMins));
+
+        detectedSessions.push({
+          recId: rec.recId,
+          rtId: rt.rtId,
+          studentName: matchedClient ? matchedClient.name : rt.cleanName,
+          normName: rt.normName,
+          date: dateStr,
+          startTime: startStr,
+          durCode,
+          profileDurCode,
+          splitParts,
+          notes: rec.note,
+          tag: 'normal',
+          checked: true
+        });
+      });
+
+      currentSttDiffState = { newClients: detectedClients, newSessions: detectedSessions };
+      savePendingSttLogs(detectedSessions);
+      updateHeaderSttPillAndEodBanner();
+      renderSttSyncDiffUI();
+    }
+
+    function renderSttSyncDiffUI() {
+      const container = document.getElementById('stt-sync-diff-container');
+      const summaryBar = document.getElementById('stt-sync-summary-bar');
+      const statsText = document.getElementById('stt-sync-stats-text');
+      if (!container) return;
+
+      const { newClients, newSessions } = currentSttDiffState;
+      if (summaryBar && statsText) {
+        summaryBar.style.display = 'flex';
+        statsText.textContent = `Detected: ${newClients.length} New Client(s) • ${newSessions.length} New Session(s)`;
+      }
+
+      if (newClients.length === 0 && newSessions.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:1.2rem; color:var(--success); font-weight:800; font-size:0.75rem;">✓ All caught up! No new clients or unimported sessions found.</div>`;
+        return;
+      }
+
+      let html = '';
+
+      // New Clients Section
+      if (newClients.length > 0) {
+        html += `<div class="card" style="padding:0.5rem; border-color:var(--purple);">
+          <strong style="font-size:0.7rem; color:var(--purple); text-transform:uppercase; display:block; margin-bottom:0.35rem;">New Student Profiles (${newClients.length})</strong>`;
+        newClients.forEach((nc, idx) => {
+          html += `
+            <div style="display:flex; align-items:center; justify-content:space-between; padding:0.35rem 0.45rem; background:var(--bg-subtle); border-radius:6px; margin-bottom:0.25rem; font-size:0.7rem;">
+              <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer; flex:1;">
+                <input type="checkbox" ${nc.checked ? 'checked' : ''} onchange="currentSttDiffState.newClients[${idx}].checked = this.checked" style="width:15px; height:15px;">
+                <span><strong>${nc.cleanName}</strong> (${nc.status}, ${nc.sessionDuration}/class, ${nc.fee} ${getCurrency()})</span>
+              </label>
+              <button type="button" onclick="rejectSingleSttClient(${idx})" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.35rem; color:var(--danger);">🚫</button>
+            </div>`;
+        });
+        html += `</div>`;
+      }
+
+      // Group New Sessions by Student Name
+      const grouped = {};
+      newSessions.forEach((s, idx) => {
+        if (!grouped[s.studentName]) grouped[s.studentName] = [];
+        grouped[s.studentName].push({ ...s, flatIdx: idx });
+      });
+
+      Object.keys(grouped).forEach(studentName => {
+        const items = grouped[studentName];
+        const existingClient = appState.clients.find(c => normalizeSttName(c.name) === normalizeSttName(studentName));
+        const activeMonth = existingClient && existingClient.months.length > 0
+          ? existingClient.months[existingClient.months.length - 1]
+          : null;
+
+        const curCount = activeMonth ? activeMonth.sessions.length : 0;
+        const quota = activeMonth ? (activeMonth.quota || existingClient.quota) : (getAppSettings().defaultQuota || 4);
+        const mNum = activeMonth ? activeMonth.monthNumber : 1;
+        const addedParts = items.filter(i => i.checked).reduce((acc, i) => acc + i.splitParts, 0);
+        const projected = curCount + addedParts;
+        const quotaBadge = projected >= quota
+          ? `M${mNum}: ${curCount}/${quota} → ${projected}/${quota} (Completes!)`
+          : `M${mNum}: ${curCount}/${quota} → ${projected}/${quota}`;
+
+        html += `
+          <div class="card" style="padding:0.55rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border-color); padding-bottom:0.3rem; margin-bottom:0.35rem; gap:0.3rem;">
+              <strong style="font-size:0.76rem; color:var(--brand-primary);">${studentName}</strong>
+              <span class="num-tabular" style="font-size:0.62rem; font-weight:800; padding:2px 6px; border-radius:9999px; background:${projected >= quota ? 'var(--success-surface)' : 'var(--brand-surface)'}; color:${projected >= quota ? 'var(--success)' : 'var(--brand-primary)'};">${quotaBadge}</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0.3rem;">
+              ${items.map(item => `
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:0.3rem; padding:0.35rem 0.45rem; background:var(--bg-subtle); border-radius:6px; border:1px solid var(--border-color); font-size:0.68rem;">
+                  <label style="display:flex; align-items:flex-start; gap:0.4rem; cursor:pointer; flex:1; min-width:0;">
+                    <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleSttSessionCheck(${item.flatIdx}, this.checked)" style="width:15px; height:15px; margin-top:2px;">
+                    <div style="min-width:0;">
+<span style="font-weight:700;">${formatDisplayDate(item.date, false)} • ${item.startTime} (${item.durCode})</span>
+                      ${(() => {
+                        const dName = WEEKDAYS[new Date(item.date + 'T12:00:00').getDay()];
+                        return (existingClient && Array.isArray(existingClient.blockedDays) && existingClient.blockedDays.includes(dName))
+                          ? `<span style="color:var(--warning); font-weight:700;"> (Note: ${dName} marked busy)</span>`
+                          : '';
+                      })()}
+                      ${item.splitParts > 1 ? `<span style="color:var(--purple); font-weight:800;"> → splits into ${item.splitParts} × ${item.profileDurCode}</span>` : ''}                      ${item.notes ? `<p style="font-size:0.62rem; color:var(--text-muted); margin-top:1px;">${item.notes}</p>` : ''}
+                    </div>
+                  </label>
+                  <div style="display:flex; align-items:center; gap:0.25rem; flex-shrink:0;">
+                    <button type="button" onclick="toggleSttSessionTag(${item.flatIdx})" class="btn" style="font-size:0.58rem; padding:0.15rem 0.35rem; ${item.tag === 'extra' ? 'background:var(--purple-surface); color:var(--purple); border-color:var(--purple);' : 'background:var(--bg-surface); color:var(--text-main); border-color:var(--border-color);'}">
+                      ${item.tag === 'extra' ? 'Extra/Free' : 'Normal'}
+                    </button>
+                    <button type="button" onclick="rejectSingleSttSession(${item.flatIdx})" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.35rem; color:var(--danger);" title="Reject Log">🚫</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function toggleAllSttDiffCheckboxes(state) {
+      currentSttDiffState.newClients.forEach(c => c.checked = state);
+      currentSttDiffState.newSessions.forEach(s => s.checked = state);
+      renderSttSyncDiffUI();
+    }
+
+    function toggleSttSessionCheck(idx, checked) {
+      if (currentSttDiffState.newSessions[idx]) {
+        currentSttDiffState.newSessions[idx].checked = checked;
+        renderSttSyncDiffUI();
+      }
+    }
+
+    function toggleSttSessionTag(idx) {
+      const s = currentSttDiffState.newSessions[idx];
+      if (!s) return;
+      s.tag = (s.tag === 'extra') ? 'normal' : 'extra';
+      renderSttSyncDiffUI();
+    }
+
+    function rejectSingleSttClient(idx) {
+      currentSttDiffState.newClients.splice(idx, 1);
+      renderSttSyncDiffUI();
+    }
+
+    function rejectSingleSttSession(idx) {
+      const s = currentSttDiffState.newSessions[idx];
+      if (!s) return;
+      const rejected = getRejectedSttLogs();
+      rejected.unshift({ ...s, rejectedAt: new Date().toISOString() });
+      saveRejectedSttLogs(rejected);
+
+      currentSttDiffState.newSessions.splice(idx, 1);
+      savePendingSttLogs(currentSttDiffState.newSessions);
+      updateHeaderSttPillAndEodBanner();
+      renderSttSyncDiffUI();
+      showToast("Log permanently rejected.");
+    }
+
+    function rejectSelectedSttItems() {
+      const toReject = currentSttDiffState.newSessions.filter(s => s.checked);
+      if (toReject.length === 0) {
+        showToast("No sessions selected to reject.");
+        return;
+      }
+      const rejected = getRejectedSttLogs();
+      toReject.forEach(s => rejected.unshift({ ...s, rejectedAt: new Date().toISOString() }));
+      saveRejectedSttLogs(rejected);
+
+      currentSttDiffState.newSessions = currentSttDiffState.newSessions.filter(s => !s.checked);
+      currentSttDiffState.newClients = currentSttDiffState.newClients.filter(c => !c.checked);
+      savePendingSttLogs(currentSttDiffState.newSessions);
+      updateHeaderSttPillAndEodBanner();
+      renderSttSyncDiffUI();
+      showToast(`Rejected ${toReject.length} log(s).`);
+    }
+
+    function applySelectedSttChanges() {
+      let addedClients = 0;
+      let addedSessions = 0;
+
+      // 1. Add selected new clients
+      currentSttDiffState.newClients.filter(c => c.checked).forEach(nc => {
+        const exists = appState.clients.some(x => x.sttActivityId === nc.rtId || normalizeSttName(x.name) === nc.normName);
+        if (!exists) {
+          appState.clients.push({
+            id: generateId() + addedClients,
+            sttActivityId: nc.rtId,
+            name: nc.cleanName,
+            grade: '1-on-1',
+            phone: '',
+            status: nc.status,
+            pricingModel: 'retainer',
+            quota: nc.quota,
+            fee: nc.fee,
+            sessionDuration: nc.sessionDuration,
+            advanceBalance: 0,
+            scheduledDays: ['Mon', 'Wed'],
+            months: [{
+              id: generateId() + addedClients + 1,
+              monthNumber: 1,
+              quota: nc.quota,
+              feeAmount: nc.fee,
+              isCompleted: false,
+              isPaid: false,
+              installments: [],
+              sessions: []
+            }]
+          });
+          addedClients++;
+        }
+      });
+
+      // 2. Add selected sessions with automatic duration-splitting
+      const remainingUnchecked = [];
+      currentSttDiffState.newSessions.forEach(s => {
+        if (!s.checked) {
+          remainingUnchecked.push(s);
+          return;
+        }
+        let client = appState.clients.find(c => c.sttActivityId === s.rtId || normalizeSttName(c.name) === s.normName);
+        if (!client) {
+          const defQuota = getAppSettings().defaultQuota || 4;
+          const defFee = getAppSettings().defaultFee || 500;
+          client = {
+            id: generateId() + addedSessions,
+            sttActivityId: s.rtId,
+            name: s.studentName,
+            grade: '1-on-1',
+            phone: '',
+            status: 'active',
+            pricingModel: 'retainer',
+            quota: defQuota,
+            fee: defFee,
+            sessionDuration: s.profileDurCode || '1h',
+            advanceBalance: 0,
+            scheduledDays: ['Mon', 'Wed'],
+            months: [{ id: generateId() + 1, monthNumber: 1, quota: defQuota, feeAmount: defFee, isCompleted: false, isPaid: false, installments: [], sessions: [] }]
+          };
+          appState.clients.push(client);
+          addedClients++;
+        } else if (!client.sttActivityId && s.rtId) {
+          client.sttActivityId = s.rtId;
+        }
+
+        const timeFormatted = `${s.startTime} (${s.durCode})`;
+        addSessionToClientMonth(client, s.date, timeFormatted, s.notes, s.tag, s.recId);
+        addedSessions++;
+      });
+
+      savePendingSttLogs(remainingUnchecked);
+      localStorage.setItem(getSttLastSyncStorageKey(), new Date().toISOString());
+      saveState();
+      closeModal('modal-stt-sync');
+      updateHeaderSttPillAndEodBanner();
+      renderAll();
+      showToast(`Synced ${addedClients} client(s) & ${addedSessions} session log(s)!`);
+    }
+
+  function applyIncomeDatePreset() {
+ const preset = document.getElementById('income-range-preset')?.value || 'this_month';
+ const startIn = document.getElementById('income-range-start');
+ const endIn = document.getElementById('income-range-end');
+ if (!startIn || !endIn) return;
+
+ const now = new Date();
+ const y = now.getFullYear();
+ const m = now.getMonth();
+
+ if (preset === 'this_month') {
+   const lastDay = new Date(y, m + 1, 0).getDate();
+   startIn.value = `${y}-${String(m + 1).padStart(2, '0')}-01`;
+   endIn.value = `${y}-${String(m + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+ } else if (preset === 'last_month') {
+   const prevDate = new Date(y, m - 1, 1);
+   const py = prevDate.getFullYear();
+   const pm = prevDate.getMonth();
+   const lastDay = new Date(py, pm + 1, 0).getDate();
+   startIn.value = `${py}-${String(pm + 1).padStart(2, '0')}-01`;
+   endIn.value = `${py}-${String(pm + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+ } else if (preset === 'this_year') {
+   startIn.value = `${y}-01-01`;
+   endIn.value = `${y}-12-31`;
+ } else if (preset === 'all_time') {
+   startIn.value = '2020-01-01';
+   endIn.value = `${y + 1}-12-31`;
+ }
+ renderAnalytics();
+}
+
+function onCustomIncomeDateChanged() {
+ const presetSel = document.getElementById('income-range-preset');
+ if (presetSel) presetSel.value = 'custom';
+ renderAnalytics();
+}
+
+function exportDateRangeIncomeSummaryCSV() {
+ const rStart = document.getElementById('income-range-start')?.value || '0000-01-01';
+ const rEnd = document.getElementById('income-range-end')?.value || '9999-12-31';
+ const hideArchived = document.getElementById('matrix-hide-archived')?.checked ?? true;
+ const selectedClientFilter = document.getElementById('matrix-client-search')?.value || 'all';
+
+ let csv = `Period: ${rStart} to ${rEnd}\n`;
+ csv += `Client,Grade,Sessions in Period,Hours Taught,Earned Value (${getCurrency()}),Cash Collected (${getCurrency()})\n`;
+
+ let grandSessions = 0, grandHours = 0, grandEarned = 0, grandCash = 0;
+
+ appState.clients.forEach(c => {
+   if (hideArchived && (c.status || 'active') === 'archived') return;
+   if (selectedClientFilter !== 'all' && String(c.id) !== String(selectedClientFilter)) return;
+
+   const defDur = c.sessionDuration || '1h';
+   let cSess = 0, cMins = 0, cEarned = 0, cCash = 0;
+
+   (c.months || []).forEach(m => {
+     const quota = m.quota || c.quota || 4;
+     const mFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount || c.fee || 0);
+     const perClassVal = quota > 0 ? (mFee / quota) : 0;
+
+     (m.sessions || []).forEach(s => {
+       if (s.date && s.date >= rStart && s.date <= rEnd) {
+         cSess++;
+         const durMatch = (s.time || '').match(/\((.*?)\)/);
+         const dCode = durMatch ? durMatch[1].trim() : defDur;
+         cMins += (DURATION_TO_MINUTES[dCode] || 60);
+         if ((s.tag || 'normal') === 'normal') cEarned += perClassVal;
+       }
+     });
+
+     (m.installments || []).forEach(inst => {
+       if (inst.date && inst.date >= rStart && inst.date <= rEnd) {
+         cCash += Number(inst.amount || 0);
+       }
+     });
+   });
+
+   if (cSess > 0 || cCash > 0) {
+     const hrs = +(cMins / 60).toFixed(2);
+     grandSessions += cSess;
+     grandHours += hrs;
+     grandEarned += cEarned;
+     grandCash += cCash;
+     csv += `"${c.name}","${c.grade || ''}",${cSess},${hrs},${cEarned.toFixed(2)},${cCash.toFixed(2)}\n`;
+   }
+ });
+
+ csv += `"TOTAL","-",${grandSessions},${grandHours.toFixed(2)},${grandEarned.toFixed(2)},${grandCash.toFixed(2)}\n`;
+
+ const blob = new Blob([csv], { type: 'text/csv' });
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = `Income_Tax_Summary_${rStart}_to_${rEnd}.csv`;
+ a.click();
+ showToast("Income & Tax Summary CSV downloaded!");
+}
+
+function switchSettingsSttTab(tab) {
+   activeSettingsSttTab = tab;
+   const pDiv = document.getElementById('stt-settings-tab-pending');
+   const rDiv = document.getElementById('stt-settings-tab-rejected');
+   const dDiv = document.getElementById('stt-settings-tab-deleted');
+   const pBtn = document.getElementById('stt-tab-btn-pending');
+   const rBtn = document.getElementById('stt-tab-btn-rejected');
+   const dBtn = document.getElementById('stt-tab-btn-deleted');
+
+   if (pDiv) pDiv.style.display = tab === 'pending' ? 'flex' : 'none';
+   if (rDiv) rDiv.style.display = tab === 'rejected' ? 'flex' : 'none';
+   if (dDiv) dDiv.style.display = tab === 'deleted' ? 'flex' : 'none';
+   if (pBtn) pBtn.className = tab === 'pending' ? 'btn btn-primary' : 'btn btn-subtle';
+   if (rBtn) rBtn.className = tab === 'rejected' ? 'btn btn-danger' : 'btn btn-subtle';
+   if (dBtn) dBtn.className = tab === 'deleted' ? 'btn btn-purple' : 'btn btn-subtle';
+   renderSettingsSttQueueTabs();
+ }
+
+ function restoreDeletedSessionFromTrash(idx) {
+   const trash = getDeletedSessionsList();
+   const item = trash[idx];
+   if (!item) return;
+
+   const client = appState.clients.find(c => String(c.id) === String(item.clientId))
+     || appState.clients.find(c => normalizeSttName(c.name) === normalizeSttName(item.clientName));
+
+   if (!client) {
+     showToast(`Client "${item.clientName}" no longer exists.`);
+     return;
+   }
+
+   const origMonth = (client.months || []).find(m => String(m.id) === String(item.monthId));
+   if (origMonth && origMonth.sessions.length < (origMonth.quota || client.quota)) {
+     origMonth.sessions.push(item.session);
+     origMonth.sessions.sort((a, b) => new Date(a.date) - new Date(b.date));
+   } else {
+     addSessionToClientMonth(
+       client,
+       item.session.date,
+       item.session.time,
+       item.session.notes || '',
+       item.session.tag || 'normal',
+       item.session.sttRecordId ?? null
+     );
+   }
+
+   trash.splice(idx, 1);
+   saveDeletedSessionsList(trash);
+   saveState();
+   renderSettingsSttQueueTabs();
+   renderAll();
+   showToast(`Restored session for ${client.name}!`);
+ }
+
+ function permanentlyPurgeTrashItem(idx) {
+   const trash = getDeletedSessionsList();
+   trash.splice(idx, 1);
+   saveDeletedSessionsList(trash);
+   renderSettingsSttQueueTabs();
+   showToast("Session permanently deleted.");
+ }
+
+ function emptyDeletedSessionsTrash() {
+   requestConfirmation("Permanently empty all sessions in Trash?", () => {
+     saveDeletedSessionsList([]);
+     renderSettingsSttQueueTabs();
+     showToast("Trash emptied.");
+   });
+ }
+
+ function renderSettingsSttQueueTabs() {
+   const pending = getPendingSttLogs();
+   const rejected = getRejectedSttLogs();
+   const deleted = getDeletedSessionsList();
+
+   const pCnt = document.getElementById('stt-pending-tab-count');
+   const rCnt = document.getElementById('stt-rejected-tab-count');
+   const dCnt = document.getElementById('stt-deleted-tab-count');
+   if (pCnt) pCnt.textContent = pending.length;
+   if (rCnt) rCnt.textContent = rejected.length;
+   if (dCnt) dCnt.textContent = deleted.length;
+
+   const dDiv = document.getElementById('stt-settings-tab-deleted');
+   if (dDiv) {
+     if (deleted.length === 0) {
+       dDiv.innerHTML = `<span style="font-size:0.68rem; color:var(--text-muted); padding:0.5rem; text-align:center;">Trash is empty.</span>`;
+     } else {
+       dDiv.innerHTML = `
+         <div style="text-align:right; margin-bottom:0.2rem;">
+           <button type="button" onclick="emptyDeletedSessionsTrash()" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.4rem; color:var(--danger);">Empty Trash</button>
+         </div>
+       ` + deleted.map((item, idx) => `
+         <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.55rem; background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:6px; font-size:0.68rem;">
+           <div style="min-width:0;">
+             <strong>${item.clientName}</strong> (M${item.monthNumber}) • ${formatDisplayDate(item.session.date, false)} (${item.session.time})
+             ${item.session.notes ? `<p style="font-size:0.6rem; color:var(--text-muted);">${item.session.notes}</p>` : ''}
+           </div>
+           <div style="display:flex; gap:0.25rem; flex-shrink:0;">
+             <button type="button" onclick="restoreDeletedSessionFromTrash(${idx})" class="btn btn-success" style="font-size:0.6rem; padding:0.2rem 0.45rem;">↩ Restore</button>
+             <button type="button" onclick="permanentlyPurgeTrashItem(${idx})" class="btn btn-subtle" style="font-size:0.6rem; padding:0.2rem 0.35rem; color:var(--danger);">✕</button>
+           </div>
+         </div>
+       `).join('');
+     }
+   }
+
+   const pDiv = document.getElementById('stt-settings-tab-pending');
+      if (pDiv) {
+        if (pending.length === 0) {
+          pDiv.innerHTML = `<span style="font-size:0.68rem; color:var(--text-muted); padding:0.5rem; text-align:center;">No pending unimported logs.</span>`;
+        } else {
+          pDiv.innerHTML = pending.map((item, idx) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.55rem; background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:6px; font-size:0.68rem;">
+              <div style="min-width:0;">
+                <strong>${item.studentName}</strong> • ${formatDisplayDate(item.date, false)} (${item.startTime}, ${item.durCode})
+                ${item.notes ? `<p style="font-size:0.6rem; color:var(--text-muted);">${item.notes}</p>` : ''}
+              </div>
+              <div style="display:flex; gap:0.25rem; flex-shrink:0;">
+                <button type="button" onclick="approveSinglePendingFromSettings(${idx})" class="btn btn-success" style="font-size:0.6rem; padding:0.2rem 0.4rem;">✓ Add</button>
+                <button type="button" onclick="rejectSinglePendingFromSettings(${idx})" class="btn btn-subtle" style="font-size:0.6rem; padding:0.2rem 0.4rem; color:var(--danger);">🚫</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      const rDiv = document.getElementById('stt-settings-tab-rejected');
+      if (rDiv) {
+        if (rejected.length === 0) {
+          rDiv.innerHTML = `<span style="font-size:0.68rem; color:var(--text-muted); padding:0.5rem; text-align:center;">No rejected logs.</span>`;
+        } else {
+          rDiv.innerHTML = `
+            <div style="text-align:right; margin-bottom:0.2rem;">
+              <button type="button" onclick="clearAllRejectedSttLogs()" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.4rem; color:var(--danger);">Clear All Rejected</button>
+            </div>
+          ` + rejected.map((item, idx) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:0.4rem 0.55rem; background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:6px; font-size:0.68rem;">
+              <div style="min-width:0;">
+                <strong>${item.studentName}</strong> • ${formatDisplayDate(item.date, false)} (${item.startTime}, ${item.durCode})
+                <span style="display:block; font-size:0.58rem; color:var(--text-muted);">Rejected: ${item.rejectedAt ? new Date(item.rejectedAt).toLocaleDateString() : '-'}</span>
+              </div>
+              <button type="button" onclick="restoreRejectedSttLog(${idx})" class="btn btn-subtle" style="font-size:0.6rem; padding:0.2rem 0.45rem; color:var(--brand-primary);">↩ Restore</button>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    function approveSinglePendingFromSettings(idx) {
+      const pending = getPendingSttLogs();
+      const item = pending[idx];
+      if (!item) return;
+
+      currentSttDiffState = { newClients: [], newSessions: [{ ...item, checked: true }] };
+      applySelectedSttChanges();
+      pending.splice(idx, 1);
+      savePendingSttLogs(pending);
+      renderSettingsSttQueueTabs();
+    }
+
+    function rejectSinglePendingFromSettings(idx) {
+      const pending = getPendingSttLogs();
+      const item = pending[idx];
+      if (!item) return;
+
+      const rejected = getRejectedSttLogs();
+      rejected.unshift({ ...item, rejectedAt: new Date().toISOString() });
+      saveRejectedSttLogs(rejected);
+
+      pending.splice(idx, 1);
+      savePendingSttLogs(pending);
+      updateHeaderSttPillAndEodBanner();
+      renderSettingsSttQueueTabs();
+      showToast("Moved to Rejected Logs.");
+    }
+
+    function restoreRejectedSttLog(idx) {
+      const rejected = getRejectedSttLogs();
+      const item = rejected[idx];
+      if (!item) return;
+
+      rejected.splice(idx, 1);
+      saveRejectedSttLogs(rejected);
+
+      const pending = getPendingSttLogs();
+      delete item.rejectedAt;
+      pending.unshift({ ...item, checked: true });
+      savePendingSttLogs(pending);
+
+      updateHeaderSttPillAndEodBanner();
+      renderSettingsSttQueueTabs();
+      showToast("Restored to Pending Logs.");
+    }
+
+    function clearAllRejectedSttLogs() {
+      requestConfirmation("Clear all rejected log history? Previously rejected records will appear again next time you scan an STT backup file.", () => {
+        saveRejectedSttLogs([]);
+        renderSettingsSttQueueTabs();
+        showToast("Rejected logs cleared.");
+      });
+    }
+
+    // Hook STT queue refresh into renderSettingsScreen & renderAll
+    const _origRenderSettingsScreen = renderSettingsScreen;
+    renderSettingsScreen = function() {
+      _origRenderSettingsScreen();
+      renderSettingsSttQueueTabs();
+    };
+
+    const _origRenderAll = renderAll;
+    renderAll = function() {
+      _origRenderAll();
+      updateHeaderSttPillAndEodBanner();
+    };
+
+   function executeOneClickExitBackup() {
+    const payload = buildFullBackupPayloadString();
+
+      const fileName = `ClassTracker_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      const blob = new Blob([payload], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+    resetUnsavedBackupCounter();
+    closeModal('modal-exit-backup');
+      showToast("Backup downloaded! Safe to exit.");
+    }
+
+    function dismissExitBackupModal() {
+     resetUnsavedBackupCounter();
+  closeModal('modal-exit-backup');
+      showToast("Press Back again to close.");
+    }
+
+    function setupExitBackupGuards() {
+      // Push a sentinel history state so Android's Back button triggers popstate instead of closing immediately
+      history.pushState({ appGuard: true }, '', location.href);
+
+      window.addEventListener('popstate', () => {
+        // Close any open modal first if user pressed Back
+        const openModalEl = document.querySelector('.modal-overlay.active');
+        if (openModalEl && openModalEl.id !== 'modal-exit-backup') {
+          openModalEl.classList.remove('active');
+          history.pushState({ appGuard: true }, '', location.href);
+          return;
+        }
+
+        // If on a sub-view, navigate back to Roster first
+        const currentView = localStorage.getItem(VIEW_STATE_KEY) || 'home';
+        if (currentView !== 'home') {
+          showMainView('home');
+          history.pushState({ appGuard: true }, '', location.href);
+          return;
+        }
+
+        // On Roster with unsaved changes -> show 1-click backup popup
+        if (hasUnsavedChangesSinceBackup) {
+          openModal('modal-exit-backup');
+          history.pushState({ appGuard: true }, '', location.href);
+        }
+      });
+
+      // Native browser close/refresh guard when unsaved changes exist
+      window.addEventListener('beforeunload', (e) => {
+        if (hasUnsavedChangesSinceBackup) {
+          e.preventDefault();
+          e.returnValue = '';
+        }
+      });
+    }
+
+/* ==========================================================================
+       1. ONE-TAP WHATSAPP CLASSES SUMMARY IMAGE + LINK SHARE
+       ========================================================================== */
+    function shareInvoiceDirectlyToWhatsApp() {
+      if (!activeInvoiceData) return;
+      const { client, month } = activeInvoiceData;
+      const fee = Number(month.calculatedDueFee || 0);
+      const phone = (client.phone || '').replace(/[^0-9]/g, '');
+
+      const summaryLines = (month.sessions || []).map((s, idx) =>
+        `${idx + 1}. ${formatDisplayDate(s.date, false)} (${s.time})`
+      ).join('\n');
+
+      const messageText = `Hello! Here is ${client.name}'s Classes Summary for Month ${month.monthNumber}:\n\n${summaryLines || 'No classes recorded yet.'}\n\nTotal Classes: ${month.sessions.length}/${month.quota || client.quota}\nFee: ${fee} ${getCurrency()} (${month.isPaid ? 'PAID' : 'DUE'})\nThank you!`;
+
+      const canvas = document.createElement('canvas');
+      const scale = 2;
+      canvas.width = 680 * scale;
+      canvas.height = Math.max(460, 260 + (month.sessions.length * 30)) * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, 680, canvas.height / scale);
+      drawInvoiceToCanvas(ctx, client, month);
+
+      canvas.toBlob(async (blob) => {
+        const fileName = `Classes_Summary_${client.name.replace(/\s+/g, '_')}_M${month.monthNumber}.png`;
+        if (blob && navigator.canShare) {
+          const file = new File([blob], fileName, { type: 'image/png' });
+          if (navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: `Classes Summary: ${client.name}`,
+                text: messageText,
+                files: [file]
+              });
+              showToast("Shared statement image!");
+              return;
+            } catch (err) {
+              if (err.name === 'AbortError') return;
+            }
+          }
+        }
+        // Fallback: open WhatsApp direct chat with pre-filled summary text
+        const waUrl = phone
+          ? `https://wa.me/${phone}?text=${encodeURIComponent(messageText)}`
+          : `https://wa.me/?text=${encodeURIComponent(messageText)}`;
+        window.open(waUrl, '_blank');
+        showToast("Opened WhatsApp summary!");
+      }, 'image/png');
+    }
+
+    /* ==========================================================================
+       2. UNLIMITED INDEXEDDB ENGINE + STT FILE HANDLE MEMORY + AUTO-PRUNE
+       ========================================================================== */
+    const CT_IDB_NAME = 'ClassTrackerUnlimitedDB_v1';
+    const CT_IDB_STORE = 'kv_store';
+
+    function openCtIndexedDB() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) return reject(new Error('IndexedDB unsupported'));
+        const req = indexedDB.open(CT_IDB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(CT_IDB_STORE)) {
+            db.createObjectStore(CT_IDB_STORE);
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function idbSet(key, val) {
+      try {
+        const db = await openCtIndexedDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(CT_IDB_STORE, 'readwrite');
+          tx.objectStore(CT_IDB_STORE).put(val, key);
+          tx.oncomplete = () => resolve(true);
+          tx.onerror = () => reject(tx.error);
+        });
+      } catch (e) { return false; }
+    }
+
+    async function idbGet(key) {
+      try {
+        const db = await openCtIndexedDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(CT_IDB_STORE, 'readonly');
+          const req = tx.objectStore(CT_IDB_STORE).get(key);
+          req.onsuccess = () => resolve(req.result);
+          req.onerror = () => reject(req.error);
+        });
+      } catch (e) { return null; }
+    }
+
+function getSttHandleIdbKey() {
+      return `stt_file_handle_${activeProfileId}`;
+    }
+
+    async function refreshSttQuickHandleButton() {
+      const btn = document.getElementById('btn-stt-quick-handle-sync');
+      if (!btn) return;
+      const handle = await idbGet(getSttHandleIdbKey());
+      if (handle) {
+        btn.style.display = 'inline-flex';
+        btn.title = handle.kind === 'directory'
+          ? `Auto-load newest backup from folder "${handle.name}"`
+          : `Quick reload "${handle.name}"`;
+      } else {
+        btn.style.display = 'none';
+      }
+    }
+
+    async function getLatestBackupFromDirectory(dirHandle) {
+      let newestFile = null;
+      let newestTime = -1;
+
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === 'file' && (entry.name.endsWith('.backup') || entry.name.startsWith('stt_'))) {
+          const f = await entry.getFile();
+          if (f.lastModified > newestTime) {
+            newestTime = f.lastModified;
+            newestFile = f;
+          }
+        }
+      }
+      return newestFile;
+    }
+
+async function pickAndRememberSttFile() {
+      const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+
+      if (!isMobile && 'showDirectoryPicker' in window) {
+        try {
+          const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+          if (dirHandle) {
+            const latestFile = await getLatestBackupFromDirectory(dirHandle);
+            if (!latestFile) {
+              showToast("No .backup files found in that folder.");
+              return;
+            }
+            await idbSet(getSttHandleIdbKey(), dirHandle);
+            await refreshSttQuickHandleButton();
+            const text = await latestFile.text();
+            parseAndCompareSttBackup(text);
+            showToast(`Linked folder & loaded "${latestFile.name}"!`);
+            return;
+          }
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      const input = document.getElementById('stt-sync-file-input');
+      if (input) input.click();
+    }
+    async function syncFromRememberedSttHandle() {
+      const handle = await idbGet(getSttHandleIdbKey());
+      if (!handle) {
+        pickAndRememberSttFile();
+        return;
+      }
+      try {
+        if (handle.queryPermission) {
+          let perm = await handle.queryPermission({ mode: 'read' });
+          if (perm !== 'granted' && handle.requestPermission) {
+            perm = await handle.requestPermission({ mode: 'read' });
+          }
+          if (perm !== 'granted') {
+            showToast("Permission needed — select your STT folder/file once.");
+            pickAndRememberSttFile();
+            return;
+          }
+        }
+
+        if (handle.kind === 'directory') {
+          const latestFile = await getLatestBackupFromDirectory(handle);
+          if (!latestFile) {
+            showToast("No .backup file found in linked folder.");
+            return;
+          }
+          const text = await latestFile.text();
+          parseAndCompareSttBackup(text);
+          showToast(`Synced newest: "${latestFile.name}"!`);
+        } else {
+          const file = await handle.getFile();
+          const text = await file.text();
+          parseAndCompareSttBackup(text);
+          showToast(`Synced from "${file.name}"!`);
+        }
+      } catch (err) {
+        showToast("Folder/file unavailable — please pick again.");
+        pickAndRememberSttFile();
+      }
+    }
+    // Hook Quick Sync button visibility whenever STT Sync Modal opens
+    const _origOpenSttSyncModal = openSttSyncModal;
+    openSttSyncModal = function() {
+      _origOpenSttSyncModal();
+      refreshSttQuickHandleButton();
+    };
+
+    // Auto-prune old daily snapshots from localStorage & mirror unlimited state to IndexedDB
+    function pruneOldLocalStorageBackups(manualTrigger = false) {
+      try {
+        const backupKey = getProfileDailyBackupKey();
+        const raw = localStorage.getItem(backupKey);
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list) && list.length > 2) {
+            // Keep only the 2 most recent snapshots in localStorage; full history lives in IndexedDB
+            localStorage.setItem(backupKey, JSON.stringify(list.slice(0, 2)));
+          }
+        }
+      } catch (e) {}
+
+      // Persist full unlimited database in IndexedDB
+      idbSet(getProfileStorageKey(), appState);
+      updateStorageMeterUI();
+      if (manualTrigger) showToast("Cache pruned & IndexedDB synced!");
+    }
+
+    function updateStorageMeterUI() {
+      const txtEl = document.getElementById('settings-storage-usage-text');
+      const barEl = document.getElementById('settings-storage-bar');
+      if (!txtEl && !barEl) return;
+
+      let totalBytes = 0;
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i) || '';
+        const v = localStorage.getItem(k) || '';
+        totalBytes += (k.length + v.length) * 2;
+      }
+      const kb = (totalBytes / 1024).toFixed(1);
+      const pct = Math.min(100, Math.max(3, Math.round((totalBytes / (5 * 1024 * 1024)) * 100)));
+
+      if (txtEl) txtEl.textContent = `${kb} KB cache • Unlimited IDB Active`;
+      if (barEl) {
+        barEl.style.width = `${pct}%`;
+        barEl.style.background = pct > 80 ? 'var(--warning)' : 'var(--success)';
+      }
+    }
+
+let unsavedEditCount = 0;
+
+ function updateUnsavedBackupBadgeUI() {
+   const badge = document.getElementById('header-unsaved-badge');
+   if (!badge) return;
+   if (unsavedEditCount > 5) {
+     badge.style.display = 'inline-flex';
+     badge.textContent = unsavedEditCount > 99 ? '99+' : String(unsavedEditCount);
+   } else {
+     badge.style.display = 'none';
+   }
+ }
+
+ function resetUnsavedBackupCounter() {
+   hasUnsavedChangesSinceBackup = false;
+   unsavedEditCount = 0;
+   updateUnsavedBackupBadgeUI();
+ }
+
+ // Wrap saveState so every save writes to IndexedDB (unlimited) and auto-prunes localStorage on quota pressure
+ const _origSaveState = saveState;
+ saveState = function() {
+   processAdvanceBalances();
+   hasUnsavedChangesSinceBackup = true;
+   unsavedEditCount++;
+   updateUnsavedBackupBadgeUI();
+   idbSet(getProfileStorageKey(), appState);
+      try {
+        localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));
+      } catch (quotaErr) {
+        // If localStorage hits 5MB limit, auto-prune daily cache and retry; IndexedDB already saved full data
+        pruneOldLocalStorageBackups(false);
+        try { localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState)); } catch (e2) {}
+      }
+      updateStorageMeterUI();
+    };
+
+    const _origRenderSettingsScreen2 = renderSettingsScreen;
+    renderSettingsScreen = function() {
+      _origRenderSettingsScreen2();
+      updateStorageMeterUI();
+    };
+
+    async function hydrateFromIndexedDBIfNeeded() {
+      const localRaw = localStorage.getItem(getProfileStorageKey());
+      const idbState = await idbGet(getProfileStorageKey());
+      if (!localRaw && idbState && Array.isArray(idbState.clients) && idbState.clients.length > 0) {
+        appState = idbState;
+        saveState();
+        renderAll();
+      } else if (appState && Array.isArray(appState.clients)) {
+        idbSet(getProfileStorageKey(), appState);
+      }
+      pruneOldLocalStorageBackups(false);
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      initTheme();
+      initData();
+      await hydrateFromIndexedDBIfNeeded();
+      populateAllTimePickers();
+      updateHeaderSttPillAndEodBanner();
       
       const lastView = localStorage.getItem(VIEW_STATE_KEY) || 'home';
       showMainView(lastView, false);
       renderAll();
+      setupExitBackupGuards();
     });
   </script>
 </body>

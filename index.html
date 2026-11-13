@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Class & Month Tracker</title>
   
-  <meta name="theme-color" content="#2563eb" id="theme-color-meta">
+<meta name="theme-color" content="#2563eb" id="theme-color-meta">
+  <link rel="manifest" href="./manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -8274,6 +8275,9 @@ let unsavedEditCount = 0;
       showMainView(lastView, false);
       renderAll();
       setupExitBackupGuards();
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      }
     });
   </script>
 </body>

@@ -1,5 +1,5 @@
 const CACHE_NAME = 'classtracker-offline-v1';
-const ASSETS = ['./', './index.html', './manifest.json'];
+const ASSETS = ['./', './index.html', './manifest.json', './icon.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(

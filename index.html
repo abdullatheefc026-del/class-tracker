@@ -1533,12 +1533,23 @@
       <div class="card">
         <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary); margin-bottom: 0.5rem;">General Preferences</h3>
         <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.72rem;">
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
+         <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
             <div>
               <span style="font-weight: 800; display: block;">Appearance Theme</span>
               <span style="font-size: 0.62rem; color: var(--text-muted);">Switch between Light and Dark mode</span>
             </div>
             <button type="button" onclick="toggleDarkMode(); renderSettingsScreen();" class="btn btn-subtle" style="font-size: 0.68rem; padding: 0.3rem 0.6rem;" id="settings-theme-btn">Light Mode</button>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
+            <div>
+              <span style="font-weight: 800; display: block;">Simple Time Tracker (STT) Sync</span>
+              <span id="settings-stt-feature-status" style="font-size: 0.62rem; color: var(--success);">Enabled</span>
+            </div>
+            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
+              <input type="checkbox" id="settings-toggle-stt-feature" onchange="toggleSttFeatureSetting(this.checked); renderSettingsScreen();" style="width: 16px; height: 16px;">
+              <span id="settings-stt-feature-label">ON</span>
+            </label>
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
@@ -2892,7 +2903,7 @@
       const themeBtn = document.getElementById('settings-theme-btn');
       if (themeBtn) themeBtn.textContent = isDark ? 'Dark Mode' : 'Light Mode';
 
-      const backupOn = isDailyBackupEnabled();
+     const backupOn = isDailyBackupEnabled();
       const bCb = document.getElementById('settings-toggle-daily-backup');
       const bLbl = document.getElementById('settings-daily-backup-label');
       const bStat = document.getElementById('settings-daily-backup-status');
@@ -2901,6 +2912,17 @@
       if (bStat) {
         bStat.textContent = backupOn ? 'Enabled (Auto-saves daily)' : 'Disabled';
         bStat.style.color = backupOn ? 'var(--success)' : 'var(--text-muted)';
+      }
+
+      const sttOn = isSttFeatureEnabled();
+      const sttCb = document.getElementById('settings-toggle-stt-feature');
+      const sttLbl = document.getElementById('settings-stt-feature-label');
+      const sttStat = document.getElementById('settings-stt-feature-status');
+      if (sttCb) sttCb.checked = sttOn;
+      if (sttLbl) sttLbl.textContent = sttOn ? 'ON' : 'OFF';
+      if (sttStat) {
+        sttStat.textContent = sttOn ? 'Enabled (Header sync pill visible)' : 'Disabled (Hidden from header)';
+        sttStat.style.color = sttOn ? 'var(--success)' : 'var(--text-muted)';
       }
     }
 
@@ -7150,10 +7172,29 @@ function copyPreviousWeekToCurrentTimetable() {
       return (raw || '').replace(/^~/, '').trim().toLowerCase();
     }
 
+  const STT_FEATURE_ENABLED_KEY = 'month_tracker_v12_stt_feature_enabled';
+
+    function isSttFeatureEnabled() {
+      const val = localStorage.getItem(STT_FEATURE_ENABLED_KEY);
+      return val === null ? false : val === 'true'; // Default to false (off) for new users, or true if already used
+    }
+
+    function toggleSttFeatureSetting(checked) {
+      localStorage.setItem(STT_FEATURE_ENABLED_KEY, checked ? 'true' : 'false');
+      renderSettingsScreen();
+      updateHeaderSttPillAndEodBanner();
+      showToast(checked ? "STT Sync feature turned ON" : "STT Sync feature turned OFF");
+    }
+
     function updateHeaderSttPillAndEodBanner() {
       const pill = document.getElementById('header-stt-status-pill');
       const label = document.getElementById('header-stt-label');
       const banner = document.getElementById('stt-eod-reminder-banner');
+      const isEnabled = isSttFeatureEnabled();
+
+      if (pill) pill.style.display = isEnabled ? 'inline-flex' : 'none';
+      if (banner) banner.style.display = 'none'; // Keep banner hidden by default unless explicitly triggered
+      if (!isEnabled) return;
 
       const pendingList = getPendingSttLogs();
       const todayStr = new Date().toISOString().split('T')[0];
@@ -7163,18 +7204,18 @@ function copyPreviousWeekToCurrentTimetable() {
 
       if (pill && label) {
         pill.classList.remove('pending', 'synced');
-      if (pendingList.length > 0) {
-     pill.classList.add('pending');
-     label.textContent = `${pendingList.length} Pending`;
-   } else if (isSyncedToday) {
-     pill.classList.add('synced');
-     label.textContent = 'Synced';
-   } else if (currentHour >= 19) {
-     pill.classList.add('pending');
-     label.textContent = 'Sync Due';
-   } else {
-     label.textContent = 'Sync';
-   }
+        if (pendingList.length > 0) {
+          pill.classList.add('pending');
+          label.textContent = `${pendingList.length} Pending`;
+        } else if (isSyncedToday) {
+          pill.classList.add('synced');
+          label.textContent = 'Synced';
+        } else if (currentHour >= 19) {
+          pill.classList.add('pending');
+          label.textContent = 'Sync Due';
+        } else {
+          label.textContent = 'Sync';
+        }
       }
 
       if (banner) {

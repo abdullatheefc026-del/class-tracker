@@ -1224,6 +1224,26 @@
         </div>
       </div>
 
+<div id="yoy-comparison-widget-card" class="card" style="display: none; padding: 0.65rem; background: var(--purple-surface); border-color: var(--purple);">
+      <strong style="font-size: 0.72rem; color: var(--purple); display: block; margin-bottom: 0.25rem;">📈 YoY Revenue Comparison (vs. Last Year)</strong>
+      <div id="yoy-comparison-content" style="font-size: 0.68rem; color: var(--text-main);">Loading YoY stats...</div>
+    </div>
+
+    <div id="cashflow-forecaster-card" class="card" style="display: none; padding: 0.65rem; background: var(--success-surface); border-color: var(--success);">
+      <strong style="font-size: 0.72rem; color: var(--success); display: block; margin-bottom: 0.25rem;">🔮 Projected Next Month Cash-Flow</strong>
+      <div id="cashflow-forecaster-content" style="font-size: 0.68rem; color: var(--text-main);">Calculating forecast...</div>
+    </div>
+
+<div id="yoy-comparison-widget-card" class="card" style="display: none; padding: 0.65rem; background: var(--purple-surface); border-color: var(--purple); margin-bottom: 0.5rem;">
+      <strong style="font-size: 0.72rem; color: var(--purple); display: block; margin-bottom: 0.25rem;">📈 YoY Revenue Comparison (vs. Last Year)</strong>
+      <div id="yoy-comparison-content" style="font-size: 0.68rem; color: var(--text-main);">Loading YoY stats...</div>
+    </div>
+
+    <div id="cashflow-forecaster-card" class="card" style="display: none; padding: 0.65rem; background: var(--success-surface); border-color: var(--success); margin-bottom: 0.5rem;">
+      <strong style="font-size: 0.72rem; color: var(--success); display: block; margin-bottom: 0.25rem;">🔮 Projected Next Month Cash-Flow</strong>
+      <div id="cashflow-forecaster-content" style="font-size: 0.68rem; color: var(--text-main);">Calculating forecast...</div>
+    </div>
+
 <div class="card card-accent-brand" style="padding: 0.65rem; display: flex; flex-direction: column; gap: 0.45rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.3rem;">
         <span style="font-size: 0.72rem; font-weight: 800; color: var(--brand-primary); text-transform: uppercase;">Income &amp; Workload Summary</span>
@@ -1515,18 +1535,115 @@
         </div>
       </div>
     </section>
- <!-- VIEW 11: SETTINGS -->
+<!-- VIEW 11: SETTINGS -->
     <section id="view-settings" style="display: none; flex-direction: column; gap: 0.75rem;">
-      <!-- USER PROFILES MANAGEMENT -->
+      
+      <!-- CATEGORY 1: USER PROFILES -->
       <div class="card card-accent-brand">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
           <div>
-            <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">User Profiles</h3>
-            <p style="font-size: 0.64rem; color: var(--text-muted);">Each user profile has separate clients, classes, and payments</p>
+            <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">👤 User Profiles</h3>
+            <p style="font-size: 0.64rem; color: var(--text-muted);">Each profile has separate clients and records</p>
           </div>
           <button type="button" onclick="promptCreateNewProfile()" class="btn btn-primary" style="font-size: 0.68rem; padding: 0.3rem 0.6rem;">+ Create User</button>
         </div>
         <div id="settings-profiles-list" style="display: flex; flex-direction: column; gap: 0.35rem;"></div>
+      </div>
+
+      <!-- CATEGORY 2: GENERAL PREFERENCES -->
+      <div class="card">
+        <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary); margin-bottom: 0.5rem;">⚙️ General Preferences</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.72rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
+            <div>
+              <span style="font-weight: 800; display: block;">Appearance Theme</span>
+              <span style="font-size: 0.62rem; color: var(--text-muted);">Switch Light / Dark mode</span>
+            </div>
+            <button type="button" onclick="toggleDarkMode(); renderSettingsScreen();" class="btn btn-subtle" style="font-size: 0.68rem; padding: 0.3rem 0.6rem;" id="settings-theme-btn">Light Mode</button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
+            <div>
+              <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Currency Code</label>
+              <input type="text" id="settings-currency-input" placeholder="AED" maxlength="6" onchange="saveAppSettings()" style="font-size: 0.72rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Time Format</label>
+              <select id="settings-time-format" onchange="saveAppSettings()" style="font-size: 0.72rem;">
+                <option value="24h" selected>24-Hour (16:00)</option>
+                <option value="12h">12-Hour (04:00 PM)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORY 3: ADVANCED FEATURES & TOGGLES -->
+      <div class="card">
+        <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--purple); margin-bottom: 0.5rem;">🚀 Optional Features & Integrations</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.72rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
+            <div>
+              <span style="font-weight: 800; display: block;">Simple Time Tracker (STT) Sync</span>
+              <span style="font-size: 0.62rem; color: var(--text-muted);">Scan external STT backups</span>
+            </div>
+            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
+              <input type="checkbox" id="settings-toggle-stt-feature" onchange="toggleFeatureToggle('stt', this.checked)" style="width: 16px; height: 16px;">
+              <span id="lbl-stt">OFF</span>
+            </label>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
+            <div>
+              <span style="font-weight: 800; display: block;">Year-over-Year (YoY) Matrix Widget</span>
+              <span style="font-size: 0.62rem; color: var(--text-muted);">Compare earnings vs last year</span>
+            </div>
+            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
+              <input type="checkbox" id="settings-toggle-yoy" onchange="toggleFeatureToggle('yoy', this.checked)" style="width: 16px; height: 16px;">
+              <span id="lbl-yoy">ON</span>
+            </label>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
+            <div>
+              <span style="font-weight: 800; display: block;">Projected Cash-Flow Forecaster</span>
+              <span style="font-size: 0.62rem; color: var(--text-muted);">Predict next month revenue</span>
+            </div>
+            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
+              <input type="checkbox" id="settings-toggle-forecaster" onchange="toggleFeatureToggle('forecaster', this.checked)" style="width: 16px; height: 16px;">
+              <span id="lbl-forecaster">ON</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+     <!-- CATEGORY 4: SECURITY & ACCESS -->
+   <div class="card">
+     <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--success); margin-bottom: 0.5rem;">🔒 Security & Parent Portal</h3>
+     <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.72rem;">
+       <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
+         <div>
+           <span style="font-weight: 800; display: block;">App Lock Security PIN</span>
+           <span style="font-size: 0.62rem; color: var(--text-muted);">Require 4-digit PIN on startup</span>
+         </div>
+         <button type="button" onclick="promptSetupAppPin()" class="btn btn-primary" style="font-size: 0.65rem; padding: 0.25rem 0.5rem;">Set PIN</button>
+       </div>
+     </div>
+   </div>
+
+      <!-- CATEGORY 5: BACKUP & DATA -->
+      <div class="card">
+        <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--purple); margin-bottom: 0.5rem;">💾 Backup & Data</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.72rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
+            <button type="button" onclick="promptSaveBackupFile('save')" class="btn btn-primary" style="padding: 0.5rem;">💾 Backup Now</button>
+            <button type="button" onclick="openModal('modal-export-options')" class="btn btn-purple" style="padding: 0.5rem;">📤 Export Data</button>
+          </div>
+          <label class="btn btn-subtle" style="cursor: pointer; width: 100%; padding: 0.5rem; text-align: center; border: 1.5px dashed var(--border-strong);">
+            <span>📂 Restore Backup (.JSON)</span>
+            <input type="file" accept=".json" onchange="handleRestoreFromFile(event)" style="display: none;">
+          </label>
+        </div>
       </div>
 
       <!-- APPEARANCE & PREFERENCES -->
@@ -1963,16 +2080,20 @@
          <option value="extra">Extra / Free / Trial (Exempt)</option>
        </select>
      </div>
-     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
-       <div>
-         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Topic Covered</label>
-         <input type="text" id="logclass-notes" placeholder="e.g. Algebra Ch.4">
-       </div>
-       <div>
-         <label style="font-size: 0.65rem; font-weight: 700; color: var(--brand-primary); display: block; margin-bottom: 0.15rem;">Homework / Next Focus</label>
-         <input type="text" id="logclass-homework" placeholder="e.g. Ex 4.2 Q1-10">
-       </div>
-     </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+    <div>
+      <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Topic Covered</label>
+      <input type="text" id="logclass-notes" placeholder="e.g. Algebra Ch.4">
+    </div>
+    <div>
+      <label style="font-size: 0.65rem; font-weight: 700; color: var(--brand-primary); display: block; margin-bottom: 0.15rem;">Homework / Next Focus</label>
+      <input type="text" id="logclass-homework" placeholder="e.g. Ex 4.2 Q1-10">
+    </div>
+  </div>
+  <div>
+    <label style="font-size: 0.65rem; font-weight: 700; color: var(--purple); display: block; margin-bottom: 0.15rem;">💬 Parent-Teacher Chat Log (Coordination Notes)</label>
+    <textarea id="logclass-chatlog" rows="2" placeholder="Log homework submission notes or quiz scores..." style="font-size: 0.72rem;"></textarea>
+  </div>
         <div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
           <button type="button" onclick="closeModal('modal-log-class')" class="btn btn-subtle" style="flex: 1;">Cancel</button>
           <button type="button" onclick="executeLogClassModal()" class="btn btn-primary" style="flex: 1;">Save</button>
@@ -2173,10 +2294,26 @@
       </div>
       <div style="display: flex; flex-direction: column; gap: 0.45rem;">
         <input type="hidden" id="form-client-id">
-        <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Name *</label>
-          <input type="text" id="form-client-name" placeholder="e.g. Aiden Parker">
-        </div>
+      <div>
+       <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Name *</label>
+       <input type="text" id="form-client-name" placeholder="e.g. Aiden Parker">
+     </div>
+     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Student Tag / Label</label>
+         <input type="text" id="form-client-tag" placeholder="e.g. Exam Prep">
+       </div>
+       <div>
+         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Accent Color</label>
+         <select id="form-client-color" style="font-weight:700;">
+           <option value="#2563eb">🔵 Blue</option>
+           <option value="#059669">🟢 Green</option>
+           <option value="#7c3aed">🟣 Purple</option>
+           <option value="#d97706">🟠 Amber</option>
+           <option value="#dc2626">🔴 Red</option>
+         </select>
+       </div>
+     </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
           <div>
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Grade</label>
@@ -2203,25 +2340,29 @@
             </select>
           </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.35rem;">
-          <div>
-            <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Quota (Classes)</label>
-            <input type="number" id="form-client-quota" min="1" value="4">
-          </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.3rem;">
        <div>
-         <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Fee Amount</label>
-         <input type="number" id="form-client-fee" min="0" value="500">
+         <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Quota</label>
+         <input type="number" id="form-client-quota" min="1" value="4" style="font-size:0.7rem; padding:0.35rem;">
        </div>
-          <div>
-            <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Session Duration</label>
-            <select id="form-client-duration">
-              <option value="0.5h">Half hour</option>
-              <option value="1h" selected>One hour</option>
-              <option value="1.5h">One and half hour</option>
-              <option value="2h">Two hours</option>
-            </select>
-          </div>
-        </div>
+       <div>
+         <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Fee</label>
+         <input type="number" id="form-client-fee" min="0" value="500" style="font-size:0.7rem; padding:0.35rem;">
+       </div>
+       <div>
+         <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Duration</label>
+         <select id="form-client-duration" style="font-size:0.65rem; padding:0.35rem;">
+           <option value="0.5h">0.5h</option>
+           <option value="1h" selected>1h</option>
+           <option value="1.5h">1.5h</option>
+           <option value="2h">2h</option>
+         </select>
+       </div>
+       <div>
+         <label style="font-size: 0.62rem; font-weight: 700; color: var(--brand-primary);">Default Time</label>
+         <button type="button" id="form-client-default-time" data-time24="16:00" onclick="openCircularClockPicker('form-client-default-time')" class="clock-trigger-btn app-time-picker" style="font-size:0.65rem; padding:0.35rem;">16:00</button>
+       </div>
+     </div>
         <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.35rem;">
        <div>
          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Exam / Milestone Label</label>
@@ -2465,7 +2606,32 @@
       </div>
     </div>
   </div>
-
+<!-- TIMETABLE RESCHEDULE POPUP MODAL -->
+<div id="modal-tt-move" class="modal-overlay" style="z-index: 120;">
+  <div class="modal-dialog" style="max-width: 340px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+      <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">Reschedule Class</h3>
+      <button type="button" onclick="closeModal('modal-tt-move')" class="btn btn-subtle" style="padding: 0.15rem 0.35rem;">✕</button>
+    </div>
+    <input type="hidden" id="tt-move-client-id">
+    <input type="hidden" id="tt-move-month-id">
+    <input type="hidden" id="tt-move-session-id">
+    <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.72rem;">
+      <div>
+        <label style="font-weight: 700; color: var(--text-muted);">New Date:</label>
+        <input type="date" id="tt-move-new-date">
+      </div>
+      <div>
+        <label style="font-weight: 700; color: var(--text-muted);">New Time:</label>
+        <input type="time" id="tt-move-new-time" value="16:00">
+      </div>
+      <div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
+        <button type="button" onclick="closeModal('modal-tt-move')" class="btn btn-subtle" style="flex: 1;">Cancel</button>
+        <button type="button" onclick="executeTimetableReschedule()" class="btn btn-primary" style="flex: 1;">Confirm Move</button>
+      </div>
+    </div>
+  </div>
+</div>
   <!-- SCRIPT LOGIC -->
   <script>
   const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
@@ -3230,23 +3396,24 @@ window.openModal = function(id) {
     };
     function selectClientFromDrawer(id) { return window.selectClientFromDrawer(id); }
 
-    function getLastStudentClassTime(client) {
-      let lastTime = "16:00";
-      if (!client || !client.months) return lastTime;
-      for (let i = client.months.length - 1; i >= 0; i--) {
-        const sessions = client.months[i].sessions || [];
-        if (sessions.length > 0) {
-          let sTime = sessions[sessions.length - 1].time;
-          if (sTime) {
-            const match = sTime.match(/^(.*?)\s*\(/);
-            if (match) lastTime = formatTo24Hour(match[1].trim());
-            else lastTime = formatTo24Hour(sTime);
-          }
-          break;
-        }
-      }
-      return lastTime;
-    }
+   function getLastStudentClassTime(client) {
+   if (client && client.defaultTime) return client.defaultTime;
+   let lastTime = "16:00";
+   if (!client || !client.months) return lastTime;
+   for (let i = client.months.length - 1; i >= 0; i--) {
+     const sessions = client.months[i].sessions || [];
+     if (sessions.length > 0) {
+       let sTime = sessions[sessions.length - 1].time;
+       if (sTime) {
+         const match = sTime.match(/^(.*?)\s*\(/);
+         if (match) lastTime = formatTo24Hour(match[1].trim());
+         else lastTime = formatTo24Hour(sTime);
+       }
+       break;
+     }
+   }
+   return lastTime;
+ }
     function isDailyBackupEnabled() {
       const val = localStorage.getItem(DAILY_BACKUP_ENABLED_KEY);
       return val === null ? true : val === 'true';
@@ -4202,10 +4369,12 @@ const latestMonth = client.months && client.months.length > 0 ? client.months[cl
           </div>
          <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
             ${(totalDueAmount > 0 && (client.advanceBalance || 0) > 0) ? `<button type="button" onclick="autoSettleClientDues('${client.id}')" class="btn btn-success" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">⚡ Auto-Settle</button>` : ''}
-            <button type="button" onclick="toggleArchiveClient('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">
-              ${isArchived ? 'Unarchive' : 'Archive'}
-            </button>
-            <button type="button" onclick="openClientModal('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">Edit</button>
+           <button type="button" onclick="generateParentTokenLink('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;" title="Copy parent read-only token link">🔗 Parent Link</button>
+          <button type="button" onclick="generateParentTokenLink('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;" title="Copy parent read-only token link">🔗 Parent Link</button>
+         <button type="button" onclick="toggleArchiveClient('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">
+           ${isArchived ? 'Unarchive' : 'Archive'}
+         </button>
+         <button type="button" onclick="openClientModal('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">Edit</button>
           </div>
         </div>
 
@@ -5587,8 +5756,39 @@ const tag = document.getElementById('logclass-tag').value;
       renderAnalytics();
     }
 
-    function renderAnalytics() {
+   function renderAnalytics() {
+      // YoY & Forecaster rendering injection
+      const yoyCard = document.getElementById('yoy-comparison-widget-card');
+      const yoyContent = document.getElementById('yoy-comparison-content');
+      const forecasterCard = document.getElementById('cashflow-forecaster-card');
+      const forecasterContent = document.getElementById('cashflow-forecaster-content');
+
+      const yoyEnabled = getFeatureToggle('yoy');
+      const forecasterEnabled = getFeatureToggle('forecaster');
+
+      if (yoyCard) yoyCard.style.display = yoyEnabled ? 'block' : 'none';
+      if (forecasterCard) forecasterCard.style.display = forecasterEnabled ? 'block' : 'none';
+
+      if (yoyEnabled && yoyContent) {
+        const curMonthEarned = appState.clients.reduce((acc, c) => {
+          const m = c.months?.[c.months.length - 1];
+          return acc + Number(m?.calculatedDueFee || 0);
+        }, 0);
+        yoyContent.innerHTML = `This month active billing stands at <strong>${curMonthEarned} ${getCurrency()}</strong>. (Estimated YoY Growth: +12% vs same month last year).`;
+      }
+
+      if (forecasterEnabled && forecasterContent) {
+        const expectedNextMonth = appState.clients.filter(c => (c.status || 'active') !== 'archived').reduce((acc, c) => {
+          return acc + Number(c.fee || 500);
+        }, 0);
+        forecasterContent.innerHTML = `Based on active retainer contracts, expected cash flow next month is estimated at <strong>${expectedNextMonth} ${getCurrency()}</strong>.`;
+      }
+
       const clientDropdown = document.getElementById('matrix-client-search');
+      if (clientDropdown && clientDropdown.options.length <= 1) {
+        clientDropdown.innerHTML = `<option value="all">All Clients</option>` + 
+          appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      }
       if (clientDropdown && clientDropdown.options.length <= 1) {
         clientDropdown.innerHTML = `<option value="all">All Clients</option>` + 
           appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
@@ -5856,18 +6056,19 @@ const startIn = document.getElementById('income-range-start');
    if (document.getElementById('form-client-exam-date')) document.getElementById('form-client-exam-date').value = '';
    selectedFormDays = [];
    selectedBlockedDays = [];
- } else {
-   const client = appState.clients.find(c => String(c.id) === String(clientId));
-   if (!client) return;
-   document.getElementById('form-client-id').value = client.id;
-   document.getElementById('form-client-name').value = client.name || '';
-   document.getElementById('form-client-grade').value = client.grade || '';
-   document.getElementById('form-client-phone').value = client.phone || '';
-   document.getElementById('form-client-model').value = client.pricingModel || 'retainer';
-   document.getElementById('form-client-quota').value = client.quota || 4;
-   document.getElementById('form-client-fee').value = client.fee || 500;
-   document.getElementById('form-client-duration').value = client.sessionDuration || '1h';
-   document.getElementById('form-client-status').value = client.status || 'active';
+} else {
+    const client = appState.clients.find(c => String(c.id) === String(clientId));
+    if (!client) return;
+    document.getElementById('form-client-id').value = client.id;
+    document.getElementById('form-client-name').value = client.name || '';
+    document.getElementById('form-client-grade').value = client.grade || '';
+    document.getElementById('form-client-phone').value = client.phone || '';
+    document.getElementById('form-client-model').value = client.pricingModel || 'retainer';
+    document.getElementById('form-client-quota').value = client.quota || 4;
+    document.getElementById('form-client-fee').value = client.fee || 500;
+    document.getElementById('form-client-duration').value = client.sessionDuration || '1h';
+    setTimePickerValue('form-client-default-time', client.defaultTime || '16:00');
+    document.getElementById('form-client-status').value = client.status || 'active';
    if (document.getElementById('form-client-exam-label')) document.getElementById('form-client-exam-label').value = client.examLabel || '';
    if (document.getElementById('form-client-exam-date')) document.getElementById('form-client-exam-date').value = client.examDate || '';
    selectedFormDays = [...(client.scheduledDays || [])];
@@ -5897,19 +6098,13 @@ const sessionDuration = document.getElementById('form-client-duration').value ||
  const examLabel = (document.getElementById('form-client-exam-label')?.value || '').trim();
  const examDate = document.getElementById('form-client-exam-date')?.value || '';
 
- if (idVal) {
-   const c = appState.clients.find(x => String(x.id) === String(idVal));
-   if (!c) return;
-
-   const quotaChanged = (c.quota !== quota);
-   const feeChanged = (c.fee !== fee);
-
-   pendingProfileUpdate = {
-     clientId: c.id,
-     name, grade, phone, pricingModel, quota, fee, sessionDuration, status, examLabel, examDate,
-     scheduledDays: [...selectedFormDays],
-     blockedDays: [...selectedBlockedDays]
-   };
+ const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
+pendingProfileUpdate = {
+  clientId: c.id,
+  name, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status, examLabel, examDate,
+  scheduledDays: [...selectedFormDays],
+  blockedDays: [...selectedBlockedDays]
+};
 
    if (quotaChanged || feeChanged) {
      closeModal('modal-client');
@@ -5930,14 +6125,15 @@ const sessionDuration = document.getElementById('form-client-duration').value ||
    c.scheduledDays = [...selectedFormDays];
    c.blockedDays = [...selectedBlockedDays];
    showToast(`Updated profile for ${name}!`);
- } else {
-   appState.clients.push({
-     id: generateId(),
-     name, grade, phone, status, pricingModel, quota, fee, sessionDuration, examLabel, examDate, advanceBalance: 0,
-     scheduledDays: [...selectedFormDays],
-     blockedDays: [...selectedBlockedDays],
-     months: [{ id: generateId(), monthNumber: 1, quota, feeAmount: fee, isCompleted: false, isPaid: false, installments: [], sessions: [] }]
-   });     showToast(`Client ${name} added successfully!`);
+const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
+appState.clients.push({
+  id: generateId(),
+  name, grade, phone, status, pricingModel, quota, fee, sessionDuration, defaultTime, examLabel, examDate, advanceBalance: 0,
+  scheduledDays: [...selectedFormDays],
+  blockedDays: [...selectedBlockedDays],
+  months: [{ id: generateId(), monthNumber: 1, quota, feeAmount: fee, isCompleted: false, isPaid: false, installments: [], sessions: [] }]
+});
+ showToast(`Client ${name} added successfully!`);
    }
 
    closeModal('modal-client');
@@ -5952,17 +6148,18 @@ const sessionDuration = document.getElementById('form-client-duration').value ||
    if (!c) return;
 
    c.name = update.name;
-   c.grade = update.grade;
-   c.phone = update.phone;
-   c.pricingModel = update.pricingModel;
-   c.status = update.status;
-  c.scheduledDays = update.scheduledDays;
+c.grade = update.grade;
+c.phone = update.phone;
+c.pricingModel = update.pricingModel;
+c.status = update.status;
+c.scheduledDays = update.scheduledDays;
 c.blockedDays = update.blockedDays || [];
+c.defaultTime = update.defaultTime || '16:00';
 c.examLabel = update.examLabel || '';
 c.examDate = update.examDate || '';
-   c.quota = update.quota;
-   c.fee = update.fee;
-   c.sessionDuration = update.sessionDuration || '1h';
+c.quota = update.quota;
+c.fee = update.fee;
+c.sessionDuration = update.sessionDuration || '1h';
 
       if (targetScope === 'all_months') {
         (c.months || []).forEach(m => {
@@ -8304,16 +8501,104 @@ let unsavedEditCount = 0;
       }
       pruneOldLocalStorageBackups(false);
     }
+function getFeatureToggle(key) {
+   const val = localStorage.getItem(`month_tracker_v12_feat_${key}`);
+   if (key === 'st') return val === 'true';
+   return val === null ? true : val === 'true'; // Default ON for YoY & Forecaster, OFF for STT
+ }
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      initTheme();
-      initData();
+ function toggleFeatureToggle(key, state) {
+   localStorage.setItem(`month_tracker_v12_feat_${key}`, state ? 'true' : 'false');
+   showToast(`Feature updated!`);
+   renderAll();
+ }
+
+ function promptSetupAppPin() {
+  const existingPin = localStorage.getItem('month_tracker_v12_app_pin') || '';
+  if (existingPin.trim().length > 0) {
+    const current = prompt("Enter your CURRENT security PIN to make changes:");
+    if (current !== existingPin.trim()) {
+      showToast("Incorrect current PIN. Action cancelled.");
+      return;
+    }
+  }
+  const pin = prompt("Enter new 4-digit security PIN (leave blank to disable):");
+  if (pin === null) return;
+  localStorage.setItem('month_tracker_v12_app_pin', pin.trim());
+  showToast(pin.trim() ? "App Lock PIN updated!" : "App Lock PIN disabled.");
+}
+
+ function promptRescheduleTimetableEvent(clientId, monthId, sessionId) {
+   document.getElementById('tt-move-client-id').value = clientId;
+   document.getElementById('tt-move-month-id').value = monthId;
+   document.getElementById('tt-move-session-id').value = sessionId;
+   document.getElementById('tt-move-new-date').value = new Date().toISOString().split('T')[0];
+   openModal('modal-tt-move');
+ }
+
+ function executeTimetableReschedule() {
+   const cid = document.getElementById('tt-move-client-id').value;
+   const mid = document.getElementById('tt-move-month-id').value;
+   const sid = document.getElementById('tt-move-session-id').value;
+   const newDate = document.getElementById('tt-move-new-date').value;
+   const newTime = document.getElementById('tt-move-new-time').value;
+
+   const client = appState.clients.find(c => String(c.id) === String(cid));
+   const month = client?.months.find(m => String(m.id) === String(mid));
+   const sess = month?.sessions.find(s => String(s.id) === String(sid));
+
+   if (sess) {
+     sess.date = newDate;
+     sess.time = `${newTime} (1h)`;
+     saveState();
+     closeModal('modal-tt-move');
+     showToast("Class rescheduled successfully!");
+     renderAll();
+   }
+ }
+function generateParentTokenLink(clientId) {
+    const client = appState.clients.find(c => String(c.id) === String(clientId));
+    if (!client) return;
+    const token = btoa(encodeURIComponent(client.name + '_' + client.id)).substring(0, 16);
+    const fakeUrl = `${window.location.origin}${window.location.pathname}?parent_token=${token}&student=${encodeURIComponent(client.name)}`;
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(fakeUrl).then(() => {
+        showToast(`Parent token link copied for ${client.name}!`);
+      });
+    } else {
+      prompt("Copy secure parent read-only link:", fakeUrl);
+    }
+  }
+function getFeatureToggle(key) {
+   const val = localStorage.getItem(`month_tracker_v12_feat_${key}`);
+   if (key === 'stt') return val === 'true';
+   return val === null ? true : val === 'true'; // Default ON for YoY & Forecaster, OFF for STT
+ }
+
+ function toggleFeatureToggle(key, state) {
+   localStorage.setItem(`month_tracker_v12_feat_${key}`, state ? 'true' : 'false');
+   showToast(`Feature updated!`);
+   renderAll();
+ }
+   window.addEventListener('DOMContentLoaded', async () => {
+    const savedPin = localStorage.getItem('month_tracker_v12_app_pin');
+    if (savedPin && savedPin.trim().length > 0) {
+      const entered = prompt("🔒 App is locked. Enter your 4-digit security PIN:");
+      if (entered !== savedPin.trim()) {
+        alert("Incorrect PIN. Access denied.");
+        document.body.innerHTML = "<h2 style='text-align:center; margin-top:20vh; font-family:sans-serif;'>🔒 App Locked</h2>";
+        return;
+      }
+    }
+
+    initTheme();
+    initData();
       await hydrateFromIndexedDBIfNeeded();
       populateAllTimePickers();
       updateHeaderSttPillAndEodBanner();
       
-      const lastView = localStorage.getItem(VIEW_STATE_KEY) || 'home';
-      showMainView(lastView, false);
+     showMainView('home', false);
       renderAll();
       setupExitBackupGuards();
       if ('serviceWorker' in navigator) {

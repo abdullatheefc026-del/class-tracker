@@ -1224,15 +1224,6 @@
         </div>
       </div>
 
-<div id="yoy-comparison-widget-card" class="card" style="display: none; padding: 0.65rem; background: var(--purple-surface); border-color: var(--purple);">
-      <strong style="font-size: 0.72rem; color: var(--purple); display: block; margin-bottom: 0.25rem;">📈 YoY Revenue Comparison (vs. Last Year)</strong>
-      <div id="yoy-comparison-content" style="font-size: 0.68rem; color: var(--text-main);">Loading YoY stats...</div>
-    </div>
-
-    <div id="cashflow-forecaster-card" class="card" style="display: none; padding: 0.65rem; background: var(--success-surface); border-color: var(--success);">
-      <strong style="font-size: 0.72rem; color: var(--success); display: block; margin-bottom: 0.25rem;">🔮 Projected Next Month Cash-Flow</strong>
-      <div id="cashflow-forecaster-content" style="font-size: 0.68rem; color: var(--text-main);">Calculating forecast...</div>
-    </div>
 
 <div id="yoy-comparison-widget-card" class="card" style="display: none; padding: 0.65rem; background: var(--purple-surface); border-color: var(--purple); margin-bottom: 0.5rem;">
       <strong style="font-size: 0.72rem; color: var(--purple); display: block; margin-bottom: 0.25rem;">📈 YoY Revenue Comparison (vs. Last Year)</strong>
@@ -4367,11 +4358,10 @@ const latestMonth = client.months && client.months.length > 0 ? client.months[cl
            </div>
          ` : ''}
           </div>
-         <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
+      <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
             ${(totalDueAmount > 0 && (client.advanceBalance || 0) > 0) ? `<button type="button" onclick="autoSettleClientDues('${client.id}')" class="btn btn-success" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">⚡ Auto-Settle</button>` : ''}
            <button type="button" onclick="generateParentTokenLink('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;" title="Copy parent read-only token link">🔗 Parent Link</button>
-          <button type="button" onclick="generateParentTokenLink('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;" title="Copy parent read-only token link">🔗 Parent Link</button>
-         <button type="button" onclick="toggleArchiveClient('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">
+         <button type="button" onclick="toggleArchiveClient('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;"> 
            ${isArchived ? 'Unarchive' : 'Archive'}
          </button>
          <button type="button" onclick="openClientModal('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">Edit</button>
@@ -5784,11 +5774,7 @@ const tag = document.getElementById('logclass-tag').value;
         forecasterContent.innerHTML = `Based on active retainer contracts, expected cash flow next month is estimated at <strong>${expectedNextMonth} ${getCurrency()}</strong>.`;
       }
 
-      const clientDropdown = document.getElementById('matrix-client-search');
-      if (clientDropdown && clientDropdown.options.length <= 1) {
-        clientDropdown.innerHTML = `<option value="all">All Clients</option>` + 
-          appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-      }
+     const clientDropdown = document.getElementById('matrix-client-search');
       if (clientDropdown && clientDropdown.options.length <= 1) {
         clientDropdown.innerHTML = `<option value="all">All Clients</option>` + 
           appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
@@ -6125,8 +6111,7 @@ pendingProfileUpdate = {
    c.scheduledDays = [...selectedFormDays];
    c.blockedDays = [...selectedBlockedDays];
    showToast(`Updated profile for ${name}!`);
-const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
-appState.clients.push({
+const clientDefaultTime = getTimePickerValue('form-client-default-time') || '16:00';appState.clients.push({
   id: generateId(),
   name, grade, phone, status, pricingModel, quota, fee, sessionDuration, defaultTime, examLabel, examDate, advanceBalance: 0,
   scheduledDays: [...selectedFormDays],

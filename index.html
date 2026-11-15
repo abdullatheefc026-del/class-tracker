@@ -1870,7 +1870,67 @@
       </div>
     </div>
   </div>
+<!-- EXAM & TERM RECORDS MODAL -->
+  <div id="modal-exam-tracker" class="modal-overlay" style="z-index: 110;">
+    <div class="modal-dialog modal-dialog-wide">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--purple);">🎓 Term & Exam Score Records</h3>
+        <button type="button" onclick="closeModal('modal-exam-tracker')" class="btn btn-subtle" style="padding: 0.2rem 0.4rem;">✕</button>
+      </div>
 
+      <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.6rem;">
+        Record exam terms, subject scores, and evaluate performance over time for <strong id="exam-modal-student-name">Student</strong>.
+      </p>
+
+      <!-- NEW EXAM ENTRY FORM -->
+      <div class="card card-accent-brand" style="margin-bottom: 0.75rem; padding: 0.65rem;">
+        <strong style="font-size: 0.72rem; color: var(--brand-primary); display: block; margin-bottom: 0.4rem;">+ Add New Exam Set / Term</strong>
+        <input type="hidden" id="form-exam-id">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; margin-bottom: 0.4rem;">
+          <div>
+            <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Term / Exam Set Name *</label>
+            <input type="text" id="form-exam-term-name" placeholder="e.g. Term 1 Finals, Quiz 3">
+          </div>
+          <div>
+            <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Exam Date *</label>
+            <input type="date" id="form-exam-date">
+          </div>
+        </div>
+
+        <!-- SUBJECTS DYNAMIC TABLE -->
+        <div style="margin-bottom: 0.4rem;">
+          <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Subjects & Scores:</label>
+          <div style="overflow-x: auto; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-surface); margin-bottom: 0.3rem;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 440px;">
+              <thead>
+                <tr style="background: var(--bg-subtle); border-bottom: 1.5px solid var(--border-color); text-align: left;">
+                  <th style="padding: 0.35rem;">Subject</th>
+                  <th style="padding: 0.35rem; width: 70px;">Score</th>
+                  <th style="padding: 0.35rem; width: 70px;">Max</th>
+                  <th style="padding: 0.35rem; width: 65px;">Grade</th>
+                  <th style="padding: 0.35rem;">Remarks</th>
+                  <th style="padding: 0.35rem; width: 30px;"></th>
+                </tr>
+              </thead>
+              <tbody id="exam-subjects-table-body"></tbody>
+            </table>
+          </div>
+          <button type="button" onclick="addExamSubjectRow()" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.2rem 0.5rem;">+ Add Subject</button>
+        </div>
+
+        <div style="display: flex; gap: 0.35rem; margin-top: 0.5rem;">
+          <button type="button" onclick="resetExamForm()" class="btn btn-subtle" style="flex: 1;">Clear Form</button>
+          <button type="button" onclick="saveClientExamRecord()" class="btn btn-purple" style="flex: 1;">Save Exam Record</button>
+        </div>
+      </div>
+
+      <!-- HISTORICAL EXAM RECORDS LIST -->
+      <div>
+        <strong style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 0.35rem;">Exam History & Scores</strong>
+        <div id="client-exam-history-container" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 280px; overflow-y: auto;"></div>
+      </div>
+    </div>
+  </div>
   <!-- REMINDERS MODAL -->
   <div id="modal-reminders" class="modal-overlay">
     <div class="modal-dialog">
@@ -4358,9 +4418,10 @@ const latestMonth = client.months && client.months.length > 0 ? client.months[cl
            </div>
          ` : ''}
           </div>
-      <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
+    <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
             ${(totalDueAmount > 0 && (client.advanceBalance || 0) > 0) ? `<button type="button" onclick="autoSettleClientDues('${client.id}')" class="btn btn-success" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">⚡ Auto-Settle</button>` : ''}
            <button type="button" onclick="generateParentTokenLink('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;" title="Copy parent read-only token link">🔗 Parent Link</button>
+           <button type="button" onclick="openExamRecordsModal()" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">🎓 Exam Records</button>
          <button type="button" onclick="toggleArchiveClient('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;"> 
            ${isArchived ? 'Unarchive' : 'Archive'}
          </button>
@@ -8590,6 +8651,184 @@ function getFeatureToggle(key) {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
       }
     });
+// --- EXAM & TERM TRACKER CONTROLLER FUNCTIONS ---
+
+  function openExamRecordsModal() {
+    const client = appState.clients.find(c => String(c.id) === String(appState.selectedClientId));
+    if (!client) return;
+
+    const nameEl = document.getElementById('exam-modal-student-name');
+    if (nameEl) nameEl.textContent = client.name;
+
+    resetExamForm();
+    renderClientExamHistory();
+    openModal('modal-exam-tracker');
+  }
+
+  function resetExamForm() {
+    document.getElementById('form-exam-id').value = '';
+    document.getElementById('form-exam-term-name').value = '';
+    document.getElementById('form-exam-date').value = new Date().toISOString().split('T')[0];
+    
+    const tbody = document.getElementById('exam-subjects-table-body');
+    if (tbody) {
+      tbody.innerHTML = '';
+      ['Mathematics', 'Science', 'English', 'Hindi'].forEach(subj => addExamSubjectRow(subj, '', 100));
+    }
+  }
+
+  function addExamSubjectRow(subjectName = '', score = '', maxScore = 100, grade = '', notes = '') {
+    const tbody = document.getElementById('exam-subjects-table-body');
+    if (!tbody) return;
+
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = "1px solid var(--border-color)";
+    tr.innerHTML = `
+      <td style="padding: 0.3rem;"><input type="text" class="exam-subj-name" value="${subjectName}" placeholder="Subject" style="padding: 0.25rem; font-size: 0.7rem;"></td>
+      <td style="padding: 0.3rem;"><input type="number" class="exam-subj-score" value="${score}" placeholder="90" style="padding: 0.25rem; font-size: 0.7rem;"></td>
+      <td style="padding: 0.3rem;"><input type="number" class="exam-subj-max" value="${maxScore}" placeholder="100" style="padding: 0.25rem; font-size: 0.7rem;"></td>
+      <td style="padding: 0.3rem;"><input type="text" class="exam-subj-grade" value="${grade}" placeholder="A+" style="padding: 0.25rem; font-size: 0.7rem;"></td>
+      <td style="padding: 0.3rem;"><input type="text" class="exam-subj-notes" value="${notes}" placeholder="Remarks" style="padding: 0.25rem; font-size: 0.7rem;"></td>
+      <td style="padding: 0.3rem; text-align: center;"><button type="button" onclick="this.closest('tr').remove()" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; color: var(--danger); font-size: 0.65rem;">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  function saveClientExamRecord() {
+    const client = appState.clients.find(c => String(c.id) === String(appState.selectedClientId));
+    if (!client) return;
+
+    const examId = document.getElementById('form-exam-id').value;
+    const termName = document.getElementById('form-exam-term-name').value.trim();
+    const examDate = document.getElementById('form-exam-date').value || new Date().toISOString().split('T')[0];
+
+    if (!termName) {
+      showToast("Please enter a Term or Exam Set name.");
+      document.getElementById('form-exam-term-name').focus();
+      return;
+    }
+
+    const subjectRows = document.querySelectorAll('#exam-subjects-table-body tr');
+    const subjects = [];
+
+    subjectRows.forEach(row => {
+      const subjectName = row.querySelector('.exam-subj-name')?.value.trim();
+      if (!subjectName) return;
+      const score = Number(row.querySelector('.exam-subj-score')?.value) || 0;
+      const maxScore = Number(row.querySelector('.exam-subj-max')?.value) || 100;
+      const gradeLetter = row.querySelector('.exam-subj-grade')?.value.trim() || '';
+      const notes = row.querySelector('.exam-subj-notes')?.value.trim() || '';
+
+      subjects.push({ subjectName, score, maxScore, gradeLetter, notes });
+    });
+
+    if (subjects.length === 0) {
+      showToast("Please add at least one subject with a score.");
+      return;
+    }
+
+    if (!client.exams) client.exams = [];
+
+    if (examId) {
+      const existing = client.exams.find(e => String(e.id) === String(examId));
+      if (existing) {
+        existing.termName = termName;
+        existing.examDate = examDate;
+        existing.subjects = subjects;
+      }
+      showToast("Exam record updated successfully!");
+    } else {
+      client.exams.push({
+        id: 'exam_' + Date.now(),
+        termName,
+        examDate,
+        subjects
+      });
+      showToast("New exam record saved!");
+    }
+
+    saveState();
+    resetExamForm();
+    renderClientExamHistory();
+  }
+
+  function renderClientExamHistory() {
+    const client = appState.clients.find(c => String(c.id) === String(appState.selectedClientId));
+    const container = document.getElementById('client-exam-history-container');
+    if (!client || !container) return;
+
+    const exams = client.exams || [];
+    if (exams.length === 0) {
+      container.innerHTML = `<span style="font-size: 0.7rem; color: var(--text-muted); padding: 0.4rem;">No exam records found for this student.</span>`;
+      return;
+    }
+
+    const sortedExams = [...exams].sort((a, b) => new Date(b.examDate) - new Date(a.examDate));
+
+    container.innerHTML = sortedExams.map(ex => {
+      const totalScore = ex.subjects.reduce((sum, s) => sum + s.score, 0);
+      const totalMax = ex.subjects.reduce((sum, s) => sum + s.maxScore, 0);
+      const percentage = totalMax > 0 ? Math.round((totalScore / totalMax) * 100) : 0;
+
+      return `
+        <div class="card" style="padding: 0.6rem; display: flex; flex-direction: column; gap: 0.35rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--border-color); padding-bottom: 0.3rem;">
+            <div>
+              <strong style="font-size: 0.76rem; color: var(--brand-primary);">${ex.termName}</strong>
+              <span style="font-size: 0.62rem; color: var(--text-muted); margin-left: 4px;">(${formatDisplayDate(ex.examDate, true)})</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <span class="num-tabular" style="font-size: 0.7rem; font-weight: 800; color: var(--success);">${totalScore}/${totalMax} (${percentage}%)</span>
+              <button type="button" onclick="editClientExamRecord('${ex.id}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.35rem;">Edit</button>
+              <button type="button" onclick="deleteClientExamRecord('${ex.id}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.35rem; color: var(--danger);">✕</button>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.25rem;">
+            ${ex.subjects.map(s => `
+              <div style="background: var(--bg-subtle); padding: 0.3rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-color); font-size: 0.68rem;">
+                <div style="display: flex; justify-content: space-between; font-weight: 700;">
+                  <span>${s.subjectName}</span>
+                  <span class="num-tabular" style="color: var(--brand-primary);">${s.score}/${s.maxScore}</span>
+                </div>
+                ${s.gradeLetter ? `<span style="font-size: 0.6rem; color: var(--success); font-weight: 800;">Grade: ${s.gradeLetter}</span>` : ''}
+                ${s.notes ? `<div style="font-size: 0.58rem; color: var(--text-muted);">${s.notes}</div>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function editClientExamRecord(examId) {
+    const client = appState.clients.find(c => String(c.id) === String(appState.selectedClientId));
+    if (!client || !client.exams) return;
+    const exam = client.exams.find(e => String(e.id) === String(examId));
+    if (!exam) return;
+
+    document.getElementById('form-exam-id').value = exam.id;
+    document.getElementById('form-exam-term-name').value = exam.termName;
+    document.getElementById('form-exam-date').value = exam.examDate;
+
+    const tbody = document.getElementById('exam-subjects-table-body');
+    if (tbody) {
+      tbody.innerHTML = '';
+      exam.subjects.forEach(s => {
+        addExamSubjectRow(s.subjectName, s.score, s.maxScore, s.gradeLetter, s.notes);
+      });
+    }
+  }
+
+  function deleteClientExamRecord(examId) {
+    requestConfirmation("Delete this exam and score record?", () => {
+      const client = appState.clients.find(c => String(c.id) === String(appState.selectedClientId));
+      if (!client || !client.exams) return;
+      client.exams = client.exams.filter(e => String(e.id) !== String(examId));
+      saveState();
+      renderClientExamHistory();
+      showToast("Exam record deleted.");
+    });
+  }
   </script>
 </body>
 </html>

@@ -924,9 +924,9 @@
       </div>
       
   <div style="display: flex; gap: 0.3rem; align-items: center;">
-        <button type="button" id="header-stt-status-pill" onclick="openSttSyncModal()" class="stt-status-pill" title="Sync Simple Time Tracker Backup">
+      <button type="button" id="header-stt-status-pill" onclick="openSttSyncModal()" class="stt-status-pill" title="Sync STT">
           <span id="header-stt-dot" style="width: 6px; height: 6px; border-radius: 50%; background: currentColor;"></span>
-          <span id="header-stt-label">STT Sync</span>
+          <span id="header-stt-label">Sync</span>
         </button>
         <select id="header-profile-switcher" onchange="switchUserProfile(this.value)" style="width: auto; max-width: 100px; font-size: 0.68rem; font-weight: 800; padding: 0.3rem 0.4rem; background: var(--brand-surface); color: var(--brand-primary); border-color: var(--brand-primary);"></select>
         <button type="button" onclick="openClientModal('new')" class="btn btn-primary" style="padding: 0.35rem 0.6rem; font-size: 0.7rem; flex-shrink: 0;">
@@ -1416,8 +1416,8 @@
           <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">Advance & Due Balances</h3>
           <span style="font-size: 0.65rem; color: var(--text-muted);">Balances are strictly non-negative</span>
         </div>
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-          Payments received create advance cash balances. Monthly blocks can only be marked as paid when sufficient balance is available to settle them.
+      <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+          Advance cash balances are applied automatically to settle due monthly blocks.
         </p>
         <div style="overflow-x: auto;">
           <table class="pivot-table" id="balances-table"></table>
@@ -1432,8 +1432,8 @@
           <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Double Ledger Account</h3>
           <button type="button" onclick="openSnapshotCustomizer('double-ledger-table', 'Double Ledger Report', 'Double_Ledger.png', 'ledger')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.2rem 0.4rem;">📷 Snapshot</button>
         </div>
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
-          Cash ledger records payments received independently from due ledger entries. Marking a month as paid deducts strictly from cash balance.
+       <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+          Tracks cash received independently from monthly due ledger entries.
         </p>
         <div style="overflow-x: auto; max-height: 60vh;">
           <table class="pivot-table" id="double-ledger-table"></table>
@@ -2548,8 +2548,8 @@
         <button type="button" onclick="closeModal('modal-fee-calculator')" class="btn btn-subtle" style="padding: 0.2rem 0.4rem;">✕</button>
       </div>
 
-      <p style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.55rem;">
-        Enter <strong>Fee / Session</strong> to calculate <strong>Total Fees</strong>, or type <strong>Total Fees</strong> to reverse-calculate the exact <strong>Fee / Session</strong>.
+   <p style="font-size: 0.65rem; color: var(--text-muted); margin-bottom: 0.55rem;">
+        Enter rate per session or total monthly fee to calculate automatically.
       </p>
 
       <div style="display: flex; flex-direction: column; gap: 0.45rem;">
@@ -2597,7 +2597,7 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
         <div>
           <h3 style="font-size: 0.92rem; font-weight: 800; color: var(--brand-primary);">🔄 Sync from Simple Time Tracker</h3>
-          <p id="stt-sync-subtitle" style="font-size: 0.65rem; color: var(--text-muted);">Select your <code>stt_automatic.backup</code> file to scan for new clients &amp; sessions</p>
+       <p id="stt-sync-subtitle" style="font-size: 0.65rem; color: var(--text-muted);">Select your STT backup file to scan for new entries.</p>
         </div>
         <button type="button" onclick="closeModal('modal-stt-sync')" class="btn btn-subtle" style="padding: 0.2rem 0.45rem;">✕</button>
       </div>
@@ -6126,7 +6126,7 @@ const startIn = document.getElementById('income-range-start');
    openModal('modal-client');
  }
 
- function handleSaveClientForm() {
+function handleSaveClientForm() {
    const idVal = document.getElementById('form-client-id').value;
    const name = document.getElementById('form-client-name').value.trim();
    if (!name) {
@@ -6140,52 +6140,51 @@ const startIn = document.getElementById('income-range-start');
    const pricingModel = document.getElementById('form-client-model').value;
    const quota = Number(document.getElementById('form-client-quota').value) || 4;
    const fee = Number(document.getElementById('form-client-fee').value) || 500;
-const sessionDuration = document.getElementById('form-client-duration').value || '1h';
- const status = document.getElementById('form-client-status').value || "active";
- const examLabel = (document.getElementById('form-client-exam-label')?.value || '').trim();
- const examDate = document.getElementById('form-client-exam-date')?.value || '';
+   const sessionDuration = document.getElementById('form-client-duration').value || '1h';
+   const status = document.getElementById('form-client-status').value || "active";
+   const examLabel = (document.getElementById('form-client-exam-label')?.value || '').trim();
+   const examDate = document.getElementById('form-client-exam-date')?.value || '';
+   const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
 
- const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
-pendingProfileUpdate = {
-  clientId: c.id,
-  name, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status, examLabel, examDate,
-  scheduledDays: [...selectedFormDays],
-  blockedDays: [...selectedBlockedDays]
-};
+   if (idVal) {
+     const c = appState.clients.find(x => String(x.id) === String(idVal));
+     if (c) {
+       const quotaChanged = Number(c.quota) !== quota;
+       const feeChanged = Number(c.fee) !== fee;
 
-   if (quotaChanged || feeChanged) {
-     closeModal('modal-client');
-     openModal('modal-profile-update-scope');
-     return;
-   }
+       if (quotaChanged || feeChanged) {
+         pendingProfileUpdate = {
+           clientId: c.id,
+           name, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status, examLabel, examDate,
+           scheduledDays: [...selectedFormDays],
+           blockedDays: [...selectedBlockedDays]
+         };
+         closeModal('modal-client');
+         openModal('modal-profile-update-scope');
+         return;
+       }
 
-   c.name = name;
-   c.grade = grade;
-   c.phone = phone;
-   c.pricingModel = pricingModel;
-   c.quota = quota;
-   c.fee = fee;
-   c.sessionDuration = sessionDuration;
-   c.status = status;
-   c.examLabel = examLabel;
-   c.examDate = examDate;
-   c.scheduledDays = [...selectedFormDays];
-   c.blockedDays = [...selectedBlockedDays];
-   showToast(`Updated profile for ${name}!`);
-const clientDefaultTime = getTimePickerValue('form-client-default-time') || '16:00';appState.clients.push({
-  id: generateId(),
-  name, grade, phone, status, pricingModel, quota, fee, sessionDuration, defaultTime, examLabel, examDate, advanceBalance: 0,
-  scheduledDays: [...selectedFormDays],
-  blockedDays: [...selectedBlockedDays],
-  months: [{ id: generateId(), monthNumber: 1, quota, feeAmount: fee, isCompleted: false, isPaid: false, installments: [], sessions: [] }]
-});
- showToast(`Client ${name} added successfully!`);
+       c.name = name;
+       c.grade = grade;
+       c.phone = phone;
+       c.pricingModel = pricingModel;
+       c.quota = quota;
+       c.fee = fee;
+       c.sessionDuration = sessionDuration;
+       c.status = status;
+       c.examLabel = examLabel;
+       c.examDate = examDate;
+       c.defaultTime = defaultTime;
+       c.scheduledDays = [...selectedFormDays];
+       c.blockedDays = [...selectedBlockedDays];
+       showToast(`Updated profile for ${name}!`); } } else { appState.clients.push({ id: generateId(), name, grade, phone, status, pricingModel, quota, fee, sessionDuration, defaultTime, examLabel, examDate, advanceBalance: 0, scheduledDays: [...selectedFormDays], blockedDays: [...selectedBlockedDays], months: [{ id: generateId(), monthNumber: 1, quota, feeAmount: fee, isCompleted: false, isPaid: false, installments: [], sessions: [] }] }); showToast(`Client ${name} added successfully!`);
    }
 
    closeModal('modal-client');
    saveState();
    renderAll();
  }
+ 
 
  function applyClientProfileUpdates(targetScope) {
    if (!pendingProfileUpdate) return;
@@ -8808,7 +8807,7 @@ function getFeatureToggle(key) {
 
     document.getElementById('form-exam-id').value = exam.id;
     document.getElementById('form-exam-term-name').value = exam.termName;
-    document.getElementById('form-exam-date').value = exam.examDate;
+   document.getElementById('form-exam-date').value = exam.examDate;
 
     const tbody = document.getElementById('exam-subjects-table-body');
     if (tbody) {

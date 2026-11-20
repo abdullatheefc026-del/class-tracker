@@ -7138,7 +7138,6 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
       const formattedTime = formatDisplayTimeBySetting(rawTime); const targetMonth = (client.months || []).find(m => m.monthNumber === monthNumber) || (client.months || [])[client.months.length - 1];
       const totalDue = (client.months || []).filter(m => !m.isPaid).reduce((sum, m) => sum + (m.calculatedDueFee || 0), 0);
       return {
-   return {
         student: client.name,
         time: formattedTime,
         date: formatDisplayDate(toLocalDateStr(), false),

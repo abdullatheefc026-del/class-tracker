@@ -1501,6 +1501,133 @@
       box-shadow: 0 0 0 2.5px var(--text-main), 0 4px 10px rgba(0, 0, 0, 0.25);
     }
 
+    .tt-bar-label {
+      display: block;
+      font-size: 0.56rem;
+      font-weight: 800;
+      line-height: 1.1;
+      padding: 2px 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .tt-projected-zone {
+      position: absolute;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, rgba(109, 40, 217, 0.12) 0%, rgba(109, 40, 217, 0.05) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tt-projected-zone.tt-projected-full-day {
+      top: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(109, 40, 217, 0.05),
+        rgba(109, 40, 217, 0.05) 6px,
+        rgba(109, 40, 217, 0.015) 6px,
+        rgba(109, 40, 217, 0.015) 12px
+      );
+    }
+
+    .tt-now-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+      background: linear-gradient(90deg, #ef4444 0%, #f97316 55%, #8b5cf6 100%);
+      z-index: 12;
+      pointer-events: none;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.45);
+    }
+
+    .tt-now-dot {
+      position: absolute;
+      left: -4px;
+      top: 50%;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ef4444;
+      border: 1.5px solid var(--bg-surface);
+      transform: translateY(-50%);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.28);
+    }
+
+    .tt-now-tag {
+      position: absolute;
+      right: 2px;
+      top: -14px;
+      font-size: 0.52rem;
+      font-weight: 800;
+      padding: 1px 4px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #ef4444 0%, #f97316 100%);
+      color: #ffffff;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .tt-now-axis-marker {
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      transform: translateY(-50%);
+      font-size: 0.52rem;
+      font-weight: 800;
+      text-align: center;
+      padding: 1px 2px;
+      border-radius: 4px;
+      background: #ef4444;
+      color: #ffffff;
+      z-index: 13;
+      pointer-events: none;
+    }
+
+    .tt-legend-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      padding: 0.3rem 0.45rem;
+      margin-bottom: 0.4rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .planner-slot-bar {
+      position: absolute;
+      border-radius: 5px;
+      padding: 2px 4px;
+      cursor: pointer;
+      overflow: hidden;
+      box-sizing: border-box;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .planner-slot-bar.selected {
+      z-index: 8;
+      transform: scale(1.02);
+      box-shadow: 0 0 0 2px var(--text-main), 0 4px 10px rgba(0, 0, 0, 0.22);
+    }
+
+    .planner-slot-bar.has-conflict {
+      box-shadow: inset 0 0 0 1.5px var(--warning);
+    }
+
     .tt-students-dropdown {
       display: none;
       flex-wrap: wrap;
@@ -1757,10 +1884,16 @@
               <span class="snav-label">Roster</span>
             </a>
           </li>
-          <li>
+<li>
             <a href="#timetable" data-view="timetable" onclick="navigateFromSidebar(event, 'timetable')" class="snav-item-link" title="Schedule">
               <span class="snav-icon" aria-hidden="true">🗓️</span>
               <span class="snav-label">Schedule</span>
+            </a>
+          </li>
+          <li>
+            <a href="#planner" data-view="planner" onclick="navigateFromSidebar(event, 'planner')" class="snav-item-link" title="Timetable">
+              <span class="snav-icon" aria-hidden="true">📋</span>
+              <span class="snav-label">Timetable</span>
             </a>
           </li>
           <li>
@@ -2520,7 +2653,7 @@
         <div id="wa-folders-grid"
           style="display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 0.45rem;"></div>
 
-        <!-- OPEN FOLDER CONTENTS -->
+<!-- OPEN FOLDER CONTENTS -->
         <div id="wa-saved-templates-list" style="display: none; flex-direction: column; gap: 0.4rem;"></div>
       </div>
     </section>
@@ -2537,22 +2670,38 @@
             </div>
             <div class="segmented-group">
               <button type="button" onclick="navigateTimetableWeek(-1)" class="btn btn-subtle"
-                style="font-size: 0.68rem; padding: 0.2rem 0.5rem;">&larr;</button>
+                style="font-size: 0.68rem; padding: 0.2rem 0.5rem;" title="Previous Week">&larr;</button>
               <button type="button" onclick="resetTimetableToCurrentWeek()" class="btn btn-primary"
-                style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">Today</button>
-              <button type="button" onclick="navigateTimetableWeek(1)" class="btn btn-subtle"
-                style="font-size: 0.68rem; padding: 0.2rem 0.5rem;">&rarr;</button>
+                style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">This Week</button>
+              <button type="button" id="btn-tt-next-week" onclick="navigateTimetableWeek(1)" class="btn btn-subtle"
+                style="font-size: 0.68rem; padding: 0.2rem 0.5rem; display: none;" title="Next Week">&rarr;</button>
             </div>
           </div>
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; width: 100%;">
             <button type="button" id="btn-tt-students-dropdown" onclick="toggleTimetableStudentsDropdown()"
               class="btn btn-subtle" style="width: 100%; font-size: 0.68rem; padding: 0.3rem 0.4rem;"
-              title="Active Students">👥 Students ▾</button>
-            <button type="button" onclick="copyPreviousWeekToCurrentTimetable()" class="btn btn-success"
-              style="width: 100%; font-size: 0.68rem; padding: 0.3rem 0.4rem;" title="Clone previous week slots">📋 Copy
-              Prev</button>
+              title="Week Students">👥 Students ▾</button>
+            <button type="button" onclick="showMainView('planner')" class="btn btn-subtle"
+              style="width: 100%; font-size: 0.68rem; padding: 0.3rem 0.4rem; color: var(--brand-primary);"
+              title="Open Timetable Setup">📋 Timetable</button>
             <button type="button" onclick="toggleTimetableOrientation()" class="btn btn-purple"
               style="width: 100%; font-size: 0.68rem; padding: 0.3rem 0.4rem;" title="Rotate Table">🔄 Rotate</button>
+          </div>
+        </div>
+        <div id="timetable-legend-bar" class="tt-legend-bar">
+          <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
+            <span style="display: inline-flex; align-items: center; gap: 4px;">
+              <span style="width: 9px; height: 9px; border-radius: 2px; background: var(--brand-primary); display: inline-block;"></span>
+              Recorded
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 4px;">
+              <span style="width: 9px; height: 9px; border-radius: 2px; background: rgba(109, 40, 217, 0.22); border: 1.5px dashed var(--purple); display: inline-block;"></span>
+              Last Week (Projected)
+            </span>
+            <span id="timetable-legend-now" style="display: inline-flex; align-items: center; gap: 4px; color: #ef4444;">
+              <span style="width: 12px; height: 2.5px; border-radius: 2px; background: linear-gradient(90deg, #ef4444, #f97316, #8b5cf6); display: inline-block;"></span>
+              Current Time
+            </span>
           </div>
         </div>
         <div id="timetable-students-dropdown" class="tt-students-dropdown"></div>
@@ -2561,6 +2710,58 @@
         </div>
         <div id="timetable-session-inspector"
           style="margin-top: 0.4rem; padding: 0.4rem 0.55rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: 6px; font-size: 0.7rem; display: none;">
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 9B: TIMETABLE SETUP (STUDENT PLANNER) -->
+    <section id="view-planner" style="display: none; flex-direction: column; gap: 0.5rem;">
+      <div id="planner-card-container" class="card" style="padding: 0.65rem;">
+        <div style="display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 0.5rem;">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
+            <div>
+              <h3 style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin: 0;">Timetable</h3>
+              <p id="planner-summary-label"
+                style="font-size: 0.66rem; font-weight: 600; color: var(--text-muted); margin: 0;">Weekly student slot planner</p>
+            </div>
+            <div class="segmented-group">
+              <button type="button" id="planner-view-grid-btn" onclick="setPlannerViewMode('grid')" class="btn btn-primary"
+                style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">Grid</button>
+              <button type="button" id="planner-view-list-btn" onclick="setPlannerViewMode('list')" class="btn btn-subtle"
+                style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">List</button>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; width: 100%;">
+            <button type="button" onclick="openPlannerSlotModal()" class="btn btn-primary"
+              style="width: 100%; font-size: 0.68rem; padding: 0.3rem 0.4rem;">+ Add Slot</button>
+            <button type="button" onclick="importStudentProfilesToPlanner()" class="btn btn-success"
+              style="width: 100%; font-size: 0.68rem; padding: 0.3rem 0.4rem;"
+              title="Auto-populate slots from active students' scheduled days & default time">✨ From Profiles</button>
+            <button type="button" onclick="togglePlannerOrientation()" class="btn btn-purple"
+              style="width: 100%; font-size: 0.68rem; padding: 0.3rem 0.4rem;" title="Rotate Table">🔄 Rotate</button>
+          </div>
+
+          <div style="display: flex; gap: 0.35rem; align-items: center;">
+            <select id="planner-student-filter" onchange="renderPlannerView()"
+              style="font-size: 0.72rem; min-height: 32px; padding: 0.25rem 0.5rem; flex: 1;">
+              <option value="all">All Students</option>
+            </select>
+            <button type="button" onclick="clearAllPlannerSlotsPrompt()" class="btn btn-danger"
+              style="font-size: 0.66rem; padding: 0.25rem 0.5rem; min-height: 32px;" title="Clear all planned slots">Clear</button>
+          </div>
+        </div>
+
+        <div id="planner-grid-wrapper" class="timetable-wrapper">
+          <div id="planner-timetable-grid"></div>
+        </div>
+
+        <div id="planner-list-view"
+          style="display: none; flex-direction: column; gap: 0.45rem; max-height: 62vh; overflow-y: auto;"></div>
+
+        <div id="planner-slot-inspector"
+          style="margin-top: 0.4rem; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: 6px; font-size: 0.7rem; display: none;">
         </div>
       </div>
     </section>
@@ -4215,7 +4416,7 @@
           <label style="font-weight: 700; color: var(--text-muted);">New Time:</label>
           <input type="time" id="tt-move-new-time" value="16:00">
         </div>
-        <div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
+<div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
           <button type="button" onclick="closeModal('modal-tt-move')" class="btn btn-subtle"
             style="flex: 1;">Cancel</button>
           <button type="button" onclick="executeTimetableReschedule()" class="btn btn-primary" style="flex: 1;">Confirm
@@ -4224,9 +4425,80 @@
       </div>
     </div>
   </div>
+
+  <!-- TIMETABLE SLOT SETUP MODAL -->
+  <div id="modal-planner-slot" class="modal-overlay" style="z-index: 120;">
+    <div class="modal-dialog">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <h3 id="planner-slot-modal-title" style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Add Timetable Slot</h3>
+        <button type="button" onclick="closeModal('modal-planner-slot')" class="btn btn-subtle"
+          style="padding: 0.2rem 0.4rem;">✕</button>
+      </div>
+      <input type="hidden" id="planner-slot-id">
+      <div style="display: flex; flex-direction: column; gap: 0.48rem;">
+        <div>
+          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Student *</label>
+          <select id="planner-slot-client" onchange="onPlannerModalClientChanged()"></select>
+          <div id="planner-slot-client-meta"
+            style="margin-top: 0.3rem; padding: 0.35rem 0.5rem; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.65rem; color: var(--text-muted); display: none;"></div>
+        </div>
+
+        <div>
+          <label id="planner-slot-days-label"
+            style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Day(s) *</label>
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="planner-slot-days-picker">
+            <button type="button" data-day="Mon" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">M</button>
+            <button type="button" data-day="Tue" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">T</button>
+            <button type="button" data-day="Wed" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">W</button>
+            <button type="button" data-day="Thu" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">T</button>
+            <button type="button" data-day="Fri" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">F</button>
+            <button type="button" data-day="Sat" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
+            <button type="button" data-day="Sun" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
+          </div>
+          <p id="planner-slot-blocked-warn"
+            style="display: none; margin-top: 0.2rem; font-size: 0.62rem; font-weight: 700; color: var(--danger);"></p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+          <div>
+            <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Start Time *</label>
+            <button type="button" id="planner-slot-time" data-time24="16:00"
+              onclick="openCircularClockPicker('planner-slot-time')"
+              class="clock-trigger-btn app-time-picker" style="min-height: 36px;">16:00</button>
+          </div>
+          <div>
+            <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Duration</label>
+            <select id="planner-slot-duration">
+              <option value="0.5h">0.5h (30 min)</option>
+              <option value="1h" selected>1h (60 min)</option>
+              <option value="1.5h">1.5h (90 min)</option>
+              <option value="2h">2h (120 min)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Subject / Grade Label</label>
+          <input type="text" id="planner-slot-subject" placeholder="e.g. Grade 9 Math">
+        </div>
+
+        <div>
+          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Notes (Room / Link / Focus)</label>
+          <input type="text" id="planner-slot-notes" placeholder="e.g. Online Zoom / Exam Prep">
+        </div>
+
+        <div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
+          <button type="button" onclick="closeModal('modal-planner-slot')" class="btn btn-subtle" style="flex: 1;">Cancel</button>
+          <button type="button" id="btn-delete-planner-slot" onclick="deletePlannerSlot(document.getElementById('planner-slot-id').value)"
+            class="btn btn-danger" style="display: none; padding: 0.45rem 0.6rem;">Delete</button>
+          <button type="button" onclick="savePlannerSlot()" class="btn btn-primary" style="flex: 1;">Save Slot</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!-- SCRIPT LOGIC -->
   <script>
-    const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
+      const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
     const ACTIVE_PROFILE_KEY = 'month_tracker_v12_active_profile_id';
     const THEME_KEY = 'month_tracker_v12_theme';
     const DAILY_BACKUP_ENABLED_KEY = 'month_tracker_v12_daily_backup_enabled';
@@ -5069,13 +5341,14 @@ function confirmFactoryReset() {
             ]
           }
         ];
-        saveState();
+saveState();
       }
+
+      if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
 
       runDailyAutoBackupCheck();
       processAdvanceBalances();
     }
-
     let hasUnsavedChangesSinceBackup = false;
 
     function saveState() {
@@ -5145,12 +5418,14 @@ function confirmFactoryReset() {
       });
     }
 
-    window.showMainView = function (viewName, saveHistory = true) {
+window.showMainView = function (viewName, saveHistory = true) {
       if (viewName !== 'timetable' && typeof isScheduleRotated !== 'undefined' && isScheduleRotated) {
         toggleTimetableOrientation();
       }
-      ['home', 'timetable', 'calendar', 'client-detail', 'clients', 'matrix', 'payments', 'balances', 'ledger', 'templates', 'settings', 'notifications', 'marks'].forEach(v => {
-        const el = document.getElementById(`view-${v}`);
+      if (viewName !== 'planner' && typeof isPlannerRotated !== 'undefined' && isPlannerRotated) {
+        togglePlannerOrientation();
+      }
+      ['home', 'timetable', 'planner', 'calendar', 'client-detail', 'clients', 'matrix', 'payments', 'balances', 'ledger', 'templates', 'settings', 'notifications', 'marks'].forEach(v => {        const el = document.getElementById(`view-${v}`);
         if (el) el.style.display = (v === viewName) ? 'flex' : 'none';
       });
       ['home', 'timetable', 'clients', 'payments'].forEach(v => {
@@ -5168,12 +5443,15 @@ function confirmFactoryReset() {
       if (viewName === 'home') {
         if (hLabel) hLabel.textContent = 'Roster';
         renderRosterPage();
-      } else if (viewName === 'timetable') {
+} else if (viewName === 'timetable') {
         if (hLabel) hLabel.textContent = 'Schedule';
         timetableWeekOffset = 0;
         renderWeeklyTimetable();
+      } else if (viewName === 'planner') {
+        if (hLabel) hLabel.textContent = 'Timetable';
+        renderPlannerView();
       } else if (viewName === 'calendar') {
-        if (hLabel) hLabel.textContent = 'Calendar';
+                if (hLabel) hLabel.textContent = 'Calendar';
         renderCalendarView();
       } else if (viewName === 'clients') {
         if (hLabel) hLabel.textContent = 'Clients';
@@ -5529,10 +5807,11 @@ function showMainView(v, s) {return window.showMainView(v, s);}
         try {
           const parsed = JSON.parse(ev.target.result);
           const restored = parsed.data ? parsed.data : parsed;
-          if (restored && Array.isArray(restored.clients)) {
+if (restored && Array.isArray(restored.clients)) {
            appState = restored;
+            if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
             appState.clients.forEach(c => {
-              if (!c.status) c.status = 'active';
+                            if (!c.status) c.status = 'active';
             });
             ensureUniqueClientColors(appState.clients);
             if (parsed.extras) {
@@ -8296,10 +8575,12 @@ if (document.getElementById('form-client-tag')) document.getElementById('form-cl
     function confirmDeleteClient(clientId) {
       const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
-      requestConfirmation(`Permanently delete client "${client.name}" and all their records?`, () => {
+requestConfirmation(`Permanently delete client "${client.name}" and all their records?`, () => {
         appState.clients = appState.clients.filter(c => String(c.id) !== String(clientId));
-        if (String(appState.selectedClientId) === String(clientId)) {
-          appState.selectedClientId = null;
+        if (Array.isArray(appState.timetableSlots)) {
+          appState.timetableSlots = appState.timetableSlots.filter(s => String(s.clientId) !== String(clientId));
+        }
+        if (String(appState.selectedClientId) === String(clientId)) {          appState.selectedClientId = null;
         }
         closeModal('modal-client');
         saveState();
@@ -9178,8 +9459,8 @@ let startY = showDetails ? 165 : 150;
         }
       }
     }
-    function navigateTimetableWeek(delta) {
-      timetableWeekOffset += delta;
+function navigateTimetableWeek(delta) {
+      timetableWeekOffset = Math.min(0, timetableWeekOffset + delta);
       renderWeeklyTimetable();
     }
 
@@ -9187,7 +9468,6 @@ let startY = showDetails ? 165 : 150;
       timetableWeekOffset = 0;
       renderWeeklyTimetable();
     }
-
     function copyPreviousWeekToCurrentTimetable() {
       const today = new Date();
       const dayOfWeek = today.getDay();
@@ -9427,19 +9707,21 @@ function setClientModalColorPreview(hexColor) {
       if (btn) btn.textContent = shouldOpen ? '👥 Students ▴' : '👥 Students ▾';
     }
 
+let timetableWeekClientIds = new Set();
+
     function renderTimetableStudentsDropdown() {
       const dd = document.getElementById('timetable-students-dropdown');
       if (!dd) return;
-      const activeClients = appState.clients
-        .filter(c => (c.status || 'active') !== 'archived')
+      const weekClients = appState.clients
+        .filter(c => timetableWeekClientIds.has(String(c.id)))
         .sort((a, b) => a.name.localeCompare(b.name));
 
-      if (activeClients.length === 0) {
-        dd.innerHTML = `<span style="font-size:0.65rem; color:var(--text-muted);">No active students.</span>`;
+      if (weekClients.length === 0) {
+        dd.innerHTML = `<span style="font-size:0.65rem; color:var(--text-muted);">No students in this week's schedule.</span>`;
         return;
       }
 
-      dd.innerHTML = activeClients.map(c => {
+      dd.innerHTML = weekClients.map(c => {
         const col = getClientColor(c);
         const isActive = activeTimetableClientId !== null && String(activeTimetableClientId) === String(c.id);
         return `
@@ -9450,7 +9732,6 @@ function setClientModalColorPreview(hexColor) {
         `;
       }).join('');
     }
-
     function applyTimetableReactiveHighlight() {
       const bars = document.querySelectorAll('#weekly-timetable-grid .tt-event-bar');
       bars.forEach(bar => {
@@ -9488,7 +9769,7 @@ function setClientModalColorPreview(hexColor) {
       applyTimetableReactiveHighlight();
     }
 
-    function selectTimetableEvent(eventKey) {
+function selectTimetableEvent(eventKey) {
       const ev = timetableEventsMap[eventKey];
       if (!ev) return;
 
@@ -9508,17 +9789,17 @@ function setClientModalColorPreview(hexColor) {
       const startDisp = formatDisplayTimeBySetting(ev.start24);
       const endDisp = formatDisplayTimeBySetting(ev.end24);
       const statusBadge = ev.projected
-        ? `<span style="font-size:0.6rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--purple-surface); color:var(--purple); border:1px solid var(--purple);">Scheduled</span>`
-        : `<span style="font-size:0.6rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--success-surface); color:var(--success); border:1px solid var(--success);">Logged • M${ev.monthNumber}</span>`;
+        ? `<span style="font-size:0.6rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--purple-surface); color:var(--purple); border:1px solid var(--purple);">Projected (Last Week${ev.projectedFromDate ? ': ' + formatDisplayDate(ev.projectedFromDate, false) : ''})</span>`
+        : `<span style="font-size:0.6rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--success-surface); color:var(--success); border:1px solid var(--success);">Recorded • M${ev.monthNumber}</span>`;
 
-const actionBtn = ev.projected
+      const actionBtn = ev.projected
         ? `<button type="button" onclick="executeScheduledTodayAdd('${ev.client.id}', '${ev.dateStr}', '${ev.start24} (${ev.durCode})'); clearTimetableSelection();" class="btn btn-success" style="font-size:0.62rem; padding:0.18rem 0.45rem;">+ Log</button>`
         : `<button type="button" onclick="if(isScheduleRotated) toggleTimetableOrientation(); openLogClassModal('${ev.client.id}', '${ev.monthId}', '${ev.sessionId}');" class="btn btn-subtle" style="font-size:0.62rem; padding:0.18rem 0.45rem;">Edit</button>`;
       inspector.style.display = 'block';
       inspector.style.borderLeft = `4px solid ${col}`;
       inspector.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; gap:0.4rem; flex-wrap:wrap;">
-          <div style="display:flex; align-items:center; gap:0.35rem; min-width:0; flex:1;">
+          <div style="display:flex; align-items:center; gap:0.35rem; min-width:0; flex:1; flex-wrap:wrap;">
             <span style="width:10px; height:10px; border-radius:50%; background:${col}; flex-shrink:0;"></span>
             <strong style="font-size:0.74rem;">${ev.client.name}</strong>
             ${statusBadge}
@@ -9550,16 +9831,26 @@ const actionBtn = ev.projected
       const labelEl = document.getElementById('timetable-week-label');
       if (!grid) return;
 
+      // Never allow navigating into future weeks
+      if (timetableWeekOffset > 0) timetableWeekOffset = 0;
+
+      const nextBtn = document.getElementById('btn-tt-next-week');
+      if (nextBtn) nextBtn.style.display = timetableWeekOffset < 0 ? 'inline-flex' : 'none';
+
+      const legendNow = document.getElementById('timetable-legend-now');
+      if (legendNow) legendNow.style.display = timetableWeekOffset === 0 ? 'inline-flex' : 'none';
+
       // Ensure every client has an assigned persistent color
       appState.clients.forEach(c => getClientColor(c));
 
-const today = new Date();
-      const todayStr = toLocalDateStr(today);
-      const dayOfWeek = today.getDay();
+      const now = new Date();
+      const todayStr = toLocalDateStr(now);
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+      const dayOfWeek = now.getDay();
       const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
-      const weekStart = new Date(today);
-      weekStart.setDate(today.getDate() + diffToMonday + (timetableWeekOffset * 7));
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() + diffToMonday + (timetableWeekOffset * 7));
 
       const weekDays = [];
       const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -9573,12 +9864,13 @@ const today = new Date();
         });
       }
       if (labelEl) {
-        const tag = timetableWeekOffset === 0 ? 'Current' : (timetableWeekOffset < 0 ? `${Math.abs(timetableWeekOffset)}w ago` : `+${timetableWeekOffset}w`);
+        const tag = timetableWeekOffset === 0 ? 'This Week' : `${Math.abs(timetableWeekOffset)}w ago`;
         labelEl.textContent = `${weekDays[0].dayName} ${weekDays[0].displayDate} – ${weekDays[6].dayName} ${weekDays[6].displayDate} (${tag})`;
       }
 
-      // Collect all logged and projected events for the 7 days
+      // Collect actual recorded sessions for the week + last week's sessions for remaining time/days of current week
       timetableEventsMap = {};
+      timetableWeekClientIds = new Set();
       const dayEventsByDate = {};
       let minStartMins = Infinity;
       let maxEndMins = -Infinity;
@@ -9587,6 +9879,7 @@ const today = new Date();
       weekDays.forEach(wd => {
         const list = [];
 
+        // 1. Actual sessions recorded for this day in the selected week
         appState.clients.forEach(c => {
           (c.months || []).forEach(m => {
             (m.sessions || []).forEach(s => {
@@ -9607,6 +9900,7 @@ const today = new Date();
                 };
                 list.push(evObj);
                 timetableEventsMap[eventKey] = evObj;
+                timetableWeekClientIds.add(String(c.id));
                 if (range.startMins < minStartMins) minStartMins = range.startMins;
                 if (range.endMins > maxEndMins) maxEndMins = range.endMins;
               }
@@ -9614,13 +9908,30 @@ const today = new Date();
           });
         });
 
-        if (wd.dateStr >= todayStr) {
+        // 2. For current week only: fill remaining time of today (>= nowMins) & remaining days (> todayStr) with last week's actual sessions
+        if (timetableWeekOffset === 0 && wd.dateStr >= todayStr) {
+          const prevDateObj = parseLocalDate(wd.dateStr);
+          prevDateObj.setDate(prevDateObj.getDate() - 7);
+          const prevDateStr = toLocalDateStr(prevDateObj);
+
           appState.clients.filter(c => (c.status || 'active') !== 'archived').forEach(c => {
-            if ((c.scheduledDays || []).includes(wd.dayName)) {
-              if (!list.some(e => e.client.id === c.id)) {
-                const lastT = formatTo24Hour(getLastStudentClassTime(c));
-                const dur = c.sessionDuration || '1h';
-                const range = parseSessionTimeRange(`${lastT} (${dur})`, dur);
+            (c.months || []).forEach(m => {
+              (m.sessions || []).forEach(s => {
+                if (s.date !== prevDateStr) return;
+                const range = parseSessionTimeRange(s.time, c.sessionDuration || '1h');
+
+                // On today, only project sessions for the remaining time of the day
+                if (wd.dateStr === todayStr && range.startMins < nowMins) return;
+
+                // Skip if this student already has an actual session logged in an overlapping slot today/that day
+                const alreadyLoggedSameSlot = list.some(e =>
+                  !e.projected &&
+                  e.client.id === c.id &&
+                  e.startMins < range.endMins &&
+                  e.endMins > range.startMins
+                );
+                if (alreadyLoggedSameSlot) return;
+
                 const eventKey = `ev_proj_${evCounter++}`;
                 const evObj = {
                   eventKey,
@@ -9628,35 +9939,49 @@ const today = new Date();
                   dateStr: wd.dateStr,
                   dayName: wd.dayName,
                   projected: true,
-                  notes: '',
+                  projectedFromDate: prevDateStr,
+                  notes: s.notes || '',
                   ...range
                 };
                 list.push(evObj);
                 timetableEventsMap[eventKey] = evObj;
+                timetableWeekClientIds.add(String(c.id));
                 if (range.startMins < minStartMins) minStartMins = range.startMins;
                 if (range.endMins > maxEndMins) maxEndMins = range.endMins;
-              }
-            }
+              });
+            });
           });
         }
 
         dayEventsByDate[wd.dateStr] = layoutDayOverlappingEvents(list);
       });
 
-      // Compute visible hour span
-      let startHour = 15;
+      // Compute visible hour span strictly from this week's actual & remaining projected sessions (+ current time on current week)
+      let startHour = 14;
       let endHour = 20;
       if (minStartMins !== Infinity && maxEndMins !== -Infinity) {
         startHour = Math.max(0, Math.floor(minStartMins / 60));
         endHour = Math.min(24, Math.ceil(maxEndMins / 60));
         if (endHour <= startHour) endHour = Math.min(24, startHour + 1);
       }
+      if (timetableWeekOffset === 0) {
+        const nowHr = Math.floor(nowMins / 60);
+        if (minStartMins === Infinity) {
+          startHour = Math.max(0, nowHr - 2);
+          endHour = Math.min(24, nowHr + 4);
+        } else {
+          if (nowHr < startHour) startHour = nowHr;
+          if (nowHr >= endHour) endHour = Math.min(24, nowHr + 1);
+        }
+      }
 
       const PX_PER_HOUR = 44;
       const pxPerMin = PX_PER_HOUR / 60;
-      const totalHours = endHour - startHour;
+      const totalHours = Math.max(1, endHour - startHour);
       const trackHeight = totalHours * PX_PER_HOUR;
       const gridStartMins = startHour * 60;
+      const nowTopPx = (nowMins - gridStartMins) * pxPerMin;
+      const showNowLine = timetableWeekOffset === 0 && nowTopPx >= 0 && nowTopPx <= trackHeight;
 
       grid.className = 'timetable-grid-landscape';
       grid.style.gridTemplateColumns = '';
@@ -9669,29 +9994,44 @@ const today = new Date();
       });
 
       // Sticky time axis column
-      html += `<div class="timetable-time-axis" style="height:${trackHeight}px;">`;
+      html += `<div class="timetable-time-axis" style="height:${trackHeight}px; position:sticky;">`;
       for (let h = startHour; h < endHour; h++) {
         const lbl = formatDisplayTimeBySetting(`${String(h).padStart(2, '0')}:00`);
         html += `<div class="timetable-axis-tick num-tabular">${lbl}</div>`;
       }
+      if (showNowLine) {
+        html += `<div class="tt-now-axis-marker num-tabular" style="top:${nowTopPx}px;">${formatDisplayTimeBySetting(minsToTimeStr(nowMins))}</div>`;
+      }
       html += `</div>`;
 
-      // 7 proportional day columns with squeezed color-only session bars
+      // 7 proportional day columns with actual vs projected-from-last-week visual separation
       weekDays.forEach(wd => {
         const laidOut = dayEventsByDate[wd.dateStr] || [];
         html += `<div class="timetable-day-track" style="height:${trackHeight}px;">`;
+
+        // Projected zone gradient + current time colored gradient line on current week
+        if (timetableWeekOffset === 0) {
+          if (wd.dateStr === todayStr && showNowLine) {
+            html += `<div class="tt-projected-zone" style="top:${nowTopPx}px; bottom:0;"></div>`;
+            html += `<div class="tt-now-line" style="top:${nowTopPx}px;"><span class="tt-now-dot"></span><span class="tt-now-tag num-tabular">NOW</span></div>`;
+          } else if (wd.dateStr > todayStr) {
+            html += `<div class="tt-projected-zone tt-projected-full-day"></div>`;
+          }
+        }
+
         laidOut.forEach(ev => {
           const col = getClientColor(ev.client);
           const topPx = Math.max(0, (ev.startMins - gridStartMins) * pxPerMin);
-          const heightPx = Math.max(12, (ev.endMins - ev.startMins) * pxPerMin);
+          const heightPx = Math.max(14, (ev.endMins - ev.startMins) * pxPerMin);
           const widthPct = 100 / ev.totalCols;
           const leftPct = ev.colIdx * widthPct;
+          const shortName = (ev.client.name || '').split(' ')[0];
 
           const barStyle = ev.projected
-            ? `top:${topPx}px; height:${heightPx}px; left:calc(${leftPct}% + 1px); width:calc(${widthPct}% - 2px); background:${col}44; border:2px dashed ${col};`
-            : `top:${topPx}px; height:${heightPx}px; left:calc(${leftPct}% + 1px); width:calc(${widthPct}% - 2px); background:${col}; border:1px solid rgba(255,255,255,0.35);`;
+            ? `top:${topPx}px; height:${heightPx}px; left:calc(${leftPct}% + 1px); width:calc(${widthPct}% - 2px); background:${col}28; border:1.5px dashed ${col}; color:${col};`
+            : `top:${topPx}px; height:${heightPx}px; left:calc(${leftPct}% + 1px); width:calc(${widthPct}% - 2px); background:${col}; border:1px solid rgba(255,255,255,0.35); color:#ffffff;`;
 
-          html += `<div class="tt-event-bar" data-client-id="${ev.client.id}" data-event-key="${ev.eventKey}" onclick="selectTimetableEvent('${ev.eventKey}')" style="${barStyle}" title="${ev.client.name} (${ev.start24}–${ev.end24})"></div>`;
+          html += `<div class="tt-event-bar" data-client-id="${ev.client.id}" data-event-key="${ev.eventKey}" onclick="selectTimetableEvent('${ev.eventKey}')" style="${barStyle}" title="${ev.client.name} (${ev.start24}–${ev.end24})"><span class="tt-bar-label">${escapeHtmlAttr(shortName)}</span></div>`;
         });
         html += `</div>`;
       });
@@ -9700,10 +10040,521 @@ const today = new Date();
       renderTimetableStudentsDropdown();
       applyTimetableReactiveHighlight();
     }
+
+    /* ==========================================================================
+       TIMETABLE SETUP (STUDENT PLANNER — INDEPENDENT OF LOGGED SESSION DATA)
+       ========================================================================== */
+    let plannerViewMode = 'grid';
+    let isPlannerRotated = false;
+    let activePlannerSlotId = null;
+    let plannerSelectedDays = [];
+
+    function togglePlannerOrientation() {
+      isPlannerRotated = !isPlannerRotated;
+      const card = document.getElementById('planner-card-container');
+      if (card) {
+        if (isPlannerRotated) {
+          card.classList.add('timetable-rotated-fullscreen');
+          showToast("Rotated 90° for full timetable view");
+        } else {
+          card.classList.remove('timetable-rotated-fullscreen');
+          showToast("Returned to normal view");
+        }
+      }
+    }
+
+    function setPlannerViewMode(mode) {
+      plannerViewMode = mode === 'list' ? 'list' : 'grid';
+      const gBtn = document.getElementById('planner-view-grid-btn');
+      const lBtn = document.getElementById('planner-view-list-btn');
+      const gWrap = document.getElementById('planner-grid-wrapper');
+      const lWrap = document.getElementById('planner-list-view');
+      if (gBtn) gBtn.className = plannerViewMode === 'grid' ? 'btn btn-primary' : 'btn btn-subtle';
+      if (lBtn) lBtn.className = plannerViewMode === 'list' ? 'btn btn-primary' : 'btn btn-subtle';
+      if (gWrap) gWrap.style.display = plannerViewMode === 'grid' ? 'block' : 'none';
+      if (lWrap) lWrap.style.display = plannerViewMode === 'list' ? 'flex' : 'none';
+      renderPlannerView();
+    }
+
+    function getPlannerSlots() {
+      if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
+      return appState.timetableSlots;
+    }
+
+    function renderPlannerView() {
+      const grid = document.getElementById('planner-timetable-grid');
+      const listView = document.getElementById('planner-list-view');
+      const summaryEl = document.getElementById('planner-summary-label');
+      const filterSel = document.getElementById('planner-student-filter');
+      if (!grid || !listView) return;
+
+      const slots = getPlannerSlots();
+      const activeClients = appState.clients.filter(c => (c.status || 'active') !== 'archived');
+
+      if (filterSel) {
+        const prev = filterSel.value || 'all';
+        const sorted = [...appState.clients].sort((a, b) => a.name.localeCompare(b.name));
+        filterSel.innerHTML = `<option value="all">All Students</option>` + sorted.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        filterSel.value = sorted.some(c => String(c.id) === String(prev)) ? prev : 'all';
+      }
+
+      const selectedClientId = filterSel?.value || 'all';
+      const visibleSlots = slots
+        .map(sl => {
+          const client = appState.clients.find(c => String(c.id) === String(sl.clientId));
+          if (!client) return null;
+          if (selectedClientId !== 'all' && String(client.id) !== String(selectedClientId)) return null;
+          const start24 = formatTo24Hour(sl.startTime || client.defaultTime || '16:00');
+          const startMins = parseTimeToMins(start24);
+          const durCode = sl.duration || client.sessionDuration || '1h';
+          const durMins = DURATION_TO_MINUTES[durCode] || 60;
+          const endMins = Math.min(1440, startMins + durMins);
+          return {
+            ...sl,
+            client,
+            start24,
+            end24: minsToTimeStr(endMins),
+            startMins,
+            endMins,
+            durCode,
+            durMins,
+            subjectLabel: sl.subject || client.grade || client.studentTag || ''
+          };
+        })
+        .filter(Boolean);
+
+      const totalMins = visibleSlots.reduce((acc, s) => acc + s.durMins, 0);
+      const uniqueStudents = new Set(visibleSlots.map(s => String(s.client.id))).size;
+      if (summaryEl) {
+        summaryEl.textContent = `${visibleSlots.length} slot(s) • ${(totalMins / 60).toFixed(1)} hrs/wk • ${uniqueStudents} student(s)`;
+      }
+
+      const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const slotsByDay = {};
+      let minStartMins = Infinity;
+      let maxEndMins = -Infinity;
+
+      dayNames.forEach(day => {
+        const dayList = visibleSlots.filter(s => s.day === day);
+        dayList.forEach(s => {
+          if (s.startMins < minStartMins) minStartMins = s.startMins;
+          if (s.endMins > maxEndMins) maxEndMins = s.endMins;
+        });
+        slotsByDay[day] = layoutDayOverlappingEvents(dayList);
+      });
+
+      // 1. Render Proportional Grid View
+      let startHour = 14;
+      let endHour = 20;
+      if (minStartMins !== Infinity && maxEndMins !== -Infinity) {
+        startHour = Math.max(0, Math.floor(minStartMins / 60));
+        endHour = Math.min(24, Math.ceil(maxEndMins / 60));
+        if (endHour <= startHour) endHour = Math.min(24, startHour + 1);
+      }
+
+      const PX_PER_HOUR = 48;
+      const pxPerMin = PX_PER_HOUR / 60;
+      const trackHeight = Math.max(1, endHour - startHour) * PX_PER_HOUR;
+      const gridStartMins = startHour * 60;
+
+      grid.className = 'timetable-grid-landscape';
+      let gHtml = `<div class="timetable-th timetable-sticky-col">Time</div>`;
+      dayNames.forEach(day => {
+        const count = (slotsByDay[day] || []).length;
+        gHtml += `<div class="timetable-th" onclick="openPlannerSlotModal(null, '${day}')" style="cursor:pointer;" title="Tap to add slot on ${day}">${day}<br><span style="font-size:0.54rem; opacity:0.85;">${count > 0 ? count + ' cls' : '+'}</span></div>`;
+      });
+
+      gHtml += `<div class="timetable-time-axis" style="height:${trackHeight}px;">`;
+      for (let h = startHour; h < endHour; h++) {
+        const lbl = formatDisplayTimeBySetting(`${String(h).padStart(2, '0')}:00`);
+        gHtml += `<div class="timetable-axis-tick num-tabular" style="height:${PX_PER_HOUR}px;">${lbl}</div>`;
+      }
+      gHtml += `</div>`;
+
+      dayNames.forEach(day => {
+        const daySlots = slotsByDay[day] || [];
+        gHtml += `<div class="timetable-day-track" style="height:${trackHeight}px; background-image:repeating-linear-gradient(to bottom, transparent 0px, transparent ${PX_PER_HOUR - 1}px, var(--border-color) ${PX_PER_HOUR - 1}px, var(--border-color) ${PX_PER_HOUR}px);">`;
+        daySlots.forEach(sl => {
+          const col = getClientColor(sl.client);
+          const topPx = Math.max(0, (sl.startMins - gridStartMins) * pxPerMin);
+          const heightPx = Math.max(22, (sl.endMins - sl.startMins) * pxPerMin);
+          const widthPct = 100 / sl.totalCols;
+          const leftPct = sl.colIdx * widthPct;
+          const isSelected = String(activePlannerSlotId) === String(sl.id);
+          const hasConflict = sl.totalCols > 1;
+
+          gHtml += `
+            <div class="planner-slot-bar ${isSelected ? 'selected' : ''} ${hasConflict ? 'has-conflict' : ''}"
+              onclick="selectPlannerSlot('${sl.id}')"
+              style="top:${topPx}px; height:${heightPx}px; left:calc(${leftPct}% + 1px); width:calc(${widthPct}% - 2px); background:${col}1f; border-left:3px solid ${col}; border-top:1px solid ${col}44; border-right:1px solid ${col}44; border-bottom:1px solid ${col}44; color:var(--text-main);"
+              title="${escapeHtmlAttr(sl.client.name)} (${sl.start24}–${sl.end24})">
+              <span style="font-size:0.58rem; font-weight:800; color:${col}; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtmlAttr(sl.client.name)}</span>
+              ${heightPx >= 32 && sl.subjectLabel ? `<span style="font-size:0.52rem; color:var(--text-muted); line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtmlAttr(sl.subjectLabel)}</span>` : ''}
+              ${heightPx >= 44 ? `<span class="num-tabular" style="font-size:0.5rem; color:var(--text-soft); line-height:1.1;">${formatDisplayTimeBySetting(sl.start24)}</span>` : ''}
+            </div>
+          `;
+        });
+        gHtml += `</div>`;
+      });
+
+      grid.innerHTML = gHtml;
+
+      // 2. Render Day-by-Day List View (Full Student Info)
+      if (visibleSlots.length === 0) {
+        listView.innerHTML = `
+          <div style="text-align:center; padding:1.5rem 0.75rem; font-size:0.74rem; color:var(--text-muted); border:1.5px dashed var(--border-color); border-radius:var(--radius-sm);">
+            No timetable slots configured yet.<br>Tap <strong>+ Add Slot</strong> or <strong>✨ From Profiles</strong> above to build your weekly student timetable.
+          </div>
+        `;
+      } else {
+        listView.innerHTML = dayNames.map(day => {
+          const daySlots = (slotsByDay[day] || []).sort((a, b) => a.startMins - b.startMins);
+          return `
+            <div style="background:var(--bg-subtle); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.5rem 0.6rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:${daySlots.length ? '0.4rem' : '0'};">
+                <strong style="font-size:0.74rem; color:var(--brand-primary);">${day} <span style="color:var(--text-muted); font-weight:600;">(${daySlots.length})</span></strong>
+                <button type="button" onclick="openPlannerSlotModal(null, '${day}')" class="btn btn-subtle" style="font-size:0.62rem; padding:0.15rem 0.45rem; min-height:24px;">+ Add</button>
+              </div>
+              ${daySlots.length === 0
+                ? `<span style="font-size:0.66rem; color:var(--text-soft);">No students scheduled</span>`
+                : `<div style="display:flex; flex-direction:column; gap:0.35rem;">
+                    ${daySlots.map(sl => {
+                      const col = getClientColor(sl.client);
+                      const isBlocked = Array.isArray(sl.client.blockedDays) && sl.client.blockedDays.includes(day);
+                      return `
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.4rem; padding:0.4rem 0.55rem; background:var(--bg-surface); border:1px solid var(--border-color); border-left:4px solid ${col}; border-radius:6px;">
+                          <div style="min-width:0; flex:1;" onclick="selectPlannerSlot('${sl.id}')">
+                            <div style="display:flex; align-items:center; gap:0.3rem; flex-wrap:wrap;">
+                              <strong style="font-size:0.75rem;">${escapeHtmlAttr(sl.client.name)}</strong>
+                              ${sl.client.studentTag ? `<span style="font-size:0.56rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--purple-surface); color:var(--purple);">${escapeHtmlAttr(sl.client.studentTag)}</span>` : ''}
+                              ${sl.totalCols > 1 ? `<span style="font-size:0.56rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--warning-surface); color:var(--warning);">Overlap</span>` : ''}
+                              ${isBlocked ? `<span style="font-size:0.56rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--danger-surface); color:var(--danger);">Unavailable Day</span>` : ''}
+                            </div>
+                            <div style="font-size:0.64rem; color:var(--text-muted); margin-top:2px;">
+                              <span class="num-tabular" style="font-weight:700; color:var(--text-main);">${formatDisplayTimeBySetting(sl.start24)} – ${formatDisplayTimeBySetting(sl.end24)} (${sl.durCode})</span>
+                              ${sl.subjectLabel ? ` • ${escapeHtmlAttr(sl.subjectLabel)}` : ''}
+                              ${sl.client.phone ? ` • ${escapeHtmlAttr(sl.client.phone)}` : ''}
+                            </div>
+                            ${sl.notes ? `<div style="font-size:0.62rem; color:var(--text-soft); margin-top:1px;">📝 ${escapeHtmlAttr(sl.notes)}</div>` : ''}
+                          </div>
+                          <div style="display:flex; gap:0.25rem; flex-shrink:0;">
+                            <button type="button" onclick="openPlannerSlotModal('${sl.id}')" class="btn btn-subtle" style="font-size:0.62rem; padding:0.18rem 0.4rem;">Edit</button>
+                            <button type="button" onclick="deletePlannerSlot('${sl.id}')" class="btn btn-subtle" style="font-size:0.62rem; padding:0.18rem 0.35rem; color:var(--danger);">✕</button>
+                          </div>
+                        </div>
+                      `;
+                    }).join('')}
+                  </div>`
+              }
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function selectPlannerSlot(slotId) {
+      const inspector = document.getElementById('planner-slot-inspector');
+      if (String(activePlannerSlotId) === String(slotId)) {
+        activePlannerSlotId = null;
+        if (inspector) inspector.style.display = 'none';
+        renderPlannerView();
+        return;
+      }
+
+      const sl = getPlannerSlots().find(x => String(x.id) === String(slotId));
+      if (!sl) return;
+      const client = appState.clients.find(c => String(c.id) === String(sl.clientId));
+      if (!client) return;
+
+      activePlannerSlotId = sl.id;
+      renderPlannerView();
+
+      if (!inspector) return;
+      const col = getClientColor(client);
+      const start24 = formatTo24Hour(sl.startTime || '16:00');
+      const durCode = sl.duration || client.sessionDuration || '1h';
+      const end24 = minsToTimeStr(parseTimeToMins(start24) + (DURATION_TO_MINUTES[durCode] || 60));
+
+      inspector.style.display = 'block';
+      inspector.style.borderLeft = `4px solid ${col}`;
+      inspector.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.4rem; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:0.35rem; min-width:0; flex:1; flex-wrap:wrap;">
+            <span style="width:10px; height:10px; border-radius:50%; background:${col}; flex-shrink:0;"></span>
+            <strong style="font-size:0.76rem;">${escapeHtmlAttr(client.name)}</strong>
+            ${sl.subject || client.grade ? `<span style="font-size:0.62rem; padding:1px 6px; border-radius:9999px; background:var(--brand-surface); color:var(--brand-primary); font-weight:700;">${escapeHtmlAttr(sl.subject || client.grade)}</span>` : ''}
+            ${client.studentTag ? `<span style="font-size:0.6rem; padding:1px 6px; border-radius:9999px; background:var(--purple-surface); color:var(--purple); font-weight:700;">${escapeHtmlAttr(client.studentTag)}</span>` : ''}
+          </div>
+          <div style="display:flex; align-items:center; gap:0.25rem; flex-shrink:0;">
+            <button type="button" onclick="if(isPlannerRotated) togglePlannerOrientation(); openPlannerSlotModal('${sl.id}');" class="btn btn-subtle" style="font-size:0.62rem; padding:0.18rem 0.45rem;">Edit</button>
+            <button type="button" onclick="if(isPlannerRotated) togglePlannerOrientation(); viewClientDetail('${client.id}');" class="btn btn-primary" style="font-size:0.62rem; padding:0.18rem 0.45rem;">Profile</button>
+            <button type="button" onclick="if(isPlannerRotated) togglePlannerOrientation(); prepareWhatsAppClassReminder('${client.id}');" class="btn btn-whatsapp" style="font-size:0.62rem; padding:0.18rem 0.4rem;">💬</button>
+            <button type="button" onclick="activePlannerSlotId=null; document.getElementById('planner-slot-inspector').style.display='none'; renderPlannerView();" class="btn btn-subtle" style="font-size:0.62rem; padding:0.18rem 0.35rem;">✕</button>
+          </div>
+        </div>
+        <div style="margin-top:0.28rem; font-size:0.66rem; color:var(--text-muted); display:flex; flex-wrap:wrap; gap:0.5rem;">
+          <span><strong>Every ${sl.day}</strong></span>
+          <span class="num-tabular">🕒 ${formatDisplayTimeBySetting(start24)} – ${formatDisplayTimeBySetting(end24)} (${durCode})</span>
+          ${client.phone ? `<span>📞 ${escapeHtmlAttr(client.phone)}</span>` : ''}
+          <span>Quota: <strong>${client.quota}/mo</strong></span>
+          ${sl.notes ? `<span>📝 ${escapeHtmlAttr(sl.notes)}</span>` : ''}
+        </div>
+      `;
+    }
+
+    function openPlannerSlotModal(slotId = null, presetDay = null) {
+      const activeClients = appState.clients
+        .filter(c => (c.status || 'active') !== 'archived')
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      if (activeClients.length === 0) {
+        showToast("Please add an active client first.");
+        return;
+      }
+
+      const clientSel = document.getElementById('planner-slot-client');
+      clientSel.innerHTML = activeClients.map(c => `<option value="${c.id}">${c.name}${c.grade ? ' — ' + c.grade : ''}</option>`).join('');
+
+      const delBtn = document.getElementById('btn-delete-planner-slot');
+      const titleEl = document.getElementById('planner-slot-modal-title');
+      const daysLbl = document.getElementById('planner-slot-days-label');
+
+      if (slotId) {
+        const sl = getPlannerSlots().find(x => String(x.id) === String(slotId));
+        if (!sl) return;
+        document.getElementById('planner-slot-id').value = sl.id;
+        if (titleEl) titleEl.textContent = 'Edit Timetable Slot';
+        if (daysLbl) daysLbl.textContent = 'Day *';
+        if (delBtn) delBtn.style.display = 'inline-flex';
+
+        if (!activeClients.some(c => String(c.id) === String(sl.clientId))) {
+          const archivedC = appState.clients.find(c => String(c.id) === String(sl.clientId));
+          if (archivedC) clientSel.innerHTML += `<option value="${archivedC.id}">${archivedC.name} (Archived)</option>`;
+        }
+        clientSel.value = String(sl.clientId);
+        plannerSelectedDays = [sl.day || 'Mon'];
+        setTimePickerValue('planner-slot-time', sl.startTime || '16:00');
+        document.getElementById('planner-slot-duration').value = sl.duration || '1h';
+        document.getElementById('planner-slot-subject').value = sl.subject || '';
+        document.getElementById('planner-slot-notes').value = sl.notes || '';
+        updatePlannerClientMetaUI();
+      } else {
+        document.getElementById('planner-slot-id').value = '';
+        if (titleEl) titleEl.textContent = 'Add Timetable Slot';
+        if (daysLbl) daysLbl.textContent = 'Day(s) * (tap one or more)';
+        if (delBtn) delBtn.style.display = 'none';
+
+        const filterClient = document.getElementById('planner-student-filter')?.value;
+        if (filterClient && filterClient !== 'all' && activeClients.some(c => String(c.id) === String(filterClient))) {
+          clientSel.value = String(filterClient);
+        }
+        plannerSelectedDays = presetDay ? [presetDay] : [];
+        document.getElementById('planner-slot-notes').value = '';
+        onPlannerModalClientChanged(presetDay ? false : true);
+      }
+
+      updatePlannerDaysPickerUI();
+      openModal('modal-planner-slot');
+    }
+
+    function onPlannerModalClientChanged(prefillDaysFromProfile = false) {
+      const clientId = document.getElementById('planner-slot-client')?.value;
+      const client = appState.clients.find(c => String(c.id) === String(clientId));
+      if (!client) return;
+
+      const isEditing = Boolean(document.getElementById('planner-slot-id')?.value);
+      if (!isEditing) {
+        setTimePickerValue('planner-slot-time', client.defaultTime || getAppSettings().defaultTime || '16:00');
+        const durSel = document.getElementById('planner-slot-duration');
+        if (durSel) durSel.value = client.sessionDuration || '1h';
+        const subjIn = document.getElementById('planner-slot-subject');
+        if (subjIn) subjIn.value = client.grade || client.studentTag || '';
+        if (prefillDaysFromProfile && Array.isArray(client.scheduledDays) && client.scheduledDays.length > 0) {
+          plannerSelectedDays = [...client.scheduledDays];
+          updatePlannerDaysPickerUI();
+        }
+      }
+      updatePlannerClientMetaUI();
+    }
+
+    function updatePlannerClientMetaUI() {
+      const clientId = document.getElementById('planner-slot-client')?.value;
+      const client = appState.clients.find(c => String(c.id) === String(clientId));
+      const metaBox = document.getElementById('planner-slot-client-meta');
+      const warnEl = document.getElementById('planner-slot-blocked-warn');
+      if (!client || !metaBox) return;
+
+      const parts = [];
+      if (client.grade) parts.push(`Grade: <strong>${escapeHtmlAttr(client.grade)}</strong>`);
+      if (client.studentTag) parts.push(`Tag: <strong>${escapeHtmlAttr(client.studentTag)}</strong>`);
+      parts.push(`Quota: <strong>${client.quota}/mo</strong>`);
+      if (client.phone) parts.push(`Phone: <strong>${escapeHtmlAttr(client.phone)}</strong>`);
+      metaBox.style.display = 'block';
+      metaBox.innerHTML = parts.join(' &bull; ');
+
+      if (warnEl) {
+        const blockedHit = plannerSelectedDays.filter(d => Array.isArray(client.blockedDays) && client.blockedDays.includes(d));
+        if (blockedHit.length > 0) {
+          warnEl.style.display = 'block';
+          warnEl.textContent = `Note: ${client.name} is marked Unavailable on ${blockedHit.join(', ')}.`;
+        } else {
+          warnEl.style.display = 'none';
+        }
+      }
+    }
+
+    function togglePlannerFormDay(btn) {
+      const day = btn.getAttribute('data-day');
+      const isEditing = Boolean(document.getElementById('planner-slot-id')?.value);
+      if (isEditing) {
+        plannerSelectedDays = [day];
+      } else {
+        if (plannerSelectedDays.includes(day)) {
+          plannerSelectedDays = plannerSelectedDays.filter(d => d !== day);
+        } else {
+          plannerSelectedDays.push(day);
+        }
+      }
+      updatePlannerDaysPickerUI();
+      updatePlannerClientMetaUI();
+    }
+
+    function updatePlannerDaysPickerUI() {
+      document.querySelectorAll('#planner-slot-days-picker button').forEach(b => {
+        const d = b.getAttribute('data-day');
+        b.className = plannerSelectedDays.includes(d) ? 'btn btn-primary' : 'btn btn-subtle';
+      });
+    }
+
+    function savePlannerSlot() {
+      const slotId = document.getElementById('planner-slot-id')?.value;
+      const clientId = Number(document.getElementById('planner-slot-client')?.value);
+      const startTime = formatTo24Hour(getTimePickerValue('planner-slot-time') || '16:00');
+      const duration = document.getElementById('planner-slot-duration')?.value || '1h';
+      const subject = (document.getElementById('planner-slot-subject')?.value || '').trim();
+      const notes = (document.getElementById('planner-slot-notes')?.value || '').trim();
+
+      if (!clientId) {
+        showToast("Please select a student.");
+        return;
+      }
+      if (plannerSelectedDays.length === 0) {
+        showToast("Please pick at least one day.");
+        return;
+      }
+
+      const slots = getPlannerSlots();
+
+      if (slotId) {
+        const existing = slots.find(x => String(x.id) === String(slotId));
+        if (existing) {
+          existing.clientId = clientId;
+          existing.day = plannerSelectedDays[0];
+          existing.startTime = startTime;
+          existing.duration = duration;
+          existing.subject = subject;
+          existing.notes = notes;
+        }
+        showToast("Timetable slot updated!");
+      } else {
+        plannerSelectedDays.forEach((day, idx) => {
+          slots.push({
+            id: generateId() + idx,
+            clientId,
+            day,
+            startTime,
+            duration,
+            subject,
+            notes
+          });
+        });
+        showToast(`Added ${plannerSelectedDays.length} timetable slot(s)!`);
+      }
+
+      saveState();
+      closeModal('modal-planner-slot');
+      renderPlannerView();
+    }
+
+    function deletePlannerSlot(slotId) {
+      if (!slotId) return;
+      requestConfirmation("Delete this timetable slot?", () => {
+        appState.timetableSlots = getPlannerSlots().filter(x => String(x.id) !== String(slotId));
+        if (String(activePlannerSlotId) === String(slotId)) {
+          activePlannerSlotId = null;
+          const inspector = document.getElementById('planner-slot-inspector');
+          if (inspector) inspector.style.display = 'none';
+        }
+        closeModal('modal-planner-slot');
+        saveState();
+        showToast("Timetable slot deleted.");
+        renderPlannerView();
+      });
+    }
+
+    function importStudentProfilesToPlanner() {
+      const slots = getPlannerSlots();
+      const activeClients = appState.clients.filter(c => (c.status || 'active') !== 'archived');
+      let added = 0;
+
+      activeClients.forEach((c, cIdx) => {
+        const days = Array.isArray(c.scheduledDays) ? c.scheduledDays : [];
+        const startTime = formatTo24Hour(c.defaultTime || getAppSettings().defaultTime || '16:00');
+        const duration = c.sessionDuration || '1h';
+        const subject = c.grade || c.studentTag || '';
+
+        days.forEach((day, dIdx) => {
+          const exists = slots.some(s =>
+            String(s.clientId) === String(c.id) &&
+            s.day === day &&
+            formatTo24Hour(s.startTime) === startTime
+          );
+          if (!exists) {
+            slots.push({
+              id: generateId() + cIdx * 10 + dIdx,
+              clientId: c.id,
+              day,
+              startTime,
+              duration,
+              subject,
+              notes: ''
+            });
+            added++;
+          }
+        });
+      });
+
+      if (added === 0) {
+        showToast("All active student profile days are already on the timetable.");
+        return;
+      }
+
+      saveState();
+      renderPlannerView();
+      showToast(`Imported ${added} slot(s) from student profiles!`);
+    }
+
+    function clearAllPlannerSlotsPrompt() {
+      if (getPlannerSlots().length === 0) {
+        showToast("Timetable is already empty.");
+        return;
+      }
+      requestConfirmation("Clear all planned timetable slots? (Actual logged classes will NOT be affected.)", () => {
+        appState.timetableSlots = [];
+        activePlannerSlotId = null;
+        const inspector = document.getElementById('planner-slot-inspector');
+        if (inspector) inspector.style.display = 'none';
+        saveState();
+        renderPlannerView();
+        showToast("Timetable cleared.");
+      });
+    }
+
     function renderAll() {
       renderRosterPage();
       renderDrawerClientsList();
       if (document.getElementById('view-timetable')?.style.display === 'flex') renderWeeklyTimetable();
+      if (document.getElementById('view-planner')?.style.display === 'flex') renderPlannerView();
       if (document.getElementById('view-calendar')?.style.display === 'flex') renderCalendarView();
       if (document.getElementById('view-client-detail')?.style.display === 'flex') renderClientDetailView();
       if (document.getElementById('view-clients')?.style.display === 'flex') renderClientsListView();
@@ -9713,7 +10564,6 @@ const today = new Date();
       if (document.getElementById('view-ledger')?.style.display === 'flex') renderDoubleLedgerTable();
       if (document.getElementById('view-marks')?.style.display === 'flex') renderMarksView();
     }
-
     function formatTo24Hour(tStr) {
       if (!tStr) return '16:00';
       if (!tStr) return '16:00';
@@ -10667,15 +11517,20 @@ function executeOneClickExitBackup() {
       history.pushState({appGuard: true}, '', location.href);
 
      window.addEventListener('popstate', () => {
-        // Exit rotated fullscreen timetable first
+// Exit rotated fullscreen timetable first
         if (typeof isScheduleRotated !== 'undefined' && isScheduleRotated) {
           toggleTimetableOrientation();
           history.pushState({appGuard: true}, '', location.href);
           return;
         }
+        if (typeof isPlannerRotated !== 'undefined' && isPlannerRotated) {
+          togglePlannerOrientation();
+          history.pushState({appGuard: true}, '', location.href);
+          return;
+        }
 
         // Close mobile side drawer if open
-        const drawerEl = document.getElementById('side-drawer');
+                const drawerEl = document.getElementById('side-drawer');
         if (drawerEl && drawerEl.classList.contains('active') && window.innerWidth < 768) {
           toggleDrawer(false);
           history.pushState({appGuard: true}, '', location.href);

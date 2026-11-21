@@ -1,4 +1,4 @@
-const CACHE_NAME = 'classtracker-offline-v4';
+const CACHE_NAME = 'classtracker-offline-v5';
 const ASSETS = ['./', './index.html', './manifest.json', './icon.png'];
 
 self.addEventListener('install', (e) => {

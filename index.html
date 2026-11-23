@@ -253,7 +253,7 @@
       font-weight: 700;
     }
 
-.nav-tab-btn svg {
+    .nav-tab-btn svg {
       width: 19px;
       height: 19px;
       stroke-width: 2.1;
@@ -511,6 +511,7 @@
 
     /* DESKTOP & TABLET (>= 768px): Permanent Sidebar with Compact Icon-Only Rail */
     @media (min-width: 768px) {
+
       .mobile-drawer-trigger,
       .sidebar-mobile-close,
       .drawer-overlay {
@@ -816,10 +817,6 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
-      #header-profile-switcher {
-        display: none;
-      }
-
       .modal-overlay {
         align-items: flex-end;
         padding: 0;
@@ -939,8 +936,7 @@
       flex-shrink: 0;
     }
 
-    #view-settings input[type="checkbox"],
-    #modal-backup-settings input[type="checkbox"] {
+    #view-settings input[type="checkbox"] {
       appearance: none;
       -webkit-appearance: none;
       width: 40px !important;
@@ -953,8 +949,7 @@
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
     }
 
-    #view-settings input[type="checkbox"]::after,
-    #modal-backup-settings input[type="checkbox"]::after {
+    #view-settings input[type="checkbox"]::after {
       content: '';
       position: absolute;
       top: 2px;
@@ -967,13 +962,11 @@
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    #view-settings input[type="checkbox"]:checked,
-    #modal-backup-settings input[type="checkbox"]:checked {
+    #view-settings input[type="checkbox"]:checked {
       background: var(--brand-primary);
     }
 
-    #view-settings input[type="checkbox"]:checked::after,
-    #modal-backup-settings input[type="checkbox"]:checked::after {
+    #view-settings input[type="checkbox"]:checked::after {
       transform: translateX(18px);
     }
 
@@ -1278,14 +1271,14 @@
       color: #ffffff;
       padding: 0.6rem 1.15rem;
       border-radius: 9999px;
-  font-size: 0.76rem;
+      font-size: 0.76rem;
       font-weight: 600;
       box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.35);
       z-index: 160;
       opacity: 0;
       pointer-events: none;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          max-width: 90vw;
+      max-width: 90vw;
       text-align: center;
     }
 
@@ -1341,7 +1334,7 @@
       width: 96vh !important;
       height: 94vw !important;
       transform: translate(-50%, -50%) rotate(90deg) !important;
-      z-index: 9999 !important;
+      z-index: 55 !important;
       background: var(--bg-surface) !important;
       border: 2px solid var(--brand-primary) !important;
       border-radius: var(--radius-md) !important;
@@ -1394,62 +1387,11 @@
       z-index: 15;
     }
 
-    .timetable-time-cell {
-      background: var(--bg-subtle);
-      font-size: 0.6rem;
-      font-weight: 800;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-right: 1.5px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-      padding: 0.25rem 0.1rem;
-      text-align: center;
-    }
-
-    .timetable-slot-cell {
-      border-right: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
-      padding: 2px;
-      min-height: 44px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      background: var(--bg-surface);
-    }
-
-    .timetable-slot-cell.slot-collision {
-      background: var(--warning-surface);
-      box-shadow: inset 0 0 0 1.5px var(--warning);
-    }
-
-    .tt-event-card {
-      background: var(--brand-surface);
-      border-left: 2.5px solid var(--brand-primary);
-      border-radius: 3px;
-      padding: 2px 3px;
-      font-size: 0.6rem;
-      font-weight: 700;
-      line-height: 1.15;
-      cursor: pointer;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .tt-event-card.projected {
-      background: var(--purple-surface);
-      border-left: 2.5px dashed var(--purple);
-      color: var(--purple);
-    }
-
     .timetable-day-track {
       position: relative;
       border-right: 1px solid var(--border-color);
       background-color: var(--bg-surface);
-      background-image: repeating-linear-gradient(to bottom,
-          transparent 0px,
+      background-image: repeating-linear-gradient(to bottom, transparent 0px,
           transparent 43px,
           var(--border-color) 43px,
           var(--border-color) 44px);
@@ -1525,13 +1467,11 @@
     .tt-projected-zone.tt-projected-full-day {
       top: 0;
       bottom: 0;
-      background: repeating-linear-gradient(
-        -45deg,
-        rgba(109, 40, 217, 0.05),
-        rgba(109, 40, 217, 0.05) 6px,
-        rgba(109, 40, 217, 0.015) 6px,
-        rgba(109, 40, 217, 0.015) 12px
-      );
+      background: repeating-linear-gradient(-45deg,
+          rgba(109, 40, 217, 0.05),
+          rgba(109, 40, 217, 0.05) 6px,
+          rgba(109, 40, 217, 0.015) 6px,
+          rgba(109, 40, 217, 0.015) 12px);
     }
 
     .tt-now-line {
@@ -1788,16 +1728,17 @@
 
   <!-- TOP APP HEADER -->
   <header class="app-header">
-<div class="header-inner">
+    <div class="header-inner">
       <div class="header-left">
         <button type="button" onclick="toggleDrawer(true)" class="btn btn-subtle mobile-drawer-trigger"
-          style="padding: 0.4rem 0.5rem; min-width: 32px; min-height: 32px;" aria-label="Open navigation menu" title="Menu">
+          style="padding: 0.4rem 0.5rem; min-width: 32px; min-height: 32px;" aria-label="Open navigation menu"
+          title="Menu">
           <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
         <div style="min-width: 0;">
-                    <h1 class="truncate-text"
+          <h1 class="truncate-text"
             style="font-size: 0.92rem; font-weight: 800; line-height: 1.15; color: var(--text-main);">Class Tracker</h1>
           <p id="header-context-label" class="truncate-text"
             style="font-size: 0.66rem; color: var(--text-muted); font-weight: 600;">Roster</p>
@@ -1822,7 +1763,7 @@
             style="display: none; position: absolute; top: -4px; right: -4px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 9999px; background: var(--warning); color: #fff; font-size: 0.58rem; font-weight: 800; align-items: center; justify-content: center;">0</span>
         </button>
       </div>
-</div>
+    </div>
   </header>
 
   <!-- SIDEBAR NAVIGATION (Docked on Tablet/Desktop with Icon Rail; Drawer on Mobile) -->
@@ -1841,7 +1782,8 @@
       <button type="button" id="sidebar-rail-toggle-btn" onclick="toggleSidebarRail()"
         class="sidebar-icon-btn sidebar-rail-btn" aria-expanded="true" aria-controls="side-drawer"
         aria-label="Toggle compact sidebar rail" title="Collapse / Expand Sidebar">
-        <svg id="sidebar-rail-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <svg id="sidebar-rail-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
+          viewBox="0 0 24 24">
           <path d="M15 18l-6-6 6-6" />
         </svg>
       </button>
@@ -1861,11 +1803,13 @@
             <span class="snav-icon" aria-hidden="true">➕</span>
             <span class="snav-label">New Client</span>
           </button>
-          <button type="button" onclick="toggleDrawer(false); openMassImportModal();" class="snav-action-btn" title="Batch Import">
+          <button type="button" onclick="toggleDrawer(false); openMassImportModal();" class="snav-action-btn"
+            title="Batch Import">
             <span class="snav-icon" aria-hidden="true">📥</span>
             <span class="snav-label">Batch Import</span>
           </button>
-          <button type="button" onclick="toggleDrawer(false); openSttSyncModal();" class="snav-action-btn" title="STT Sync">
+          <button type="button" onclick="toggleDrawer(false); openSttSyncModal();" class="snav-action-btn"
+            title="STT Sync">
             <span class="snav-icon" aria-hidden="true">🔄</span>
             <span class="snav-label">STT Sync</span>
           </button>
@@ -1879,43 +1823,50 @@
         <span class="snav-heading">Workspace</span>
         <ul class="snav-list">
           <li>
-            <a href="#home" data-view="home" onclick="navigateFromSidebar(event, 'home')" class="snav-item-link" title="Roster">
+            <a href="#home" data-view="home" onclick="navigateFromSidebar(event, 'home')" class="snav-item-link"
+              title="Roster">
               <span class="snav-icon" aria-hidden="true">🏠</span>
               <span class="snav-label">Roster</span>
             </a>
           </li>
-<li>
-            <a href="#timetable" data-view="timetable" onclick="navigateFromSidebar(event, 'timetable')" class="snav-item-link" title="Schedule">
+          <li>
+            <a href="#timetable" data-view="timetable" onclick="navigateFromSidebar(event, 'timetable')"
+              class="snav-item-link" title="Schedule">
               <span class="snav-icon" aria-hidden="true">🗓️</span>
               <span class="snav-label">Schedule</span>
             </a>
           </li>
           <li>
-            <a href="#planner" data-view="planner" onclick="navigateFromSidebar(event, 'planner')" class="snav-item-link" title="Timetable">
+            <a href="#planner" data-view="planner" onclick="navigateFromSidebar(event, 'planner')"
+              class="snav-item-link" title="Timetable">
               <span class="snav-icon" aria-hidden="true">📋</span>
               <span class="snav-label">Timetable</span>
             </a>
           </li>
           <li>
-            <a href="#calendar" data-view="calendar" onclick="navigateFromSidebar(event, 'calendar')" class="snav-item-link" title="Calendar">
+            <a href="#calendar" data-view="calendar" onclick="navigateFromSidebar(event, 'calendar')"
+              class="snav-item-link" title="Calendar">
               <span class="snav-icon" aria-hidden="true">📅</span>
               <span class="snav-label">Calendar</span>
             </a>
           </li>
           <li>
-            <a href="#clients" data-view="clients" onclick="navigateFromSidebar(event, 'clients')" class="snav-item-link" title="Clients">
+            <a href="#clients" data-view="clients" onclick="navigateFromSidebar(event, 'clients')"
+              class="snav-item-link" title="Clients">
               <span class="snav-icon" aria-hidden="true">👥</span>
               <span class="snav-label">Clients</span>
             </a>
           </li>
           <li>
-            <a href="#marks" data-view="marks" onclick="navigateFromSidebar(event, 'marks')" class="snav-item-link" title="Marks & Scores">
+            <a href="#marks" data-view="marks" onclick="navigateFromSidebar(event, 'marks')" class="snav-item-link"
+              title="Marks & Scores">
               <span class="snav-icon" aria-hidden="true">🎓</span>
               <span class="snav-label">Marks &amp; Scores</span>
             </a>
           </li>
           <li>
-            <a href="#notifications" data-view="notifications" onclick="navigateFromSidebar(event, 'notifications')" class="snav-item-link" title="Notifications">
+            <a href="#notifications" data-view="notifications" onclick="navigateFromSidebar(event, 'notifications')"
+              class="snav-item-link" title="Notifications">
               <span class="snav-icon" aria-hidden="true">📬</span>
               <span class="snav-label">Notifications</span>
               <span id="drawer-notif-badge"
@@ -1931,9 +1882,9 @@
         <ul class="snav-list">
           <!-- Parent Group 1: Finance & Reports -->
           <li>
-            <button type="button" id="snav-parent-finance" class="snav-parent-btn"
-              data-group="finance" aria-expanded="true" aria-controls="snav-sub-finance"
-              onclick="toggleSidebarGroup('finance')" title="Finance & Reports">
+            <button type="button" id="snav-parent-finance" class="snav-parent-btn" data-group="finance"
+              aria-expanded="true" aria-controls="snav-sub-finance" onclick="toggleSidebarGroup('finance')"
+              title="Finance & Reports">
               <span class="snav-icon" aria-hidden="true">💳</span>
               <span class="snav-label">Finance &amp; Reports</span>
               <span class="snav-chevron" aria-hidden="true">▶</span>
@@ -1968,9 +1919,9 @@
 
           <!-- Parent Group 2: System & Tools -->
           <li>
-            <button type="button" id="snav-parent-system" class="snav-parent-btn"
-              data-group="system" aria-expanded="true" aria-controls="snav-sub-system"
-              onclick="toggleSidebarGroup('system')" title="System & Tools">
+            <button type="button" id="snav-parent-system" class="snav-parent-btn" data-group="system"
+              aria-expanded="true" aria-controls="snav-sub-system" onclick="toggleSidebarGroup('system')"
+              title="System & Tools">
               <span class="snav-icon" aria-hidden="true">⚙️</span>
               <span class="snav-label">System &amp; Tools</span>
               <span class="snav-chevron" aria-hidden="true">▶</span>
@@ -2002,9 +1953,8 @@
 
       <!-- QUICK DIRECTORY (Collapsible Panel, hidden in compact rail mode) -->
       <div id="sidebar-directory-panel" class="snav-section">
-        <button type="button" id="snav-parent-directory" class="snav-parent-btn"
-          aria-expanded="true" aria-controls="clients-dropdown-content"
-          onclick="toggleClientsDropdown()" title="Quick Directory">
+        <button type="button" id="snav-parent-directory" class="snav-parent-btn" aria-expanded="true"
+          aria-controls="clients-dropdown-content" onclick="toggleClientsDropdown()" title="Quick Directory">
           <span class="snav-icon" aria-hidden="true">🔎</span>
           <span class="snav-label">Directory (<span id="drawer-client-count">0</span>)</span>
           <span id="clients-dropdown-arrow" class="snav-chevron" aria-hidden="true">▶</span>
@@ -2013,7 +1963,8 @@
           style="padding: 0.35rem 0.35rem 0.25rem var(--snav-pad-x); display: flex; flex-direction: column; gap: 0.3rem;">
           <div style="display:flex; gap:0.25rem;">
             <select id="drawer-client-status-filter" onchange="renderDrawerClientsList()"
-              aria-label="Filter client status" style="font-size:12px; min-height:28px; padding:0.2rem 0.3rem; width:78px;">
+              aria-label="Filter client status"
+              style="font-size:12px; min-height:28px; padding:0.2rem 0.3rem; width:78px;">
               <option value="active">Active</option>
               <option value="archived">Archived</option>
               <option value="all">All</option>
@@ -2029,7 +1980,7 @@
   </aside>
 
   <!-- MAIN CONTENT VIEWS -->
-     <main class="main-content">
+  <main class="main-content">
 
     <!-- VIEW 1: HOME & ROSTER -->
     <section id="view-home" style="display: flex; flex-direction: column; gap: 0.75rem;">
@@ -2168,14 +2119,14 @@
           style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; flex-wrap: wrap; gap: 4px;">
           <h3 id="calendar-view-header-title"
             style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">Date: </h3>
-<div style="display: flex; align-items: center; gap: 0.3rem;">
+          <div style="display: flex; align-items: center; gap: 0.3rem;">
             <input type="date" id="calendar-jump-date" onchange="jumpToCalendarDate(this.value)"
               style="font-size: 0.68rem; padding: 0.25rem 0.4rem; width: 110px;">
-            <button type="button" onclick="jumpToCalendarDate(toLocalDateStr())"
-              class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">Today</button>
+            <button type="button" onclick="jumpToCalendarDate(toLocalDateStr())" class="btn btn-subtle"
+              style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">Today</button>
             <button type="button" onclick="openCalendarAddSessionModal()" class="btn btn-primary"
               style="font-size: 0.68rem; padding: 0.25rem 0.5rem;">+ Add Class</button>
-                      </div>
+          </div>
         </div>
         <div class="h-calendar-strip" id="horizontal-calendar-strip"></div>
       </div>
@@ -2653,7 +2604,7 @@
         <div id="wa-folders-grid"
           style="display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 0.45rem;"></div>
 
-<!-- OPEN FOLDER CONTENTS -->
+        <!-- OPEN FOLDER CONTENTS -->
         <div id="wa-saved-templates-list" style="display: none; flex-direction: column; gap: 0.4rem;"></div>
       </div>
     </section>
@@ -2691,15 +2642,19 @@
         <div id="timetable-legend-bar" class="tt-legend-bar">
           <div style="display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
             <span style="display: inline-flex; align-items: center; gap: 4px;">
-              <span style="width: 9px; height: 9px; border-radius: 2px; background: var(--brand-primary); display: inline-block;"></span>
+              <span
+                style="width: 9px; height: 9px; border-radius: 2px; background: var(--brand-primary); display: inline-block;"></span>
               Recorded
             </span>
             <span style="display: inline-flex; align-items: center; gap: 4px;">
-              <span style="width: 9px; height: 9px; border-radius: 2px; background: rgba(109, 40, 217, 0.22); border: 1.5px dashed var(--purple); display: inline-block;"></span>
+              <span
+                style="width: 9px; height: 9px; border-radius: 2px; background: rgba(109, 40, 217, 0.22); border: 1.5px dashed var(--purple); display: inline-block;"></span>
               Last Week (Projected)
             </span>
-            <span id="timetable-legend-now" style="display: inline-flex; align-items: center; gap: 4px; color: #ef4444;">
-              <span style="width: 12px; height: 2.5px; border-radius: 2px; background: linear-gradient(90deg, #ef4444, #f97316, #8b5cf6); display: inline-block;"></span>
+            <span id="timetable-legend-now"
+              style="display: inline-flex; align-items: center; gap: 4px; color: #ef4444;">
+              <span
+                style="width: 12px; height: 2.5px; border-radius: 2px; background: linear-gradient(90deg, #ef4444, #f97316, #8b5cf6); display: inline-block;"></span>
               Current Time
             </span>
           </div>
@@ -2723,13 +2678,14 @@
             <div>
               <h3 style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin: 0;">Timetable</h3>
               <p id="planner-summary-label"
-                style="font-size: 0.66rem; font-weight: 600; color: var(--text-muted); margin: 0;">Weekly student slot planner</p>
+                style="font-size: 0.66rem; font-weight: 600; color: var(--text-muted); margin: 0;">Weekly student slot
+                planner</p>
             </div>
             <div class="segmented-group">
-              <button type="button" id="planner-view-grid-btn" onclick="setPlannerViewMode('grid')" class="btn btn-primary"
-                style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">Grid</button>
-              <button type="button" id="planner-view-list-btn" onclick="setPlannerViewMode('list')" class="btn btn-subtle"
-                style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">List</button>
+              <button type="button" id="planner-view-grid-btn" onclick="setPlannerViewMode('grid')"
+                class="btn btn-primary" style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">Grid</button>
+              <button type="button" id="planner-view-list-btn" onclick="setPlannerViewMode('list')"
+                class="btn btn-subtle" style="font-size: 0.68rem; padding: 0.2rem 0.55rem;">List</button>
             </div>
           </div>
 
@@ -2749,7 +2705,8 @@
               <option value="all">All Students</option>
             </select>
             <button type="button" onclick="clearAllPlannerSlotsPrompt()" class="btn btn-danger"
-              style="font-size: 0.66rem; padding: 0.25rem 0.5rem; min-height: 32px;" title="Clear all planned slots">Clear</button>
+              style="font-size: 0.66rem; padding: 0.25rem 0.5rem; min-height: 32px;"
+              title="Clear all planned slots">Clear</button>
           </div>
         </div>
 
@@ -2885,7 +2842,7 @@
             <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
               <input type="checkbox" id="settings-toggle-forecaster"
                 onchange="toggleFeatureToggle('forecaster', this.checked)" style="width: 16px; height: 16px;">
-              <span id="lbl-forecaster">ON</span>
+<span id="lbl-forecaster">ON</span>
             </label>
           </div>
         </div>
@@ -2893,14 +2850,12 @@
 
       <!-- CATEGORY 4: SECURITY & ACCESS -->
       <div class="card">
-        <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--success); margin-bottom: 0.5rem;">🔒 Security &
-          Parent Portal</h3>
+        <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--success); margin-bottom: 0.5rem;">🔒 Security</h3>
         <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.72rem;">
           <div
             style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
             <div>
-              <span style="font-weight: 800; display: block;">App Lock Security PIN</span>
-              <span style="font-size: 0.62rem; color: var(--text-muted);">Require 4-digit PIN on startup</span>
+              <span style="font-weight: 800; display: block;">App Lock Security PIN</span>              <span style="font-size: 0.62rem; color: var(--text-muted);">Require 4-digit PIN on startup</span>
             </div>
             <button type="button" onclick="promptSetupAppPin()" class="btn btn-primary"
               style="font-size: 0.65rem; padding: 0.25rem 0.5rem;">Set PIN</button>
@@ -3328,6 +3283,12 @@
       <input type="hidden" id="edit-month-id">
       <div style="display: flex; flex-direction: column; gap: 0.5rem;">
         <div>
+          <label
+            style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Month
+            Quota (Classes)</label>
+          <input type="number" id="edit-month-quota" min="1" placeholder="e.g. 8">
+        </div>
+        <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.15rem;">
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Manual Fee Override</label>
             <button type="button" id="btn-apply-prorata-fee" onclick="applyProRataToEditMonth()" class="btn btn-purple"
@@ -3476,50 +3437,12 @@
     </div>
   </div>
 
-  <!-- BACKUP & RESTORE MODAL -->
-  <div id="modal-backup-settings" class="modal-overlay">
-    <div class="modal-dialog">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <h3 style="font-size: 0.9rem; font-weight: 800;">Data Hub / Backup</h3>
-        <button type="button" onclick="closeModal('modal-backup-settings')" class="btn btn-subtle"
-          style="padding: 0.2rem 0.4rem;">✕</button>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 0.65rem; font-size: 0.72rem;">
-        <div
-          style="display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.65rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color);">
-          <div>
-            <span style="font-weight: 800; display: block;">Backup Daily (Auto)</span>
-            <span id="daily-backup-status" style="font-size: 0.62rem; color: var(--success);">Enabled</span>
-          </div>
-          <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
-            <input type="checkbox" id="toggle-daily-backup" onchange="toggleDailyBackupSetting(this.checked)"
-              style="width: 16px; height: 16px;">
-            <span id="daily-backup-toggle-label">ON</span>
-          </label>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
-          <button type="button" onclick="promptSaveBackupFile('save')" class="btn btn-primary"
-            style="padding: 0.55rem 0.4rem;">💾 Backup Now</button>
-          <button type="button" onclick="openModal('modal-export-options')" class="btn btn-purple"
-            style="padding: 0.55rem 0.4rem;">📤 Export Data</button>
-        </div>
-
-        <label class="btn btn-subtle"
-          style="cursor: pointer; width: 100%; padding: 0.55rem; text-align: center; border: 1.5px dashed var(--border-strong);">
-          <span>📂 Restore Backup (.JSON)</span>
-          <input type="file" accept=".json" onchange="handleRestoreFromFile(event)" style="display: none;">
-        </label>
-      </div>
-    </div>
-  </div>
-
   <!-- MULTI-FORMAT EXPORT MODAL -->
   <div id="modal-export-options" class="modal-overlay">
     <div class="modal-dialog">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--purple);">Export Data Format</h3>
-        <button type="button" onclick="closeModal('modal-export-options')" class="btn btn-subtle"
+        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--purple);">Export Data Format</h3> <button
+          type="button" onclick="closeModal('modal-export-options')" class="btn btn-subtle"
           style="padding: 0.2rem 0.4rem;">✕</button>
       </div>
       <p style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 0.5rem;">Select your preferred file format
@@ -4013,7 +3936,7 @@
           <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Name *</label>
           <input type="text" id="form-client-name" placeholder="e.g. Aiden Parker">
         </div>
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
           <div>
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Student Tag / Label</label>
             <input type="text" id="form-client-tag" placeholder="e.g. Exam Prep">
@@ -4021,15 +3944,21 @@
           <div>
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Assigned Color</label>
             <input type="hidden" id="form-client-color">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; min-height: 36px; padding: 0.25rem 0.45rem; background: var(--bg-subtle); border: 1px solid var(--border-strong); border-radius: var(--radius-sm);">
+            <div
+              style="display: flex; align-items: center; justify-content: space-between; gap: 0.35rem; min-height: 36px; padding: 0.25rem 0.45rem; background: var(--bg-subtle); border: 1px solid var(--border-strong); border-radius: var(--radius-sm);">
               <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0;">
-                <span id="form-client-color-swatch" style="width: 18px; height: 18px; border-radius: 50%; background: #2563eb; border: 2px solid var(--bg-surface); box-shadow: 0 0 0 1px var(--border-strong); flex-shrink: 0;"></span>
-                <span id="form-client-color-hex" class="num-tabular" style="font-size: 0.66rem; font-weight: 700; color: var(--text-muted);">#2563EB</span>
+                <span id="form-client-color-swatch"
+                  style="width: 18px; height: 18px; border-radius: 50%; background: #2563eb; border: 2px solid var(--bg-surface); box-shadow: 0 0 0 1px var(--border-strong); flex-shrink: 0;"></span>
+                <span id="form-client-color-hex" class="num-tabular"
+                  style="font-size: 0.66rem; font-weight: 700; color: var(--text-muted);">#2563EB</span>
               </div>
-              <button type="button" onclick="regenerateClientModalColor()" class="btn btn-subtle" style="min-height: 26px; padding: 0.18rem 0.45rem; font-size: 0.64rem;" title="Generate another unique random color">🎲 New</button>
+              <button type="button" onclick="regenerateClientModalColor()" class="btn btn-subtle"
+                style="min-height: 26px; padding: 0.18rem 0.45rem; font-size: 0.64rem;"
+                title="Generate another unique random color">🎲 New</button>
             </div>
           </div>
-        </div>        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
           <div>
             <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Grade</label>
             <input type="text" id="form-client-grade" placeholder="e.g. Grade 9">
@@ -4085,6 +4014,12 @@
               style="min-height: 36px;">16:00</button>
           </div>
         </div>
+
+        <button type="button" id="btn-open-month-rate-range" onclick="openProfileUpdateScopeFromClientModal()"
+          class="btn btn-subtle"
+          style="display: none; width: 100%; font-size: 0.68rem; color: var(--brand-primary); border-style: dashed;">
+          📅 Apply Quota / Fee to Specific Months (From → Till)...
+        </button>
 
         <div>
           <label
@@ -4144,20 +4079,93 @@
   </div>
 
   <!-- PROFILE UPDATE SCOPE MODAL -->
-  <div id="modal-profile-update-scope" class="modal-overlay">
+  <div id="modal-profile-update-scope" class="modal-overlay" style="z-index: 85;">
     <div class="modal-dialog">
-      <h3 style="font-size: 0.9rem; font-weight: 800; margin-bottom: 0.4rem; color: var(--brand-primary);">Apply Rate &
-        Quota Changes</h3>
-      <p style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.6rem;">
-        Choose which monthly blocks should be updated with the new quota and retainer fee:
-      </p>
-      <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-        <button type="button" onclick="applyClientProfileUpdates('upcoming_only')" class="btn btn-subtle"
-          style="width: 100%; justify-content: center;">Upcoming Months Only</button>
-        <button type="button" onclick="applyClientProfileUpdates('this_month')" class="btn btn-subtle"
-          style="width: 100%; justify-content: center;">From This Month</button>
-        <button type="button" onclick="applyClientProfileUpdates('all_months')" class="btn btn-primary"
-          style="width: 100%; justify-content: center;">From First Class Onwards</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Apply Rate &amp; Quota Changes
+        </h3>
+        <button type="button" onclick="closeModal('modal-profile-update-scope')" class="btn btn-subtle"
+          style="padding: 0.2rem 0.4rem;">✕</button>
+      </div>
+
+      <div id="scope-change-summary"
+        style="padding: 0.45rem 0.6rem; background: var(--brand-surface); border: 1px solid var(--brand-primary); border-radius: var(--radius-sm); font-size: 0.7rem; margin-bottom: 0.55rem; display: flex; flex-direction: column; gap: 0.3rem;">
+      </div>
+
+      <div style="display: flex; gap: 0.65rem; flex-wrap: wrap; margin-bottom: 0.55rem; font-size: 0.7rem;">
+        <label style="display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; cursor: pointer;">
+          <input type="checkbox" id="scope-apply-quota" checked onchange="updateProfileScopeOptionsVisibility()"> Update
+          Quota
+        </label>
+        <label style="display: inline-flex; align-items: center; gap: 0.3rem; font-weight: 700; cursor: pointer;">
+          <input type="checkbox" id="scope-apply-fee" checked onchange="updateProfileScopeOptionsVisibility()"> Update
+          Fee
+        </label>
+      </div>
+
+      <!-- QUICK PRESETS -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.3rem; margin-bottom: 0.55rem;">
+        <button type="button" onclick="setProfileScopePreset('upcoming_only')" class="btn btn-subtle"
+          style="font-size: 0.65rem; padding: 0.3rem 0.35rem;">Future Only</button>
+        <button type="button" onclick="setProfileScopePreset('this_month')" class="btn btn-subtle"
+          style="font-size: 0.65rem; padding: 0.3rem 0.35rem;">Current &rarr; Onwards</button>
+        <button type="button" onclick="setProfileScopePreset('all_months')" class="btn btn-subtle"
+          style="font-size: 0.65rem; padding: 0.3rem 0.35rem;">All Months</button>
+      </div>
+
+      <!-- FROM / TILL RANGE SELECTORS -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.55rem;">
+        <div>
+          <label for="scope-from-month"
+            style="font-size: 0.64rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">From
+            Month</label>
+          <select id="scope-from-month" onchange="onProfileScopeRangeChanged()" style="font-size: 0.72rem;"></select>
+        </div>
+        <div>
+          <label for="scope-till-month"
+            style="font-size: 0.64rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Till
+            Month</label>
+          <select id="scope-till-month" onchange="onProfileScopeRangeChanged()" style="font-size: 0.72rem;"></select>
+        </div>
+      </div>
+
+      <!-- SPECIFIC MONTHS CHECKLIST -->
+      <div style="margin-bottom: 0.55rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+          <span
+            style="font-size: 0.64rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Specific
+            Months Affected</span>
+          <span id="scope-selected-count" style="font-size: 0.64rem; font-weight: 700; color: var(--brand-primary);">0
+            selected</span>
+        </div>
+        <div id="scope-months-checklist"
+          style="max-height: 165px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.25rem; padding: 0.35rem; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: var(--radius-sm);">
+        </div>
+      </div>
+
+      <!-- EXTRA OPTIONS -->
+      <div style="display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.65rem; font-size: 0.7rem;">
+        <label style="display: flex; align-items: center; gap: 0.4rem; font-weight: 700; cursor: pointer;">
+          <input type="checkbox" id="scope-apply-future" checked onchange="updateScopeSelectedCountLabel()">
+          <span>Also set as new default for future months</span>
+        </label>
+        <label id="scope-reorg-row"
+          style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; color: var(--purple); font-weight: 600;">
+          <input type="checkbox" id="scope-reorg-classes">
+          <span>Re-pack classes in selected months to fit new quota</span>
+        </label>
+        <label id="scope-reset-paid-row"
+          style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; color: var(--text-muted);">
+          <input type="checkbox" id="scope-reset-paid" checked>
+          <span>Reset Paid status on modified months (recalculate dues)</span>
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 0.35rem;">
+        <button type="button" onclick="closeModal('modal-profile-update-scope')" class="btn btn-subtle"
+          style="flex: 1;">Cancel</button>
+        <button type="button" onclick="applyClientProfileUpdates('custom')" class="btn btn-primary"
+          style="flex: 1;">Apply Changes</button>
       </div>
     </div>
   </div>
@@ -4396,64 +4404,48 @@
       </div>
     </div>
   </div>
-  <!-- TIMETABLE RESCHEDULE POPUP MODAL -->
-  <div id="modal-tt-move" class="modal-overlay" style="z-index: 120;">
-    <div class="modal-dialog" style="max-width: 340px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
-        <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">Reschedule Class</h3>
-        <button type="button" onclick="closeModal('modal-tt-move')" class="btn btn-subtle"
-          style="padding: 0.15rem 0.35rem;">✕</button>
-      </div>
-      <input type="hidden" id="tt-move-client-id">
-      <input type="hidden" id="tt-move-month-id">
-      <input type="hidden" id="tt-move-session-id">
-      <div style="display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.72rem;">
-        <div>
-          <label style="font-weight: 700; color: var(--text-muted);">New Date:</label>
-          <input type="date" id="tt-move-new-date">
-        </div>
-        <div>
-          <label style="font-weight: 700; color: var(--text-muted);">New Time:</label>
-          <input type="time" id="tt-move-new-time" value="16:00">
-        </div>
-<div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
-          <button type="button" onclick="closeModal('modal-tt-move')" class="btn btn-subtle"
-            style="flex: 1;">Cancel</button>
-          <button type="button" onclick="executeTimetableReschedule()" class="btn btn-primary" style="flex: 1;">Confirm
-            Move</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-<!-- TIMETABLE SLOT SETUP MODAL -->
+  <!-- TIMETABLE SLOT SETUP MODAL -->
   <div id="modal-planner-slot" class="modal-overlay" style="z-index: 80;">
     <div class="modal-dialog">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <h3 id="planner-slot-modal-title" style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Add Timetable Slot</h3>
+        <h3 id="planner-slot-modal-title" style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Add
+          Timetable Slot</h3>
         <button type="button" onclick="closeModal('modal-planner-slot')" class="btn btn-subtle"
           style="padding: 0.2rem 0.4rem;">✕</button>
       </div>
       <input type="hidden" id="planner-slot-id">
       <div style="display: flex; flex-direction: column; gap: 0.48rem;">
         <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Student *</label>
+          <label
+            style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Student
+            *</label>
           <select id="planner-slot-client" onchange="onPlannerModalClientChanged()"></select>
           <div id="planner-slot-client-meta"
-            style="margin-top: 0.3rem; padding: 0.35rem 0.5rem; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.65rem; color: var(--text-muted); display: none;"></div>
+            style="margin-top: 0.3rem; padding: 0.35rem 0.5rem; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.65rem; color: var(--text-muted); display: none;">
+          </div>
         </div>
 
         <div>
           <label id="planner-slot-days-label"
-            style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Day(s) *</label>
-          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="planner-slot-days-picker">
-            <button type="button" data-day="Mon" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">M</button>
-            <button type="button" data-day="Tue" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">T</button>
-            <button type="button" data-day="Wed" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">W</button>
-            <button type="button" data-day="Thu" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">T</button>
-            <button type="button" data-day="Fri" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">F</button>
-            <button type="button" data-day="Sat" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
-            <button type="button" data-day="Sun" onclick="togglePlannerFormDay(this)" class="btn btn-subtle" style="padding: 0.25rem 0;">S</button>
+            style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Day(s)
+            *</label>
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;"
+            id="planner-slot-days-picker">
+            <button type="button" data-day="Mon" onclick="togglePlannerFormDay(this)" class="btn btn-subtle"
+              style="padding: 0.25rem 0;">M</button>
+            <button type="button" data-day="Tue" onclick="togglePlannerFormDay(this)" class="btn btn-subtle"
+              style="padding: 0.25rem 0;">T</button>
+            <button type="button" data-day="Wed" onclick="togglePlannerFormDay(this)" class="btn btn-subtle"
+              style="padding: 0.25rem 0;">W</button>
+            <button type="button" data-day="Thu" onclick="togglePlannerFormDay(this)" class="btn btn-subtle"
+              style="padding: 0.25rem 0;">T</button>
+            <button type="button" data-day="Fri" onclick="togglePlannerFormDay(this)" class="btn btn-subtle"
+              style="padding: 0.25rem 0;">F</button>
+            <button type="button" data-day="Sat" onclick="togglePlannerFormDay(this)" class="btn btn-subtle"
+              style="padding: 0.25rem 0;">S</button>
+            <button type="button" data-day="Sun" onclick="togglePlannerFormDay(this)" class="btn btn-subtle"
+              style="padding: 0.25rem 0;">S</button>
           </div>
           <p id="planner-slot-blocked-warn"
             style="display: none; margin-top: 0.2rem; font-size: 0.62rem; font-weight: 700; color: var(--danger);"></p>
@@ -4461,13 +4453,16 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
           <div>
-            <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Start Time *</label>
+            <label
+              style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Start
+              Time *</label>
             <button type="button" id="planner-slot-time" data-time24="16:00"
-              onclick="openCircularClockPicker('planner-slot-time')"
-              class="clock-trigger-btn app-time-picker" style="min-height: 36px;">16:00</button>
+              onclick="openCircularClockPicker('planner-slot-time')" class="clock-trigger-btn app-time-picker"
+              style="min-height: 36px;">16:00</button>
           </div>
           <div>
-            <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Duration</label>
+            <label
+              style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Duration</label>
             <select id="planner-slot-duration">
               <option value="0.5h">0.5h (30 min)</option>
               <option value="1h" selected>1h (60 min)</option>
@@ -4478,19 +4473,25 @@
         </div>
 
         <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Subject / Grade Label</label>
+          <label
+            style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Subject
+            / Grade Label</label>
           <input type="text" id="planner-slot-subject" placeholder="e.g. Grade 9 Math">
         </div>
 
         <div>
-          <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Notes (Room / Link / Focus)</label>
+          <label
+            style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Notes
+            (Room / Link / Focus)</label>
           <input type="text" id="planner-slot-notes" placeholder="e.g. Online Zoom / Exam Prep">
         </div>
 
         <div style="display: flex; gap: 0.35rem; margin-top: 0.3rem;">
-          <button type="button" onclick="closeModal('modal-planner-slot')" class="btn btn-subtle" style="flex: 1;">Cancel</button>
-          <button type="button" id="btn-delete-planner-slot" onclick="deletePlannerSlot(document.getElementById('planner-slot-id').value)"
-            class="btn btn-danger" style="display: none; padding: 0.45rem 0.6rem;">Delete</button>
+          <button type="button" onclick="closeModal('modal-planner-slot')" class="btn btn-subtle"
+            style="flex: 1;">Cancel</button>
+          <button type="button" id="btn-delete-planner-slot"
+            onclick="deletePlannerSlot(document.getElementById('planner-slot-id').value)" class="btn btn-danger"
+            style="display: none; padding: 0.45rem 0.6rem;">Delete</button>
           <button type="button" onclick="savePlannerSlot()" class="btn btn-primary" style="flex: 1;">Save Slot</button>
         </div>
       </div>
@@ -4498,7 +4499,7 @@
   </div>
   <!-- SCRIPT LOGIC -->
   <script>
-      const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
+    const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
     const ACTIVE_PROFILE_KEY = 'month_tracker_v12_active_profile_id';
     const THEME_KEY = 'month_tracker_v12_theme';
     const DAILY_BACKUP_ENABLED_KEY = 'month_tracker_v12_daily_backup_enabled';
@@ -4549,16 +4550,6 @@
       return activeProfileId === 'default' ? 'month_tracker_v12_settings' : `month_tracker_v12_settings_${activeProfileId}`;
     }
 
-    function syncProfileSwitcherUI() {
-      const list = getUserProfilesList();
-      const optionsHtml = list.map(p => `<option value="${p.id}" ${p.id === activeProfileId ? 'selected' : ''}>👤 ${p.name}</option>`).join('');
-
-      const headerSel = document.getElementById('header-profile-switcher');
-      const drawerSel = document.getElementById('drawer-profile-switcher');
-      if (headerSel) headerSel.innerHTML = optionsHtml;
-      if (drawerSel) drawerSel.innerHTML = optionsHtml;
-    }
-
     function promptCreateNewProfile() {
       const name = prompt("Enter name for the new user profile (e.g. Tutor 2, Sarah, Branch B):");
       if (!name || !name.trim()) return;
@@ -4582,7 +4573,6 @@
       if (!newName || !newName.trim()) return;
       prof.name = newName.trim();
       saveUserProfilesList(list);
-      syncProfileSwitcherUI();
       if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
       showToast("Profile renamed!");
     }
@@ -4595,11 +4585,9 @@
       localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
       appState = {clients: []};
       initData();
-      syncProfileSwitcherUI();
       populateAllTimePickers();
+      setTimePickerValue('quicklog-time', getAppSettings().defaultTime);
       applyAllSavedLayouts();
-      updateHeaderSttPillAndEodBanner();
-      updateNotificationBadges();
       renderAll();
       showToast(`Switched to ${prof.name}`);
     }
@@ -4625,8 +4613,6 @@
         }
         if (activeProfileId === profileId) {
           switchUserProfile(updated[0].id);
-        } else {
-          syncProfileSwitcherUI();
         }
         if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
         showToast(`Deleted profile "${prof.name}".`);
@@ -4637,7 +4623,6 @@
     let timetableWeekOffset = 0;
     let rosterScheduledDayOffset = 0;
     let activeWhatsAppContext = null;
-
     const DURATION_TO_MINUTES = {
       '0.5h': 30,
       '1h': 60,
@@ -4660,7 +4645,7 @@
 
     let appState = {clients: []};
     let selectedFormDays = [];
-let selectedBlockedDays = [];
+    let selectedBlockedDays = [];
     let currentActiveMatrixFilters = {};
     let pastMonthDatesList = [];
 
@@ -4697,11 +4682,9 @@ let selectedBlockedDays = [];
     let pendingConfirmationCallback = null;
     let pendingProfileUpdate = null;
     let activeSnapshotData = null;
-        let activeInvoiceData = null;
+    let activeInvoiceData = null;
 
     const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-    const APP_SETTINGS_KEY = 'month_tracker_v12_settings';
 
     function getAppSettings() {
       try {
@@ -4996,8 +4979,13 @@ let selectedBlockedDays = [];
       const fcLbl = document.getElementById('lbl-forecaster');
       if (fcCb) fcCb.checked = fcOn;
       if (fcLbl) fcLbl.textContent = fcOn ? 'ON' : 'OFF';
+
+      renderSettingsSttQueueTabs();
+      updateStorageMeterUI();
+      renderNotificationManagerSettingsUI();
+      renderLayoutEditorList();
     }
-function confirmFactoryReset() {
+    function confirmFactoryReset() {
       requestConfirmation("Are you sure you want to delete ALL clients, classes, and payment records permanently?", async () => {
         hasUnsavedChangesSinceBackup = false;
         localStorage.removeItem(getProfileStorageKey());
@@ -5130,7 +5118,7 @@ function confirmFactoryReset() {
       renderNotificationsScreen();
     }
 
-   function formatNotifTimestamp(isoStr) {
+    function formatNotifTimestamp(isoStr) {
       if (!isoStr) return '';
       const d = new Date(isoStr);
       if (isNaN(d)) return '';
@@ -5287,7 +5275,8 @@ function confirmFactoryReset() {
     };
 
     function initData() {
-      activeProfileId = getActiveProfileId(); syncProfileSwitcherUI(); const stored = localStorage.getItem(getProfileStorageKey()) || (activeProfileId === 'default' ? localStorage.getItem('month_tracker_v11_store') : null);
+      activeProfileId = getActiveProfileId();
+      const stored = localStorage.getItem(getProfileStorageKey()) || (activeProfileId === 'default' ? localStorage.getItem('month_tracker_v11_store') : null);
       if (stored) {
         try {
           appState = JSON.parse(stored);
@@ -5341,7 +5330,7 @@ function confirmFactoryReset() {
             ]
           }
         ];
-saveState();
+        saveState();
       }
 
       if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
@@ -5350,18 +5339,27 @@ saveState();
       processAdvanceBalances();
     }
     let hasUnsavedChangesSinceBackup = false;
+    let unsavedEditCount = 0;
 
     function saveState() {
       processAdvanceBalances();
-      localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));
       hasUnsavedChangesSinceBackup = true;
+      unsavedEditCount++;
+      updateUnsavedBackupBadgeUI();
+      idbSet(getProfileStorageKey(), appState);
+      try {
+        localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));
+      } catch (quotaErr) {
+        pruneOldLocalStorageBackups(false);
+        try {localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));} catch (e2) { }
+      }
+      updateStorageMeterUI();
     }
 
     function processAdvanceBalances() {
       appState.clients.forEach(c => {
         if (c.advanceBalance === undefined || c.advanceBalance < 0) c.advanceBalance = 0;
         if (c.pricingModel === undefined) c.pricingModel = 'retainer';
-
         let totalCashIn = 0;
 
         (c.months || []).forEach((m, index) => {
@@ -5418,98 +5416,65 @@ saveState();
       });
     }
 
-window.showMainView = function (viewName, saveHistory = true) {
+    function showMainView(viewName, saveHistory = true) {
       if (viewName !== 'timetable' && typeof isScheduleRotated !== 'undefined' && isScheduleRotated) {
         toggleTimetableOrientation();
       }
       if (viewName !== 'planner' && typeof isPlannerRotated !== 'undefined' && isPlannerRotated) {
         togglePlannerOrientation();
       }
-      ['home', 'timetable', 'planner', 'calendar', 'client-detail', 'clients', 'matrix', 'payments', 'balances', 'ledger', 'templates', 'settings', 'notifications', 'marks'].forEach(v => {        const el = document.getElementById(`view-${v}`);
+
+      const viewMeta = {
+        home: ['Roster', renderRosterPage],
+        timetable: ['Schedule', () => {timetableWeekOffset = 0; renderWeeklyTimetable();}],
+        planner: ['Timetable', renderPlannerView],
+        calendar: ['Calendar', renderCalendarView],
+        'client-detail': [null, null],
+        clients: ['Clients', renderClientsListView],
+        matrix: ['Matrix', renderAnalytics],
+        payments: ['Payments', renderPaymentsView],
+        balances: ['Balances', renderBalancesTable],
+        ledger: ['Ledger', renderDoubleLedgerTable],
+        templates: ['Templates', renderWhatsAppTemplatesScreen],
+        settings: ['Settings', renderSettingsScreen],
+        notifications: ['Notifications', renderNotificationsScreen],
+        marks: ['Marks & Scores', renderMarksView]
+      };
+
+      Object.keys(viewMeta).forEach(v => {
+        const el = document.getElementById(`view-${v}`);
         if (el) el.style.display = (v === viewName) ? 'flex' : 'none';
       });
       ['home', 'timetable', 'clients', 'payments'].forEach(v => {
-        const b = document.getElementById(`bnav-${v}`);
-        if (b) {
-          if (v === viewName) b.classList.add('active');
-          else b.classList.remove('active');
-        }
+        document.getElementById(`bnav-${v}`)?.classList.toggle('active', v === viewName);
       });
-      if (saveHistory) {
-        localStorage.setItem(VIEW_STATE_KEY, viewName);
-      }
+      if (saveHistory) localStorage.setItem(VIEW_STATE_KEY, viewName);
 
+      const meta = viewMeta[viewName];
       const hLabel = document.getElementById('header-context-label');
-      if (viewName === 'home') {
-        if (hLabel) hLabel.textContent = 'Roster';
-        renderRosterPage();
-} else if (viewName === 'timetable') {
-        if (hLabel) hLabel.textContent = 'Schedule';
-        timetableWeekOffset = 0;
-        renderWeeklyTimetable();
-      } else if (viewName === 'planner') {
-        if (hLabel) hLabel.textContent = 'Timetable';
-        renderPlannerView();
-      } else if (viewName === 'calendar') {
-                if (hLabel) hLabel.textContent = 'Calendar';
-        renderCalendarView();
-      } else if (viewName === 'clients') {
-        if (hLabel) hLabel.textContent = 'Clients';
-        renderClientsListView();
-      } else if (viewName === 'matrix') {
-        if (hLabel) hLabel.textContent = 'Matrix';
-        renderAnalytics();
-      } else if (viewName === 'payments') {
-        if (hLabel) hLabel.textContent = 'Payments';
-        renderPaymentsView();
-      } else if (viewName === 'balances') {
-        if (hLabel) hLabel.textContent = 'Balances';
-        renderBalancesTable();
-      } else if (viewName === 'ledger') {
-        if (hLabel) hLabel.textContent = 'Ledger';
-        renderDoubleLedgerTable();
-      } else if (viewName === 'templates') {
-        if (hLabel) hLabel.textContent = 'Templates';
-        renderWhatsAppTemplatesScreen();
-      } else if (viewName === 'settings') {
-        if (hLabel) hLabel.textContent = 'Settings';
-        renderSettingsScreen();
-      } else if (viewName === 'notifications') {
-        if (hLabel) hLabel.textContent = 'Notifications';
-        renderNotificationsScreen();
-} else if (viewName === 'marks') {
-        if (hLabel) hLabel.textContent = 'Marks & Scores';
-        renderMarksView();
+      if (meta) {
+        if (hLabel && meta[0]) hLabel.textContent = meta[0];
+        if (meta[1]) meta[1]();
       }
-      if (typeof updateSidebarActiveState === 'function') {
-        updateSidebarActiveState(viewName);
-      }
-    };
-function showMainView(v, s) {return window.showMainView(v, s);}
+      updateSidebarActiveState(viewName);
+    }
 
     const SIDEBAR_RAIL_KEY = 'month_tracker_sidebar_rail_collapsed';
     let currentSidebarActiveView = 'home';
 
-    window.toggleDrawer = function (open) {
+    function toggleDrawer(open) {
       const d = document.getElementById('side-drawer');
       const o = document.getElementById('drawer-overlay');
       if (!d || !o) return;
-      if (open) {
-        d.classList.add('active');
-        o.classList.add('active');
-        renderDrawerClientsList();
-      } else {
-        d.classList.remove('active');
-        o.classList.remove('active');
-      }
-    };
-    function toggleDrawer(open) {return window.toggleDrawer(open);}
+      d.classList.toggle('active', !!open);
+      o.classList.toggle('active', !!open);
+      if (open) renderDrawerClientsList();
+    }
 
     function toggleSidebarRail(forceCollapsed = null) {
       const isCollapsed = forceCollapsed !== null
         ? forceCollapsed
-        : !document.body.classList.contains('sidebar-rail-collapsed');
-      document.body.classList.toggle('sidebar-rail-collapsed', isCollapsed);
+        : !document.body.classList.contains('sidebar-rail-collapsed'); document.body.classList.toggle('sidebar-rail-collapsed', isCollapsed);
       localStorage.setItem(SIDEBAR_RAIL_KEY, isCollapsed ? 'true' : 'false');
 
       const btn = document.getElementById('sidebar-rail-toggle-btn');
@@ -5588,21 +5553,20 @@ function showMainView(v, s) {return window.showMainView(v, s);}
     }
 
     let clientsDropdownOpen = true;
-    window.toggleClientsDropdown = function () {
+    function toggleClientsDropdown() {
       clientsDropdownOpen = !clientsDropdownOpen;
       const el = document.getElementById('clients-dropdown-content');
       if (el) el.style.display = clientsDropdownOpen ? 'flex' : 'none';
       const btn = document.getElementById('snav-parent-directory');
       if (btn) btn.setAttribute('aria-expanded', clientsDropdownOpen ? 'true' : 'false');
-    };
-    function toggleClientsDropdown() {return window.toggleClientsDropdown();}
-    window.renderDrawerClientsList = function () {
+    }
+
+    function renderDrawerClientsList() {
       const container = document.getElementById('drawer-clients-container');
       if (!container) return;
       const q = (document.getElementById('drawer-client-search')?.value || '').toLowerCase();
       const statusFilter = document.getElementById('drawer-client-status-filter')?.value || 'active';
-      const countEl = document.getElementById('drawer-client-count');
-      if (countEl) countEl.textContent = appState.clients.length;
+      const countEl = document.getElementById('drawer-client-count'); if (countEl) countEl.textContent = appState.clients.length;
 
       const filtered = appState.clients.filter(c => {
         const matchesQuery = c.name.toLowerCase().includes(q);
@@ -5632,16 +5596,15 @@ function showMainView(v, s) {return window.showMainView(v, s);}
             </div>
             <span style="font-size: 0.65rem; font-weight: 800; color: ${isArchived ? 'var(--text-muted)' : 'var(--brand-primary)'};">&rarr;</span>
           </div>
+</div>
         `;
       }).join('');
-    };
-    function renderDrawerClientsList() {return window.renderDrawerClientsList();}
+    }
 
-    window.selectClientFromDrawer = function (clientId) {
+    function selectClientFromDrawer(clientId) {
       toggleDrawer(false);
       viewClientDetail(clientId);
-    };
-    function selectClientFromDrawer(id) {return window.selectClientFromDrawer(id);}
+    }
 
     function getLastStudentClassTime(client) {
       if (client && client.defaultTime) return client.defaultTime;
@@ -5666,25 +5629,8 @@ function showMainView(v, s) {return window.showMainView(v, s);}
       return val === null ? true : val === 'true';
     }
 
-    function openBackupSettingsModal() {
-      const enabled = isDailyBackupEnabled();
-      const cb = document.getElementById('toggle-daily-backup');
-      const lbl = document.getElementById('daily-backup-toggle-label');
-      const status = document.getElementById('daily-backup-status');
-      if (cb) cb.checked = enabled;
-      if (lbl) lbl.textContent = enabled ? 'ON' : 'OFF';
-      if (status) {
-        status.textContent = enabled ? 'Active (Saves automatically once per day)' : 'Turned Off';
-        status.style.color = enabled ? 'var(--success)' : 'var(--text-muted)';
-      }
-      openModal('modal-backup-settings');
-    }
-
     function toggleDailyBackupSetting(checked) {
       localStorage.setItem(DAILY_BACKUP_ENABLED_KEY, checked ? 'true' : 'false');
-      if (document.getElementById('modal-backup-settings')?.classList.contains('active')) {
-        openBackupSettingsModal();
-      }
       showToast(checked ? "Daily auto-backup turned ON" : "Daily auto-backup turned OFF");
       if (checked) runDailyAutoBackupCheck();
     }
@@ -5709,8 +5655,6 @@ function showMainView(v, s) {return window.showMainView(v, s);}
 
         localStorage.setItem(getProfileDailyBackupKey(), JSON.stringify(backupList));
         localStorage.setItem(profileDateKey, todayDate);
-        const statusEl = document.getElementById('daily-backup-status');
-        if (statusEl) statusEl.textContent = `Saved (${todayDate})`;
       }
     }
 
@@ -5724,7 +5668,7 @@ function showMainView(v, s) {return window.showMainView(v, s);}
         });
       });
       const reportHtml = `<!DOCTYPE html><html><head><title>Class Tracker Export</title><style>body{font-family:sans-serif;padding:20px;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #cbd5e1;padding:8px;text-align:left;font-size:12px;}th{background:#1e293b;color:#fff;}</style></head><body><h2>Class & Month Tracker Report (${new Date().toLocaleDateString()})</h2><table><thead><tr><th>Client</th><th>Month</th><th>Class</th><th>Date</th><th>Time</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
-     const blob = new Blob([reportHtml], {type: 'text/html'});
+      const blob = new Blob([reportHtml], {type: 'text/html'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `ClassTracker_Report_${toLocalDateStr()}.html`;
@@ -5769,7 +5713,7 @@ function showMainView(v, s) {return window.showMainView(v, s);}
       }, null, 2);
     }
 
-   async function promptSaveBackupFile(mode) {
+    async function promptSaveBackupFile(mode) {
       const payload = buildFullBackupPayloadString();
       const fileName = `ClassTracker_Backup_${toLocalDateStr()}.json`;
 
@@ -5807,11 +5751,11 @@ function showMainView(v, s) {return window.showMainView(v, s);}
         try {
           const parsed = JSON.parse(ev.target.result);
           const restored = parsed.data ? parsed.data : parsed;
-if (restored && Array.isArray(restored.clients)) {
-           appState = restored;
+          if (restored && Array.isArray(restored.clients)) {
+            appState = restored;
             if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
             appState.clients.forEach(c => {
-                            if (!c.status) c.status = 'active';
+              if (!c.status) c.status = 'active';
             });
             ensureUniqueClientColors(appState.clients);
             if (parsed.extras) {
@@ -5842,7 +5786,7 @@ if (restored && Array.isArray(restored.clients)) {
           });
         });
       });
-     const blob = new Blob([csv], {type: 'text/csv'});
+      const blob = new Blob([csv], {type: 'text/csv'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `ClassTracker_Export_${toLocalDateStr()}.csv`;
@@ -5852,15 +5796,14 @@ if (restored && Array.isArray(restored.clients)) {
 
     function updateQuickReceiptBalancesDisplay() {
       const cSelect = document.getElementById('quick-receipt-client-select');
-      const clientId = Number(cSelect?.value);
-      const client = appState.clients.find(c => c.id === clientId);
+      const clientId = cSelect?.value;
+      const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
 
       const dueBalEl = document.getElementById('qr-due-bal');
       const advBalEl = document.getElementById('qr-adv-bal');
       const previewBox = document.getElementById('qr-allocation-preview-box');
-      const autoSettle = document.getElementById('qr-auto-settle-checkbox')?.checked ?? true;
-      const enteredAmt = Math.max(0, Number(document.getElementById('quick-receipt-amount')?.value) || 0);
+      const autoSettle = document.getElementById('qr-auto-settle-checkbox')?.checked ?? true; const enteredAmt = Math.max(0, Number(document.getElementById('quick-receipt-amount')?.value) || 0);
 
       const bal = Math.max(0, client.advanceBalance || 0);
       const unpaidDueMonths = (client.months || []).filter(m => !m.isPaid && m.isDue && (m.calculatedDueFee || 0) > 0);
@@ -6055,7 +5998,7 @@ if (restored && Array.isArray(restored.clients)) {
       }
     }
 
-   function renderRosterPage() {
+    function renderRosterPage() {
       const todayDay = getTodayWeekday();
       const todayDateStr = toLocalDateStr();
       const todayBadge = document.getElementById('today-name-badge');
@@ -6126,7 +6069,7 @@ if (restored && Array.isArray(restored.clients)) {
 
       const scheduledBlock = document.getElementById('roster-block-scheduled');
       const schedTitleEl = document.getElementById('roster-scheduled-header-title');
-     if (scheduledBlock) {
+      if (scheduledBlock) {
         const targetDate = new Date();
         targetDate.setDate(targetDate.getDate() + rosterScheduledDayOffset);
         const targetDateStr = toLocalDateStr(targetDate);
@@ -6238,7 +6181,7 @@ if (restored && Array.isArray(restored.clients)) {
       renderRosterPage();
     }
 
-   function executeScheduledTodayAdd(clientId, dateStr, customTimeStr = null) {
+    function executeScheduledTodayAdd(clientId, dateStr, customTimeStr = null) {
       const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
       const timeVal = customTimeStr || `${typeof getTimePickerValue === 'function' ? getTimePickerValue('quicklog-time') : (document.getElementById('quicklog-time')?.value || '16:00')} (${document.getElementById('quicklog-duration-select')?.value || '1h'})`;
@@ -6340,7 +6283,7 @@ if (restored && Array.isArray(restored.clients)) {
     function openQuickAddModal() {
       const select = document.getElementById('quickmodal-client-select');
       if (!select) return;
-     const activeClients = appState.clients.filter(c => (c.status || 'active') !== 'archived');
+      const activeClients = appState.clients.filter(c => (c.status || 'active') !== 'archived');
       select.innerHTML = activeClients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
       document.getElementById('quickmodal-date').value = toLocalDateStr();
       document.getElementById('quickmodal-notes').value = '';
@@ -6383,7 +6326,7 @@ if (restored && Array.isArray(restored.clients)) {
       }
     }
 
-   function handleSaveQuickModalSession() {
+    function handleSaveQuickModalSession() {
       const clientId = document.getElementById('quickmodal-client-select')?.value;
       const dateVal = document.getElementById('quickmodal-date')?.value || toLocalDateStr();
       const timeVal = `${getTimePickerValue('quickmodal-time') || '16:00'} (${document.getElementById('quickmodal-duration')?.value || '1h'})`;
@@ -6633,21 +6576,20 @@ if (restored && Array.isArray(restored.clients)) {
          <p style="font-size: 0.7rem; color: var(--text-muted);">${client.grade || '1-on-1'} • Model: ${client.pricingModel === 'per_class' ? 'Per-Class' : 'Retainer'} ${client.phone ? '• ' + client.phone : ''}</p>
          ${(client.scheduledDays && client.scheduledDays.length > 0) || (client.blockedDays && client.blockedDays.length > 0) ? `
            <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.3rem; align-items:center;">
-             ${(client.scheduledDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--brand-surface); color:var(--brand-primary); border:1px solid var(--brand-primary);">${d}</span>`).join('')}
+${(client.scheduledDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--brand-surface); color:var(--brand-primary); border:1px solid var(--brand-primary);">${d}</span>`).join('')}
              ${(client.blockedDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--danger-surface); color:var(--danger); border:1px solid var(--danger); text-decoration:line-through;" title="Unavailable / Busy">${d}</span>`).join('')}
            </div>
          ` : ''}
           </div>
     <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
             ${(totalDueAmount > 0 && (client.advanceBalance || 0) > 0) ? `<button type="button" onclick="autoSettleClientDues('${client.id}')" class="btn btn-success" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">⚡ Auto-Settle</button>` : ''}
-           <button type="button" onclick="generateParentTokenLink('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;" title="Copy parent read-only token link">🔗 Parent Link</button>
            <button type="button" onclick="openMarksScreenForClient('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">🎓 Marks &amp; Exams</button>
          <button type="button" onclick="toggleArchiveClient('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;"> 
            ${isArchived ? 'Unarchive' : 'Archive'}
          </button>
          <button type="button" onclick="openClientModal('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">Edit</button>
           </div>
-        </div>
+                  </div>
 
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; border-top: 1.5px solid var(--border-color); padding-top: 0.5rem; font-size: 0.7rem;">
           <div style="background: var(--bg-subtle); padding: 0.35rem; border-radius: 4px; border: 1.5px solid var(--border-color);">
@@ -6872,6 +6814,8 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
 
       document.getElementById('edit-month-client-id').value = clientId;
       document.getElementById('edit-month-id').value = monthId;
+      const qInput = document.getElementById('edit-month-quota');
+      if (qInput) qInput.value = month.quota || client.quota || 4;
       document.getElementById('edit-month-fee-override').value = month.manualFeeOverride !== undefined ? month.manualFeeOverride : '';
       document.getElementById('edit-month-force-complete').checked = !!month.forceCompleted;
       openModal('modal-edit-month');
@@ -6898,6 +6842,11 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
       const client = appState.clients.find(c => String(c.id) === String(clientId));
       const month = client.months.find(m => String(m.id) === String(monthId));
 
+      const newQuota = Number(document.getElementById('edit-month-quota')?.value);
+      if (newQuota && newQuota >= 1) {
+        month.quota = newQuota;
+      }
+
       const overrideVal = document.getElementById('edit-month-fee-override').value;
       if (overrideVal === '') {
         delete month.manualFeeOverride;
@@ -6914,7 +6863,6 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
       renderClientDetailView();
       renderAll();
     }
-
     function confirmDeleteEmptyMonth(clientId, monthId) {
       requestConfirmation("Delete this empty month block?", () => {
         const client = appState.clients.find(c => String(c.id) === String(clientId));
@@ -7097,14 +7045,13 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
           saveDeletedSessionsList(trash);
         }
 
-       month.sessions = month.sessions.filter(s => String(s.id) !== String(sessId));
+        month.sessions = month.sessions.filter(s => String(s.id) !== String(sessId));
         saveState();
         showToast("Moved to Trash (Settings → Trash to restore).");
         renderAll();
       });
     }
 
-    const WA_CATEGORIES_KEY = 'month_tracker_v12_wa_categories';
     let activeOpenTemplateFolder = null; // null = showing folders grid, otherwise category id
 
     const DEFAULT_WA_CATEGORIES = [
@@ -7516,18 +7463,17 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
         if (document.getElementById('logclass-homework')) document.getElementById('logclass-homework').value = sess.homework || '';
         if (document.getElementById('logclass-chatlog')) document.getElementById('logclass-chatlog').value = sess.chatLog || '';
         populateSessionTestFields('logclass', sess.classTest || null);
-   } else {
-        document.getElementById('logclass-session-id').value = '';
+      } else {
+document.getElementById('logclass-session-id').value = '';
         document.getElementById('logclass-modal-title').textContent = "Log Class";
         document.getElementById('logclass-date').value = toLocalDateStr();
         setTimePickerValue('logclass-time', getLastStudentClassTime(client));
-        document.getElementById('logclass-duration').value = '1h';
+        document.getElementById('logclass-duration').value = client.sessionDuration || '1h';
         document.getElementById('logclass-tag').value = 'normal';
         document.getElementById('logclass-notes').value = '';
         if (document.getElementById('logclass-homework')) document.getElementById('logclass-homework').value = '';
         if (document.getElementById('logclass-chatlog')) document.getElementById('logclass-chatlog').value = '';
-        resetSessionTestFields('logclass');
-      }
+        resetSessionTestFields('logclass');      }
 
       const logBanner = document.getElementById('logclass-last-topic-banner');
       if (logBanner) {
@@ -7545,7 +7491,7 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
 
     function executeLogClassModal() {
       const clientId = document.getElementById('logclass-client-id').value;
-    const monthId = document.getElementById('logclass-month-id').value;
+      const monthId = document.getElementById('logclass-month-id').value;
       const sessionId = document.getElementById('logclass-session-id').value;
       const dateVal = document.getElementById('logclass-date').value || toLocalDateStr();
       const timeVal = `${getTimePickerValue('logclass-time') || '16:00'} (${document.getElementById('logclass-duration').value || '1h'})`;
@@ -7582,7 +7528,7 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
         const dayName = WEEKDAYS[dObj.getDay()];
         const isBlockedDay = Array.isArray(client.blockedDays) && client.blockedDays.includes(dayName);
 
-      if (splitCount > 1) {
+        if (splitCount > 1) {
           window._pendingSessionHomework = homework;
           window._pendingSessionChatLog = chatLog;
           window._pendingSessionClassTest = classTest;
@@ -7623,7 +7569,7 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
       const client = appState.clients.find(c => String(c.id) === String(appState.selectedClientId));
       if (!client) return;
 
-    document.getElementById('past-month-quota').value = client.quota || 4;
+      document.getElementById('past-month-quota').value = client.quota || 4;
       document.getElementById('past-month-fee').value = client.fee || 500;
       document.getElementById('past-month-date-picker').value = toLocalDateStr();
       pastMonthDatesList = [];
@@ -7734,7 +7680,7 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
       const sessId = document.getElementById('reassign-session-id').value;
       const targetMonthId = document.getElementById('reassign-target-select').value;
 
-const client = appState.clients.find(c => String(c.id) === String(clientId));
+      const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
       const srcMonth = client.months.find(m => m.sessions.some(s => String(s.id) === String(sessId)));
       const dstMonth = client.months.find(m => String(m.id) === String(targetMonthId));
@@ -7771,7 +7717,7 @@ const client = appState.clients.find(c => String(c.id) === String(clientId));
         });
       });
 
-let earliestDate = new Date();
+      let earliestDate = new Date();
       earliestDate.setHours(12, 0, 0, 0);
       earliestDate.setDate(earliestDate.getDate() - 365);
 
@@ -7797,7 +7743,7 @@ let earliestDate = new Date();
       const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
       startDay.setDate(startDay.getDate() - diff);
 
-      const totalDays = Math.round((today - startDay) / (1000 * 60 * 60 * 24)) + 1;      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const totalDays = Math.round((today - startDay) / (1000 * 60 * 60 * 24)) + 1; const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
       let currentColumn = 1;
 
       for (let i = 0; i < totalDays; i++) {
@@ -7819,7 +7765,7 @@ let earliestDate = new Date();
           const label = document.createElement('div');
           label.className = 'heatmap-month-label';
           label.style.gridColumn = `${currentColumn} / span 4`;
-label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+          label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
           grid.appendChild(label);
         }
 
@@ -7838,7 +7784,7 @@ label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
         if (dStr === todayLocalStr) {
           cell.classList.add('selected-cell');
         }
-                cell.setAttribute('data-count', Math.min(count, 5));
+        cell.setAttribute('data-count', Math.min(count, 5));
         cell.title = `${dayOfWeekName}, ${formatDisplayDate(dStr, true)}: ${count} class(es)`;
 
         cell.onclick = () => {
@@ -7880,7 +7826,7 @@ label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
         });
         csv += `"${c.name}",${(c.months || []).length},${totalSessions},${totalBilled},${totalPaid},${Math.max(0, c.advanceBalance || 0)}\n`;
       });
-     const blob = new Blob([csv], {type: 'text/csv'});
+      const blob = new Blob([csv], {type: 'text/csv'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `Summary_Pivot_Database_${toLocalDateStr()}.csv`;
@@ -7892,7 +7838,7 @@ label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
       const table = document.getElementById('analytics-pivot-table');
       if (!table) return;
 
-    const fClient = document.getElementById('pivot-filter-client')?.value || 'all';
+      const fClient = document.getElementById('pivot-filter-client')?.value || 'all';
       const fMonth = document.getElementById('pivot-filter-month')?.value || 'all';
 
       let totalSessionsAll = 0, totalBilledAll = 0, totalPaidAll = 0, totalDueAll = 0;
@@ -7929,7 +7875,7 @@ label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
         });
         const bal = Math.max(0, totalBilled - totalPaid);
 
-       totalSessionsAll += totalSessions;
+        totalSessionsAll += totalSessions;
         totalBilledAll += totalBilled;
         totalPaidAll += totalPaid;
         totalDueAll += bal;
@@ -8156,21 +8102,23 @@ label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
         matrixClientSel.value = appState.clients.some(c => String(c.id) === String(prevMVal)) ? prevMVal : 'all';
       }
 
-      const pivotClientSel = document.getElementById('pivot-filter-client');
+const pivotClientSel = document.getElementById('pivot-filter-client');
       if (pivotClientSel) {
         const prevPVal = pivotClientSel.value || 'all';
         pivotClientSel.innerHTML = `<option value="all">All Clients</option>` + appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         pivotClientSel.value = appState.clients.some(c => String(c.id) === String(prevPVal)) ? prevPVal : 'all';
       }
       const pivotMonthSel = document.getElementById('pivot-filter-month');
-      if (pivotMonthSel && pivotMonthSel.options.length <= 1) {
-        pivotMonthSel.innerHTML = `<option value="all">All Months</option>` + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">Month ${i + 1}</option>`).join('');
+      if (pivotMonthSel) {
+        const prevM = pivotMonthSel.value || 'all';
+        const maxMonth = Math.max(12, ...appState.clients.flatMap(c => (c.months || []).map(m => m.monthNumber || 0)));
+        pivotMonthSel.innerHTML = `<option value="all">All Months</option>` + Array.from({length: maxMonth}, (_, i) => `<option value="${i + 1}">Month ${i + 1}</option>`).join('');
+        pivotMonthSel.value = prevM;
       }
 
       const selectedClientFilter = matrixClientSel?.value || 'all';
       const monthFilter = document.getElementById('analytics-month-filter')?.value || 'all';
       const hideArchived = document.getElementById('matrix-hide-archived')?.checked ?? true;
-
       let totalBilled = 0, totalPaid = 0, unbilledMidCycle = 0, unbilledSessionsCount = 0;
 
       const filtered = appState.clients.filter(c => {
@@ -8407,13 +8355,15 @@ label.textContent = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
       const s = getAppSettings();
       document.getElementById('client-modal-title').textContent = isNew ? "New Client Profile" : "Edit Client Profile";
       document.getElementById('btn-delete-client').style.display = isNew ? "none" : "inline-flex";
+      const rangeBtn = document.getElementById('btn-open-month-rate-range');
+      if (rangeBtn) rangeBtn.style.display = isNew ? "none" : "inline-flex";
 
       if (isNew) {
         document.getElementById('form-client-id').value = '';
         document.getElementById('form-client-name').value = '';
-if (document.getElementById('form-client-tag')) document.getElementById('form-client-tag').value = '';
+        if (document.getElementById('form-client-tag')) document.getElementById('form-client-tag').value = '';
         setClientModalColorPreview(pickRandomClientColor(appState.clients));
-        document.getElementById('form-client-grade').value = '';        document.getElementById('form-client-phone').value = '';
+        document.getElementById('form-client-grade').value = ''; document.getElementById('form-client-phone').value = '';
         document.getElementById('form-client-model').value = 'retainer';
         document.getElementById('form-client-quota').value = s.defaultQuota || 4;
         document.getElementById('form-client-fee').value = s.defaultFee || 500;
@@ -8427,10 +8377,10 @@ if (document.getElementById('form-client-tag')) document.getElementById('form-cl
         if (!client) return;
         document.getElementById('form-client-id').value = client.id;
         document.getElementById('form-client-name').value = client.name || '';
-if (document.getElementById('form-client-tag')) document.getElementById('form-client-tag').value = client.studentTag || '';
+        if (document.getElementById('form-client-tag')) document.getElementById('form-client-tag').value = client.studentTag || '';
         setClientModalColorPreview(client.accentColor || pickRandomClientColor(appState.clients));
-        document.getElementById('form-client-grade').value = client.grade || ''; 
-        document.getElementById('form-client-phone').value = client.phone || '';        document.getElementById('form-client-model').value = client.pricingModel || 'retainer';
+        document.getElementById('form-client-grade').value = client.grade || '';
+        document.getElementById('form-client-phone').value = client.phone || ''; document.getElementById('form-client-model').value = client.pricingModel || 'retainer';
         document.getElementById('form-client-quota').value = client.quota || 4;
         document.getElementById('form-client-fee').value = client.fee || 500;
         document.getElementById('form-client-duration').value = client.sessionDuration || '1h';
@@ -8480,11 +8430,15 @@ if (document.getElementById('form-client-tag')) document.getElementById('form-cl
             pendingProfileUpdate = {
               clientId: c.id,
               name, studentTag, accentColor, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status,
+              oldQuota: Number(c.quota) || 4,
+              oldFee: Number(c.fee) || 0,
+              quotaChanged,
+              feeChanged,
               scheduledDays: [...selectedFormDays],
               blockedDays: [...selectedBlockedDays]
             };
             closeModal('modal-client');
-            openModal('modal-profile-update-scope');
+            openProfileUpdateScopeModal();
             return;
           }
 
@@ -8524,9 +8478,195 @@ if (document.getElementById('form-client-tag')) document.getElementById('form-cl
         showToast(`Client ${name} added successfully!`);
       }
 
-      closeModal('modal-client');
+closeModal('modal-client');
       saveState();
       renderAll();
+    }
+
+    function openProfileUpdateScopeFromClientModal() {
+      const idVal = document.getElementById('form-client-id')?.value;
+      const c = appState.clients.find(x => String(x.id) === String(idVal));
+      if (!c) return;
+
+      const name = (document.getElementById('form-client-name')?.value || '').trim() || c.name;
+      const grade = (document.getElementById('form-client-grade')?.value || '').trim();
+      const studentTag = (document.getElementById('form-client-tag')?.value || '').trim();      const accentColor = (document.getElementById('form-client-color')?.value || c.accentColor || '#2563eb').toLowerCase();
+      const phone = (document.getElementById('form-client-phone')?.value || '').trim();
+      const pricingModel = document.getElementById('form-client-model')?.value || 'retainer';
+      const quota = Number(document.getElementById('form-client-quota')?.value) || 4;
+      const fee = Number(document.getElementById('form-client-fee')?.value) || 0;
+      const sessionDuration = document.getElementById('form-client-duration')?.value || '1h';
+      const status = document.getElementById('form-client-status')?.value || 'active';
+      const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
+
+      pendingProfileUpdate = {
+        clientId: c.id,
+        name, studentTag, accentColor, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status,
+        oldQuota: Number(c.quota) || 4,
+        oldFee: Number(c.fee) || 0,
+        quotaChanged: true,
+        feeChanged: true,
+        scheduledDays: [...selectedFormDays],
+        blockedDays: [...selectedBlockedDays]
+      };
+      closeModal('modal-client');
+      openProfileUpdateScopeModal();
+    }
+
+    function openProfileUpdateScopeModal() {
+      if (!pendingProfileUpdate) return;
+      const u = pendingProfileUpdate;
+      const c = appState.clients.find(x => String(x.id) === String(u.clientId));
+      if (!c) return;
+
+      const months = c.months || [];
+      const curr = getCurrency();
+
+      const summaryEl = document.getElementById('scope-change-summary');
+      if (summaryEl) {
+        const lines = [];
+        lines.push(`<strong>${escapeHtmlAttr(u.name)}</strong> (${months.length} existing month${months.length === 1 ? '' : 's'})`);
+        lines.push(
+          `Quota: <strong class="num-tabular">${u.oldQuota} &rarr; ${u.quota} classes</strong> &bull; Fee: <strong class="num-tabular">${u.oldFee} &rarr; ${u.fee} ${curr}</strong>`
+        );
+        summaryEl.innerHTML = lines.join('<br>');
+      }
+
+      const applyQuotaCb = document.getElementById('scope-apply-quota');
+      const applyFeeCb = document.getElementById('scope-apply-fee');
+      if (applyQuotaCb) applyQuotaCb.checked = !!u.quotaChanged;
+      if (applyFeeCb) applyFeeCb.checked = !!u.feeChanged;
+
+      const reorgCb = document.getElementById('scope-reorg-classes');
+      if (reorgCb) reorgCb.checked = false;
+
+      const resetPaidCb = document.getElementById('scope-reset-paid');
+      if (resetPaidCb) resetPaidCb.checked = !!u.feeChanged;
+
+      const fromSel = document.getElementById('scope-from-month');
+      const tillSel = document.getElementById('scope-till-month');
+      if (fromSel && tillSel) {
+        const fromOpts = months.map(m => `<option value="${m.monthNumber}">Month ${m.monthNumber} (${m.quota || c.quota} cls • ${m.manualFeeOverride !== undefined ? m.manualFeeOverride : (m.feeAmount ?? c.fee)} ${curr})</option>`).join('')
+          + `<option value="future_only">Future New Months Only</option>`;
+        const tillOpts = months.map(m => `<option value="${m.monthNumber}">Month ${m.monthNumber}</option>`).join('')
+          + `<option value="onwards">Onwards (Include Future)</option>`;
+
+        fromSel.innerHTML = fromOpts;
+        tillSel.innerHTML = tillOpts;
+
+        // Default to current/latest month onwards
+        fromSel.value = months.length > 0 ? String(months[months.length - 1].monthNumber) : 'future_only';
+        tillSel.value = 'onwards';
+      }
+
+      const checklist = document.getElementById('scope-months-checklist');
+      if (checklist) {
+        if (months.length === 0) {
+          checklist.innerHTML = `<span style="font-size:0.68rem; color:var(--text-muted); padding:0.25rem;">No existing monthly blocks yet.</span>`;
+        } else {
+          checklist.innerHTML = months.map(m => {
+            const mQuota = m.quota || c.quota;
+            const mFee = m.manualFeeOverride !== undefined ? m.manualFeeOverride : (m.feeAmount !== undefined ? m.feeAmount : c.fee);
+            const statusBadge = m.isPaid
+              ? `<span style="font-size:0.56rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--success-surface); color:var(--success);">PAID</span>`
+              : (m.isDue
+                ? `<span style="font-size:0.56rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--warning-surface); color:var(--warning);">DUE</span>`
+                : `<span style="font-size:0.56rem; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--bg-surface); color:var(--text-muted); border:1px solid var(--border-color);">OPEN</span>`);
+            return `
+              <label style="display:flex; align-items:center; justify-content:space-between; gap:0.4rem; padding:0.32rem 0.45rem; background:var(--bg-surface); border:1px solid var(--border-color); border-radius:6px; font-size:0.68rem; cursor:pointer;">
+                <span style="display:flex; align-items:center; gap:0.4rem; min-width:0;">
+                  <input type="checkbox" class="scope-month-cb" data-month-id="${m.id}" data-month-num="${m.monthNumber}" onchange="updateScopeSelectedCountLabel()">
+                  <span><strong>M${m.monthNumber}</strong> <span class="num-tabular" style="color:var(--text-muted);">(${m.sessions.length}/${mQuota} cls • ${mFee} ${curr})</span></span>
+                </span>
+                ${statusBadge}
+              </label>
+            `;
+          }).join('');
+        }
+      }
+
+      onProfileScopeRangeChanged();
+      updateProfileScopeOptionsVisibility();
+      openModal('modal-profile-update-scope');
+    }
+
+    function updateProfileScopeOptionsVisibility() {
+      const qOn = document.getElementById('scope-apply-quota')?.checked;
+      const fOn = document.getElementById('scope-apply-fee')?.checked;
+      const reorgRow = document.getElementById('scope-reorg-row');
+      const resetRow = document.getElementById('scope-reset-paid-row');
+      if (reorgRow) reorgRow.style.display = qOn ? 'flex' : 'none';
+      if (resetRow) resetRow.style.display = fOn ? 'flex' : 'none';
+    }
+
+    function setProfileScopePreset(preset) {
+      if (!pendingProfileUpdate) return;
+      const c = appState.clients.find(x => String(x.id) === String(pendingProfileUpdate.clientId));
+      const months = c?.months || [];
+      const fromSel = document.getElementById('scope-from-month');
+      const tillSel = document.getElementById('scope-till-month');
+      if (!fromSel || !tillSel) return;
+
+      if (preset === 'upcoming_only') {
+        fromSel.value = 'future_only';
+        tillSel.value = 'onwards';
+      } else if (preset === 'this_month') {
+        fromSel.value = months.length > 0 ? String(months[months.length - 1].monthNumber) : 'future_only';
+        tillSel.value = 'onwards';
+      } else if (preset === 'all_months') {
+        fromSel.value = months.length > 0 ? String(months[0].monthNumber) : 'future_only';
+        tillSel.value = 'onwards';
+      }
+      onProfileScopeRangeChanged();
+    }
+
+    function onProfileScopeRangeChanged() {
+      const fromSel = document.getElementById('scope-from-month');
+      const tillSel = document.getElementById('scope-till-month');
+      const futureCb = document.getElementById('scope-apply-future');
+      if (!fromSel || !tillSel) return;
+
+      const fromVal = fromSel.value;
+      let tillVal = tillSel.value;
+
+      if (fromVal === 'future_only') {
+        tillSel.value = 'onwards';
+        tillVal = 'onwards';
+        document.querySelectorAll('#scope-months-checklist .scope-month-cb').forEach(cb => {
+          cb.checked = false;
+        });
+        if (futureCb) futureCb.checked = true;
+      } else {
+        const fromNum = Number(fromVal);
+        const isOnwards = tillVal === 'onwards';
+        let tillNum = isOnwards ? Infinity : Number(tillVal);
+
+        if (!isOnwards && tillNum < fromNum) {
+          tillNum = fromNum;
+          tillSel.value = String(fromNum);
+        }
+
+        document.querySelectorAll('#scope-months-checklist .scope-month-cb').forEach(cb => {
+          const mNum = Number(cb.getAttribute('data-month-num'));
+          cb.checked = mNum >= fromNum && mNum <= tillNum;
+        });
+        if (futureCb) futureCb.checked = isOnwards;
+      }
+
+      updateScopeSelectedCountLabel();
+    }
+
+    function updateScopeSelectedCountLabel() {
+      const cbs = Array.from(document.querySelectorAll('#scope-months-checklist .scope-month-cb'));
+      const checkedCount = cbs.filter(cb => cb.checked).length;
+      const includeFuture = document.getElementById('scope-apply-future')?.checked;
+      const lbl = document.getElementById('scope-selected-count');
+      if (lbl) {
+        const parts = [];
+        if (checkedCount > 0) parts.push(`${checkedCount} month${checkedCount === 1 ? '' : 's'}`);
+        if (includeFuture) parts.push('future months');
+        lbl.textContent = parts.length > 0 ? parts.join(' + ') : 'None selected';
+      }
     }
 
     function applyClientProfileUpdates(targetScope) {
@@ -8535,6 +8675,7 @@ if (document.getElementById('form-client-tag')) document.getElementById('form-cl
       const c = appState.clients.find(x => String(x.id) === String(update.clientId));
       if (!c) return;
 
+      // Always save non-rate profile metadata
       c.name = update.name;
       c.studentTag = update.studentTag || '';
       c.accentColor = update.accentColor || '#2563eb';
@@ -8545,42 +8686,129 @@ if (document.getElementById('form-client-tag')) document.getElementById('form-cl
       c.scheduledDays = update.scheduledDays;
       c.blockedDays = update.blockedDays || [];
       c.defaultTime = update.defaultTime || '16:00';
-      c.quota = update.quota; c.fee = update.fee;
       c.sessionDuration = update.sessionDuration || '1h';
 
+      const applyQuota = document.getElementById('scope-apply-quota')?.checked ?? true;
+      const applyFee = document.getElementById('scope-apply-fee')?.checked ?? true;
+      const applyToFuture = document.getElementById('scope-apply-future')?.checked ?? true;
+      const shouldReorg = (document.getElementById('scope-reorg-classes')?.checked ?? false) && applyQuota;
+      const resetPaid = (document.getElementById('scope-reset-paid')?.checked ?? true) && applyFee;
+
+      // Update default client quota/fee ONLY if applying to future months
+      if (applyToFuture) {
+        if (applyQuota) c.quota = update.quota;
+        if (applyFee) c.fee = update.fee;
+      }
+
+      let selectedMonthIds = new Set();
       if (targetScope === 'all_months') {
-        (c.months || []).forEach(m => {
-          m.quota = update.quota;
-          m.feeAmount = update.fee;
-          delete m.manualFeeOverride;
-          m.isPaid = false;
-        });
+        (c.months || []).forEach(m => selectedMonthIds.add(String(m.id)));
       } else if (targetScope === 'this_month') {
         if (c.months && c.months.length > 0) {
-          const currentMonth = c.months[c.months.length - 1];
-          currentMonth.quota = update.quota;
-          currentMonth.feeAmount = update.fee;
-          delete currentMonth.manualFeeOverride;
-          currentMonth.isPaid = false;
+          selectedMonthIds.add(String(c.months[c.months.length - 1].id));
         }
+      } else if (targetScope === 'custom') {
+        document.querySelectorAll('#scope-months-checklist .scope-month-cb:checked').forEach(cb => {
+          selectedMonthIds.add(String(cb.getAttribute('data-month-id')));
+        });
+      }
+
+      const affectedIndices = [];
+      (c.months || []).forEach((m, idx) => {
+        if (!selectedMonthIds.has(String(m.id))) return;
+        affectedIndices.push(idx);
+        if (applyQuota) m.quota = update.quota;
+        if (applyFee) {
+          m.feeAmount = update.fee;
+          delete m.manualFeeOverride;
+          if (resetPaid) m.isPaid = false;
+        }
+      });
+
+      // Optionally re-pack classes inside the selected months to match the new quota
+      if (shouldReorg && affectedIndices.length > 0) {
+        const collectedSessions = [];
+        affectedIndices.forEach(idx => {
+          const m = c.months[idx];
+          (m.sessions || []).forEach(s => collectedSessions.push(s));
+          m.sessions = [];
+        });
+        collectedSessions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        let sIdx = 0;
+        affectedIndices.forEach(idx => {
+          const m = c.months[idx];
+          const q = m.quota || update.quota || c.quota || 4;
+          while (sIdx < collectedSessions.length && m.sessions.length < q) {
+            m.sessions.push(collectedSessions[sIdx++]);
+          }
+        });
+
+        // Handle overflow sessions if the new quota is smaller than before
+        const lastAffectedIdx = affectedIndices[affectedIndices.length - 1];
+        let insertCursor = lastAffectedIdx + 1;
+        while (sIdx < collectedSessions.length) {
+          if (applyToFuture || lastAffectedIdx === c.months.length - 1) {
+            const newQ = update.quota || c.quota || 4;
+            const newFee = applyFee ? update.fee : c.fee;
+            const chunk = collectedSessions.slice(sIdx, sIdx + newQ);
+            sIdx += chunk.length;
+            c.months.splice(insertCursor++, 0, {
+              id: generateId() + sIdx,
+              monthNumber: insertCursor,
+              quota: newQ,
+              feeAmount: newFee,
+              isCompleted: false,
+              isPaid: false,
+              installments: [],
+              sessions: chunk
+            });
+          } else {
+            // Bounded range: keep overflow in the last affected month without disturbing later months
+            c.months[lastAffectedIdx].sessions.push(collectedSessions[sIdx++]);
+          }
+        }
+
+        // Remove empty affected blocks that have no payment receipts (keeping at least 1 month)
+        c.months = c.months.filter((m, idx) => {
+          if (c.months.length <= 1) return true;
+          const wasAffected = selectedMonthIds.has(String(m.id));
+          const hasSessions = (m.sessions || []).length > 0;
+          const hasPayments = (m.installments || []).length > 0;
+          return !wasAffected || hasSessions || hasPayments;
+        });
+
+        if (c.months.length === 0) {
+          c.months.push({
+            id: generateId(),
+            monthNumber: 1,
+            quota: c.quota,
+            feeAmount: c.fee,
+            isCompleted: false,
+            isPaid: false,
+            installments: [],
+            sessions: []
+          });
+        }
+        c.months.forEach((m, idx) => {m.monthNumber = idx + 1;});
       }
 
       pendingProfileUpdate = null;
       closeModal('modal-profile-update-scope');
-     saveState();
-      showToast(`Updated profile and recalculated balances!`);
+      saveState();
+      showToast(`Updated ${affectedIndices.length} month(s)${applyToFuture ? ' + future defaults' : ''}!`);
       renderAll();
     }
-
     function confirmDeleteClient(clientId) {
       const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
-requestConfirmation(`Permanently delete client "${client.name}" and all their records?`, () => {
+      requestConfirmation(`Permanently delete client "${client.name}" and all their records?`, () => {
         appState.clients = appState.clients.filter(c => String(c.id) !== String(clientId));
         if (Array.isArray(appState.timetableSlots)) {
           appState.timetableSlots = appState.timetableSlots.filter(s => String(s.clientId) !== String(clientId));
         }
-        if (String(appState.selectedClientId) === String(clientId)) {          appState.selectedClientId = null;
+        if (String(appState.selectedClientId) === String(clientId)) {
+          appState.selectedClientId = null;
         }
         closeModal('modal-client');
         saveState();
@@ -8595,7 +8823,7 @@ requestConfirmation(`Permanently delete client "${client.name}" and all their re
 
     function executeQuickReceipt() {
       const cSelect = document.getElementById('quick-receipt-client-select');
-      const clientId = Number(cSelect?.value);
+      const clientId = cSelect?.value;
       const amount = Number(document.getElementById('quick-receipt-amount')?.value);
       const dateVal = document.getElementById('quick-receipt-date')?.value || toLocalDateStr();
 
@@ -8604,13 +8832,12 @@ requestConfirmation(`Permanently delete client "${client.name}" and all their re
         return;
       }
 
-      const client = appState.clients.find(c => c.id === clientId);
+      const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
 
       if (!client.months || client.months.length === 0) {
         client.months = [{id: generateId(), monthNumber: 1, quota: client.quota, feeAmount: client.fee, isCompleted: false, isPaid: false, installments: [], sessions: []}];
       }
-
       const targetMonth = client.months[client.months.length - 1];
       if (!targetMonth.installments) targetMonth.installments = [];
 
@@ -8661,7 +8888,7 @@ requestConfirmation(`Permanently delete client "${client.name}" and all their re
 
       document.getElementById('edit-pay-client-id').value = clientId;
       document.getElementById('edit-pay-month-id').value = monthId;
-document.getElementById('edit-pay-inst-id').value = instId;
+      document.getElementById('edit-pay-inst-id').value = instId;
       document.getElementById('edit-pay-amount').value = inst.amount || 0;
       document.getElementById('edit-pay-date').value = inst.date || toLocalDateStr();
       document.getElementById('edit-pay-note').value = inst.note || '';
@@ -8743,20 +8970,24 @@ document.getElementById('edit-pay-inst-id').value = instId;
         updateQuickReceiptBalancesDisplay();
       }
 
-     const qrDateInput = document.getElementById('quick-receipt-date');
+      const qrDateInput = document.getElementById('quick-receipt-date');
       if (qrDateInput && !qrDateInput.value) {
         qrDateInput.value = toLocalDateStr();
       }
 
-      const settleClientSel = document.getElementById('settle-filter-client');
+const settleClientSel = document.getElementById('settle-filter-client');
       if (settleClientSel) {
         const prevSVal = settleClientSel.value || 'all';
         settleClientSel.innerHTML = `<option value="all">All Clients</option>` + appState.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         settleClientSel.value = appState.clients.some(c => String(c.id) === String(prevSVal)) ? prevSVal : 'all';
       }
+      const maxMonth = Math.max(12, ...appState.clients.flatMap(c => (c.months || []).map(m => m.monthNumber || 0)));
+      const monthOptionsHtml = `<option value="all">All Months</option>` + Array.from({length: maxMonth}, (_, i) => `<option value="${i + 1}">Month ${i + 1}</option>`).join('');
       const settleMonthSel = document.getElementById('settle-filter-month');
-      if (settleMonthSel && settleMonthSel.options.length <= 1) {
-        settleMonthSel.innerHTML = `<option value="all">All Months</option>` + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">Month ${i + 1}</option>`).join('');
+      if (settleMonthSel) {
+        const prevSM = settleMonthSel.value || 'all';
+        settleMonthSel.innerHTML = monthOptionsHtml;
+        settleMonthSel.value = prevSM;
       }
 
       renderPaymentsPivotTable(activeClients);
@@ -8768,13 +8999,14 @@ document.getElementById('edit-pay-inst-id').value = instId;
         histClientSel.value = appState.clients.some(c => String(c.id) === String(prevHVal)) ? prevHVal : 'all';
       }
       const histMonthSel = document.getElementById('payments-filter-month');
-      if (histMonthSel && histMonthSel.options.length <= 1) {
-        histMonthSel.innerHTML = `<option value="all">All Months</option>` + Array.from({length: 12}, (_, i) => `<option value="${i + 1}">Month ${i + 1}</option>`).join('');
+      if (histMonthSel) {
+        const prevHM = histMonthSel.value || 'all';
+        histMonthSel.innerHTML = monthOptionsHtml;
+        histMonthSel.value = prevHM;
       }
 
       const selectedClient = histClientSel?.value || 'all';
       const selectedMonth = histMonthSel?.value || 'all';
-
       const historyTable = document.getElementById('payments-history-table');
       if (!historyTable) return;
 
@@ -8962,18 +9194,20 @@ document.getElementById('edit-pay-inst-id').value = instId;
       renderedHtml += `</div>`;
       previewBox.innerHTML = renderedHtml;
 
-      const actionsCols = previewBox.querySelectorAll('th:last-child, td:last-child');
+const actionsCols = previewBox.querySelectorAll('th:last-child, td:last-child');
       actionsCols.forEach(cell => {
         if (cell.textContent.includes('Actions') || cell.querySelector('button')) {
           cell.style.display = 'none';
         }
+      });
+      previewBox.querySelectorAll('.pivot-total-row').forEach(row => {
+        row.style.display = showSummary ? '' : 'none';
       });
     }
 
     function downloadOrShareCustomSnapshot(action = 'download') {
       const previewBox = document.getElementById('snapshot-preview-content');
       if (!previewBox) return;
-
       const canvas = document.createElement('canvas');
       const scale = 2;
       canvas.width = 720 * scale;
@@ -9066,22 +9300,14 @@ document.getElementById('edit-pay-inst-id').value = instId;
           ctx.fillText(text, x + 6, startY + 17);
         });
 
-        startY += rowHeight;
+startY += rowHeight;
       });
-    }
-
-    function openInvoiceGeneratorModal() {
-      if (appState.clients.length === 0) return;
-      const firstClient = appState.clients[0];
-      const firstMonth = firstClient.months && firstClient.months.length > 0 ? firstClient.months[firstClient.months.length - 1] : null;
-      openInvoiceGeneratorModalPreselect(firstClient.id, firstMonth ? firstMonth.id : null);
     }
 
     function openInvoiceGeneratorModalPreselect(clientId, monthId) {
       const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
       const month = client.months.find(m => String(m.id) === String(monthId)) || client.months[client.months.length - 1];
-
       activeInvoiceData = {client, month};
       renderCustomInvoicePreview();
       openModal('modal-invoice-customizer');
@@ -9166,7 +9392,7 @@ document.getElementById('edit-pay-inst-id').value = instId;
       container.innerHTML = html;
     }
 
-   function downloadOrShareCustomInvoice(action = 'download') {
+    function downloadOrShareCustomInvoice(action = 'download') {
       if (!activeInvoiceData) return;
       const {client, month} = activeInvoiceData;
 
@@ -9249,7 +9475,7 @@ document.getElementById('edit-pay-inst-id').value = instId;
         ctx.fillText(`Grade: ${client.grade || '1-on-1'}   Phone: ${client.phone || '-'}`, 44, 134);
       }
 
-let startY = showDetails ? 165 : 150;
+      let startY = showDetails ? 165 : 150;
       const rowHeight = 28;
 
       if (showSessions) {
@@ -9370,10 +9596,10 @@ let startY = showDetails ? 165 : 150;
         }));
 
         appState.clients.push({
-            id: generateId() + count,
-            name,
-            accentColor: pickRandomClientColor(appState.clients),
-            grade: "Grade 9",  phone: "",
+          id: generateId() + count,
+          name,
+          accentColor: pickRandomClientColor(appState.clients),
+          grade: "Grade 9", phone: "",
           status: "active",
           pricingModel: "retainer",
           quota,
@@ -9409,13 +9635,13 @@ let startY = showDetails ? 165 : 150;
     }
 
     function executeQuickAddDirect(clientId) {
- const client = appState.clients.find(c => String(c.id) === String(clientId));
+      const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
 
       const dateVal = document.getElementById('quicklog-date')?.value || toLocalDateStr();
       const timeVal = `${getTimePickerValue('quicklog-time') || '16:00'} (${document.getElementById('quicklog-duration-select')?.value || '1h'})`;
 
-      addSessionToClientMonth(client, dateVal, timeVal, "Quick log", "normal");
+addSessionToClientMonth(client, dateVal, timeVal, "Quick log", "normal");
       saveState();
       showToast(`Class logged for ${client.name}!`);
       renderAll();
@@ -9423,29 +9649,15 @@ let startY = showDetails ? 165 : 150;
 
     function initTheme() {
       const saved = localStorage.getItem(THEME_KEY) || 'light';
-      if (saved === 'dark') {
-        document.documentElement.classList.add('dark');
-        const badge = document.getElementById('theme-badge');
-        if (badge) badge.textContent = 'Dark';
-        const label = document.getElementById('drawer-theme-label');
-        if (label) label.textContent = 'Theme: Dark';
-      } else {
-        document.documentElement.classList.remove('dark');
-        const badge = document.getElementById('theme-badge');
-        if (badge) badge.textContent = 'Light';
-        const label = document.getElementById('drawer-theme-label');
-        if (label) label.textContent = 'Theme: Light';
-      }
+      document.documentElement.classList.toggle('dark', saved === 'dark');
     }
 
     function toggleDarkMode() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
-      initTheme();
     }
 
     let isScheduleRotated = false;
-
     function toggleTimetableOrientation() {
       isScheduleRotated = !isScheduleRotated;
       const card = document.getElementById('schedule-card-container');
@@ -9459,165 +9671,118 @@ let startY = showDetails ? 165 : 150;
         }
       }
     }
-function navigateTimetableWeek(delta) {
+    function navigateTimetableWeek(delta) {
       timetableWeekOffset = Math.min(0, timetableWeekOffset + delta);
       renderWeeklyTimetable();
     }
 
-    function resetTimetableToCurrentWeek() {
+function resetTimetableToCurrentWeek() {
       timetableWeekOffset = 0;
       renderWeeklyTimetable();
     }
-    function copyPreviousWeekToCurrentTimetable() {
-      const today = new Date();
-      const dayOfWeek = today.getDay();
-      const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-
-      const curWeekStart = new Date(today);
-      curWeekStart.setDate(today.getDate() + diffToMonday + (timetableWeekOffset * 7));
-
-   const prevWeekStart = new Date(curWeekStart);
-      prevWeekStart.setDate(curWeekStart.getDate() - 7);
-
-      const prevStartStr = toLocalDateStr(prevWeekStart);
-      const prevEnd = new Date(prevWeekStart);
-      prevEnd.setDate(prevWeekStart.getDate() + 6);
-      const prevEndStr = toLocalDateStr(prevEnd);
-
-      let clonedCount = 0;
-      appState.clients.filter(c => (c.status || 'active') !== 'archived').forEach(c => {
-        const prevSessions = [];
-(c.months || []).forEach(m => {
-          (m.sessions || []).forEach(s => {
-            if (s.date >= prevStartStr && s.date <= prevEndStr) prevSessions.push(s);
-          });
-        });
-
-        prevSessions.forEach(ps => {
-          const oldDate = parseLocalDate(ps.date);
-          oldDate.setDate(oldDate.getDate() + 7);
-          const newDateStr = toLocalDateStr(oldDate);
-
-          const alreadyExists = (c.months || []).some(m => (m.sessions || []).some(s => s.date === newDateStr));
-          if (!alreadyExists) {
-            addSessionToClientMonth(c, newDateStr, ps.time || '16:00 (1h)', ps.notes || 'Copied from prev week', 'normal');
-            clonedCount++;
-          }
-        });
-      });
-
-      if (clonedCount === 0) {
-        showToast("No new sessions from previous week to copy.");
-        return;
-      }
-            saveState();
-      renderAll();
-      showToast(`Copied ${clonedCount} session(s) from previous week!`);
-    }
 
     const CLIENT_COLOR_PALETTE = [
-        '#2563eb', '#059669', '#7c3aed', '#d97706', '#dc2626',
-        '#0891b2', '#db2777', '#4f46e5', '#16a34a', '#ea580c',
-        '#9333ea', '#0284c7', '#be123c', '#0d9488', '#ca8a04', '#6366f1'
-      ];
+      '#2563eb', '#059669', '#7c3aed', '#d97706', '#dc2626',
+      '#0891b2', '#db2777', '#4f46e5', '#16a34a', '#ea580c',
+      '#9333ea', '#0284c7', '#be123c', '#0d9488', '#ca8a04', '#6366f1'
+    ];
+    function hslToHex(h, s, l) {
+      s /= 100;
+      l /= 100;
+      const k = n => (n + h / 30) % 12;
+      const a = s * Math.min(l, 1 - l);
+      const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+      const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
+      return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+    }
 
-      function hslToHex(h, s, l) {
-        s /= 100;
-        l /= 100;
-        const k = n => (n + h / 30) % 12;
-        const a = s * Math.min(l, 1 - l);
-        const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-        const toHex = x => Math.round(255 * x).toString(16).padStart(2, '0');
-        return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+    function hexToRgb(hex) {
+      const m = String(hex || '').replace('#', '').match(/^([0-9a-f]{6})$/i);
+      if (!m) return null;
+      const n = parseInt(m[1], 16);
+      return {r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255};
+    }
+
+    function isColorTooClose(hexA, hexB, minDist = 36) {
+      const a = hexToRgb(hexA);
+      const b = hexToRgb(hexB);
+      if (!a || !b) return false;
+      return Math.hypot(a.r - b.r, a.g - b.g, a.b - b.b) < minDist;
+    }
+
+    function pickRandomClientColor(clientsList = []) {
+      const usedList = (clientsList || [])
+        .map(c => (c.accentColor || '').toLowerCase())
+        .filter(Boolean);
+      const usedSet = new Set(usedList);
+
+      const available = CLIENT_COLOR_PALETTE.filter(col => !usedSet.has(col.toLowerCase()));
+      if (available.length > 0) {
+        return available[Math.floor(Math.random() * available.length)];
       }
 
-      function hexToRgb(hex) {
-        const m = String(hex || '').replace('#', '').match(/^([0-9a-f]{6})$/i);
-        if (!m) return null;
-        const n = parseInt(m[1], 16);
-        return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+      // All curated palette colors are in use: generate a guaranteed-unique random vibrant hex color
+      for (let attempt = 0; attempt < 200; attempt++) {
+        const h = Math.floor(Math.random() * 360);
+        const s = 55 + Math.floor(Math.random() * 32);
+        const l = 36 + Math.floor(Math.random() * 20);
+        const candidate = hslToHex(h, s, l).toLowerCase();
+        if (usedSet.has(candidate)) continue;
+        if (attempt < 120 && usedList.some(u => isColorTooClose(candidate, u, 36))) continue;
+        return candidate;
       }
 
-      function isColorTooClose(hexA, hexB, minDist = 36) {
-        const a = hexToRgb(hexA);
-        const b = hexToRgb(hexB);
-        if (!a || !b) return false;
-        return Math.hypot(a.r - b.r, a.g - b.g, a.b - b.b) < minDist;
-      }
+      let fallback = '#123456';
+      do {
+        const r = 40 + Math.floor(Math.random() * 180);
+        const g = 40 + Math.floor(Math.random() * 180);
+        const b = 40 + Math.floor(Math.random() * 180);
+        fallback = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+      } while (usedSet.has(fallback));
+      return fallback;
+    }
 
-      function pickRandomClientColor(clientsList = []) {
-        const usedList = (clientsList || [])
-          .map(c => (c.accentColor || '').toLowerCase())
-          .filter(Boolean);
-        const usedSet = new Set(usedList);
-
-        const available = CLIENT_COLOR_PALETTE.filter(col => !usedSet.has(col.toLowerCase()));
-        if (available.length > 0) {
-          return available[Math.floor(Math.random() * available.length)];
+    function ensureUniqueClientColors(clientsList = []) {
+      const seen = new Set();
+      let changed = false;
+      const assignedSoFar = [];
+      (clientsList || []).forEach(c => {
+        const norm = (c.accentColor || '').toLowerCase();
+        if (!norm || seen.has(norm)) {
+          c.accentColor = pickRandomClientColor(assignedSoFar);
+          changed = true;
         }
+        seen.add(c.accentColor.toLowerCase());
+        assignedSoFar.push(c);
+      });
+      return changed;
+    }
 
-        // All curated palette colors are in use: generate a guaranteed-unique random vibrant hex color
-        for (let attempt = 0; attempt < 200; attempt++) {
-          const h = Math.floor(Math.random() * 360);
-          const s = 55 + Math.floor(Math.random() * 32);
-          const l = 36 + Math.floor(Math.random() * 20);
-          const candidate = hslToHex(h, s, l).toLowerCase();
-          if (usedSet.has(candidate)) continue;
-          if (attempt < 120 && usedList.some(u => isColorTooClose(candidate, u, 36))) continue;
-          return candidate;
-        }
+    function setClientModalColorPreview(hexColor) {
+      const hiddenInput = document.getElementById('form-client-color');
+      const swatch = document.getElementById('form-client-color-swatch');
+      const hexLbl = document.getElementById('form-client-color-hex');
+      const clean = (hexColor || '#2563eb').toLowerCase();
+      if (hiddenInput) hiddenInput.value = clean;
+      if (swatch) swatch.style.background = clean;
+      if (hexLbl) hexLbl.textContent = clean.toUpperCase();
+    }
 
-        let fallback = '#123456';
-        do {
-          const r = 40 + Math.floor(Math.random() * 180);
-          const g = 40 + Math.floor(Math.random() * 180);
-          const b = 40 + Math.floor(Math.random() * 180);
-          fallback = `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-        } while (usedSet.has(fallback));
-        return fallback;
+    function regenerateClientModalColor() {
+      const editingId = document.getElementById('form-client-id')?.value || null;
+      const currentHex = (document.getElementById('form-client-color')?.value || '').toLowerCase();
+      const otherClients = (appState.clients || []).filter(c => !editingId || String(c.id) !== String(editingId));
+      const excludeList = currentHex ? [...otherClients, {accentColor: currentHex}] : otherClients;
+      setClientModalColorPreview(pickRandomClientColor(excludeList));
+    }
+
+    function getClientColor(client) {
+      if (!client) return '#2563eb';
+      if (!client.accentColor) {
+        client.accentColor = pickRandomClientColor(appState.clients);
       }
-
-      function ensureUniqueClientColors(clientsList = []) {
-        const seen = new Set();
-        let changed = false;
-        const assignedSoFar = [];
-        (clientsList || []).forEach(c => {
-          const norm = (c.accentColor || '').toLowerCase();
-          if (!norm || seen.has(norm)) {
-            c.accentColor = pickRandomClientColor(assignedSoFar);
-            changed = true;
-          }
-          seen.add(c.accentColor.toLowerCase());
-          assignedSoFar.push(c);
-        });
-        return changed;
-      }
-
-function setClientModalColorPreview(hexColor) {
-        const hiddenInput = document.getElementById('form-client-color');
-        const swatch = document.getElementById('form-client-color-swatch');
-        const hexLbl = document.getElementById('form-client-color-hex');
-        const clean = (hexColor || '#2563eb').toLowerCase();
-        if (hiddenInput) hiddenInput.value = clean;
-        if (swatch) swatch.style.background = clean;
-        if (hexLbl) hexLbl.textContent = clean.toUpperCase();
-      }
-
-      function regenerateClientModalColor() {
-        const editingId = document.getElementById('form-client-id')?.value || null;
-        const currentHex = (document.getElementById('form-client-color')?.value || '').toLowerCase();
-        const otherClients = (appState.clients || []).filter(c => !editingId || String(c.id) !== String(editingId));
-        const excludeList = currentHex ? [...otherClients, { accentColor: currentHex }] : otherClients;
-        setClientModalColorPreview(pickRandomClientColor(excludeList));
-      }
-
-      function getClientColor(client) {
-                if (!client) return '#2563eb';
-        if (!client.accentColor) {
-          client.accentColor = pickRandomClientColor(appState.clients);
-        }
-        return client.accentColor;
-      }
+      return client.accentColor;
+    }
 
     let timetableEventsMap = {};
     let activeTimetableClientId = null;
@@ -9707,7 +9872,7 @@ function setClientModalColorPreview(hexColor) {
       if (btn) btn.textContent = shouldOpen ? '👥 Students ▴' : '👥 Students ▾';
     }
 
-let timetableWeekClientIds = new Set();
+    let timetableWeekClientIds = new Set();
 
     function renderTimetableStudentsDropdown() {
       const dd = document.getElementById('timetable-students-dropdown');
@@ -9769,7 +9934,7 @@ let timetableWeekClientIds = new Set();
       applyTimetableReactiveHighlight();
     }
 
-function selectTimetableEvent(eventKey) {
+    function selectTimetableEvent(eventKey) {
       const ev = timetableEventsMap[eventKey];
       if (!ev) return;
 
@@ -10216,12 +10381,12 @@ function selectTimetableEvent(eventKey) {
                 <button type="button" onclick="openPlannerSlotModal(null, '${day}')" class="btn btn-subtle" style="font-size:0.62rem; padding:0.15rem 0.45rem; min-height:24px;">+ Add</button>
               </div>
               ${daySlots.length === 0
-                ? `<span style="font-size:0.66rem; color:var(--text-soft);">No students scheduled</span>`
-                : `<div style="display:flex; flex-direction:column; gap:0.35rem;">
+              ? `<span style="font-size:0.66rem; color:var(--text-soft);">No students scheduled</span>`
+              : `<div style="display:flex; flex-direction:column; gap:0.35rem;">
                     ${daySlots.map(sl => {
-                      const col = getClientColor(sl.client);
-                      const isBlocked = Array.isArray(sl.client.blockedDays) && sl.client.blockedDays.includes(day);
-                      return `
+                const col = getClientColor(sl.client);
+                const isBlocked = Array.isArray(sl.client.blockedDays) && sl.client.blockedDays.includes(day);
+                return `
                         <div style="display:flex; justify-content:space-between; align-items:center; gap:0.4rem; padding:0.4rem 0.55rem; background:var(--bg-surface); border:1px solid var(--border-color); border-left:4px solid ${col}; border-radius:6px;">
                           <div style="min-width:0; flex:1;" onclick="selectPlannerSlot('${sl.id}')">
                             <div style="display:flex; align-items:center; gap:0.3rem; flex-wrap:wrap;">
@@ -10243,9 +10408,9 @@ function selectTimetableEvent(eventKey) {
                           </div>
                         </div>
                       `;
-                    }).join('')}
+              }).join('')}
                   </div>`
-              }
+            }
             </div>
           `;
         }).join('');
@@ -10302,19 +10467,18 @@ function selectTimetableEvent(eventKey) {
       `;
     }
 
-    function openPlannerSlotModal(slotId = null, presetDay = null) {
+function openPlannerSlotModal(slotId = null, presetDay = null) {
       const activeClients = appState.clients
         .filter(c => (c.status || 'active') !== 'archived')
         .sort((a, b) => a.name.localeCompare(b.name));
 
-      if (activeClients.length === 0) {
+      if (!slotId && activeClients.length === 0) {
         showToast("Please add an active client first.");
         return;
       }
 
       const clientSel = document.getElementById('planner-slot-client');
       clientSel.innerHTML = activeClients.map(c => `<option value="${c.id}">${c.name}${c.grade ? ' — ' + c.grade : ''}</option>`).join('');
-
       const delBtn = document.getElementById('btn-delete-planner-slot');
       const titleEl = document.getElementById('planner-slot-modal-title');
       const daysLbl = document.getElementById('planner-slot-days-label');
@@ -10545,7 +10709,7 @@ function selectTimetableEvent(eventKey) {
         const inspector = document.getElementById('planner-slot-inspector');
         if (inspector) inspector.style.display = 'none';
         saveState();
-        renderPlannerView();
+renderPlannerView();
         showToast("Timetable cleared.");
       });
     }
@@ -10553,26 +10717,33 @@ function selectTimetableEvent(eventKey) {
     function renderAll() {
       renderRosterPage();
       renderDrawerClientsList();
-      if (document.getElementById('view-timetable')?.style.display === 'flex') renderWeeklyTimetable();
-      if (document.getElementById('view-planner')?.style.display === 'flex') renderPlannerView();
-      if (document.getElementById('view-calendar')?.style.display === 'flex') renderCalendarView();
-      if (document.getElementById('view-client-detail')?.style.display === 'flex') renderClientDetailView();
-      if (document.getElementById('view-clients')?.style.display === 'flex') renderClientsListView();
-      if (document.getElementById('view-matrix')?.style.display === 'flex') renderAnalytics();
-      if (document.getElementById('view-payments')?.style.display === 'flex') renderPaymentsView();
-      if (document.getElementById('view-balances')?.style.display === 'flex') renderBalancesTable();
-      if (document.getElementById('view-ledger')?.style.display === 'flex') renderDoubleLedgerTable();
-      if (document.getElementById('view-marks')?.style.display === 'flex') renderMarksView();
+      const activeViewRenderers = {
+        timetable: renderWeeklyTimetable,
+        planner: renderPlannerView,
+        calendar: renderCalendarView,
+        'client-detail': renderClientDetailView,
+        clients: renderClientsListView,
+        matrix: renderAnalytics,
+        payments: renderPaymentsView,
+        balances: renderBalancesTable,
+        ledger: renderDoubleLedgerTable,
+        marks: renderMarksView
+      };
+      Object.entries(activeViewRenderers).forEach(([id, fn]) => {
+        if (document.getElementById(`view-${id}`)?.style.display === 'flex') fn();
+      });
+      updateHeaderSttPillAndEodBanner();
+      updateNotificationBadges();
     }
+
     function formatTo24Hour(tStr) {
-      if (!tStr) return '16:00';
       if (!tStr) return '16:00';
       const ampmMatch = tStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)/i);
       if (ampmMatch) {
         let h = parseInt(ampmMatch[1], 10);
         const m = ampmMatch[2];
         const mod = ampmMatch[3].toUpperCase();
-        if (mod === 'PM' && h < 12) h += 12;
+                if (mod === 'PM' && h < 12) h += 12;
         if (mod === 'AM' && h === 12) h = 0;
         return `${String(h).padStart(2, '0')}:${m}`;
       }
@@ -10681,25 +10852,8 @@ function selectTimetableEvent(eventKey) {
         return JSON.parse(localStorage.getItem(getSttPendingStorageKey()) || '[]');
       } catch (e) {return [];}
     }
-    function savePendingSttLogs(list) {
+function savePendingSttLogs(list) {
       localStorage.setItem(getSttPendingStorageKey(), JSON.stringify(list));
-    }
-
-    function getStudentAccentColor(name) {
-      const palettes = [
-        {bg: '#eff6ff', border: '#2563eb', text: '#1e40af'},
-        {bg: '#ecfdf5', border: '#059669', text: '#065f46'},
-        {bg: '#f5f3ff', border: '#7c3aed', text: '#5b21b6'},
-        {bg: '#fffbeb', border: '#d97706', text: '#92400e'},
-        {bg: '#fef2f2', border: '#dc2626', text: '#991b1b'},
-        {bg: '#f0f9ff', border: '#0284c7', text: '#075985'},
-        {bg: '#fdf4ff', border: '#c026d3', text: '#86198f'}
-      ];
-      let hash = 0;
-      for (let i = 0; i < (name || '').length; i++) {
-        hash = name.charCodeAt(i) + ((hash << 5) - hash);
-      }
-      return palettes[Math.abs(hash) % palettes.length];
     }
 
     function normalizeSttName(raw) {
@@ -10707,7 +10861,6 @@ function selectTimetableEvent(eventKey) {
     }
 
     const STT_FEATURE_ENABLED_KEY = 'month_tracker_v12_stt_feature_enabled';
-
     function isSttFeatureEnabled() {
       const val = localStorage.getItem(STT_FEATURE_ENABLED_KEY);
       return val === null ? false : val === 'true'; // Default to false (off) for new users, or true if already used
@@ -10752,14 +10905,14 @@ function selectTimetableEvent(eventKey) {
         }
       }
 
-      if (banner) {
+if (banner) {
         const syncNotifsAllowed = getNotificationPrefs().categories.sync !== false;
         const shouldShowBanner = syncNotifsAllowed && ((currentHour >= 19 && !isSyncedToday) || pendingList.length > 0);
         banner.style.display = shouldShowBanner ? 'flex' : 'none';
       }
     }
 
-    function openSttSyncModal() {
+    async function openSttSyncModal() {
       const pending = getPendingSttLogs();
       const lastSync = localStorage.getItem(getSttLastSyncStorageKey());
       const lastSyncEl = document.getElementById('stt-last-sync-label');
@@ -10783,12 +10936,16 @@ function selectTimetableEvent(eventKey) {
         }
       }
       openModal('modal-stt-sync');
+      await refreshSttQuickHandleButton();
+      const handle = await idbGet(getSttHandleIdbKey());
+      if (handle) {
+        await syncFromRememberedSttHandle();
+      }
     }
 
     function handleSttSyncFileSelect(event) {
       const files = Array.from(event.target.files || []);
       if (files.length === 0) return;
-
       files.sort((a, b) => b.lastModified - a.lastModified);
       const newestFile = files[0];
 
@@ -10894,7 +11051,7 @@ function selectTimetableEvent(eventKey) {
 
       parsedRecords.forEach(rec => {
         if (existingRecordIds.has(rec.recId) || rejectedIds.has(rec.recId)) return;
-     const rt = rtMap[rec.rtId];
+        const rt = rtMap[rec.rtId];
         if (!rt || !rt.cleanName) return;
 
         const dObj = new Date(rec.startTs);
@@ -11102,11 +11259,11 @@ function selectTimetableEvent(eventKey) {
         const exists = appState.clients.some(x => x.sttActivityId === nc.rtId || normalizeSttName(x.name) === nc.normName);
         if (!exists) {
           appState.clients.push({
-              id: generateId() + addedClients,
-              sttActivityId: nc.rtId,
-              name: nc.cleanName,
-              accentColor: pickRandomClientColor(appState.clients),
-              grade: '1-on-1',  phone: '',
+            id: generateId() + addedClients,
+            sttActivityId: nc.rtId,
+            name: nc.cleanName,
+            accentColor: pickRandomClientColor(appState.clients),
+            grade: '1-on-1', phone: '',
             status: nc.status,
             pricingModel: 'retainer',
             quota: nc.quota,
@@ -11141,11 +11298,11 @@ function selectTimetableEvent(eventKey) {
           const defQuota = getAppSettings().defaultQuota || 4;
           const defFee = getAppSettings().defaultFee || 500;
           client = {
-              id: generateId() + addedSessions,
-              sttActivityId: s.rtId,
-              name: s.studentName,
-              accentColor: pickRandomClientColor(appState.clients),
-              grade: '1-on-1',  phone: '',
+            id: generateId() + addedSessions,
+            sttActivityId: s.rtId,
+            name: s.studentName,
+            accentColor: pickRandomClientColor(appState.clients),
+            grade: '1-on-1', phone: '',
             status: 'active',
             pricingModel: 'retainer',
             quota: defQuota,
@@ -11469,32 +11626,17 @@ function selectTimetableEvent(eventKey) {
 
     function clearAllRejectedSttLogs() {
       requestConfirmation("Clear all rejected log history? Previously rejected records will appear again next time you scan an STT backup file.", () => {
-        saveRejectedSttLogs([]);
+saveRejectedSttLogs([]);
         renderSettingsSttQueueTabs();
         showToast("Rejected logs cleared.");
       });
     }
 
-    // Hook STT queue refresh into renderSettingsScreen & renderAll
-    const _origRenderSettingsScreen = renderSettingsScreen;
-    renderSettingsScreen = function () {
-      _origRenderSettingsScreen();
-      renderSettingsSttQueueTabs();
-    };
-
-    const _origRenderAll = renderAll;
-    renderAll = function () {
-      _origRenderAll();
-      updateHeaderSttPillAndEodBanner();
-      updateNotificationBadges();
-    };
-
-function executeOneClickExitBackup() {
+    function executeOneClickExitBackup() {
       const payload = buildFullBackupPayloadString();
 
       const fileName = `ClassTracker_Backup_${toLocalDateStr()}.json`;
-      const blob = new Blob([payload], {type: 'application/json'});
-      const a = document.createElement('a');
+      const blob = new Blob([payload], {type: 'application/json'});      const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = fileName;
       document.body.appendChild(a);
@@ -11516,8 +11658,8 @@ function executeOneClickExitBackup() {
       // Push a sentinel history state so Android's Back button triggers popstate instead of closing immediately
       history.pushState({appGuard: true}, '', location.href);
 
-     window.addEventListener('popstate', () => {
-// Exit rotated fullscreen timetable first
+      window.addEventListener('popstate', () => {
+        // Exit rotated fullscreen timetable first
         if (typeof isScheduleRotated !== 'undefined' && isScheduleRotated) {
           toggleTimetableOrientation();
           history.pushState({appGuard: true}, '', location.href);
@@ -11530,7 +11672,7 @@ function executeOneClickExitBackup() {
         }
 
         // Close mobile side drawer if open
-                const drawerEl = document.getElementById('side-drawer');
+        const drawerEl = document.getElementById('side-drawer');
         if (drawerEl && drawerEl.classList.contains('active') && window.innerWidth < 768) {
           toggleDrawer(false);
           history.pushState({appGuard: true}, '', location.href);
@@ -11779,25 +11921,15 @@ function executeOneClickExitBackup() {
           showToast(`Synced from "${file.name}"!`);
         }
       } catch (err) {
-        showToast("Folder/file unavailable — please pick again.");
+showToast("Folder/file unavailable — please pick again.");
         pickAndRememberSttFile();
       }
     }
-    // Auto-sync from remembered handle whenever Sync button opens the modal
-    const _origOpenSttSyncModal = openSttSyncModal;
-    openSttSyncModal = async function () {
-      _origOpenSttSyncModal();
-      await refreshSttQuickHandleButton();
-      const handle = await idbGet(getSttHandleIdbKey());
-      if (handle) {
-        await syncFromRememberedSttHandle();
-      }
-    };
 
     // Auto-prune old daily snapshots from localStorage & mirror unlimited state to IndexedDB
     function pruneOldLocalStorageBackups(manualTrigger = false) {
       try {
-        const backupKey = getProfileDailyBackupKey();;
+        const backupKey = getProfileDailyBackupKey();
         const raw = localStorage.getItem(backupKey);
         if (raw) {
           const list = JSON.parse(raw);
@@ -11835,8 +11967,6 @@ function executeOneClickExitBackup() {
       }
     }
 
-    let unsavedEditCount = 0;
-
     function updateUnsavedBackupBadgeUI() {
       const badge = document.getElementById('header-unsaved-badge');
       if (!badge) return;
@@ -11854,38 +11984,11 @@ function executeOneClickExitBackup() {
       updateUnsavedBackupBadgeUI();
     }
 
-    // Wrap saveState so every save writes to IndexedDB (unlimited) and auto-prunes localStorage on quota pressure
-    const _origSaveState = saveState;
-    saveState = function () {
-      processAdvanceBalances();
-      hasUnsavedChangesSinceBackup = true;
-      unsavedEditCount++;
-      updateUnsavedBackupBadgeUI();
-      idbSet(getProfileStorageKey(), appState);
-      try {
-        localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));
-      } catch (quotaErr) {
-        // If localStorage hits 5MB limit, auto-prune daily cache and retry; IndexedDB already saved full data
-        pruneOldLocalStorageBackups(false);
-        try {localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));} catch (e2) { }
-      }
-      updateStorageMeterUI();
-    };
-
-    const _origRenderSettingsScreen2 = renderSettingsScreen;
-    renderSettingsScreen = function () {
-      _origRenderSettingsScreen2();
-      updateStorageMeterUI();
-      renderNotificationManagerSettingsUI();
-      renderLayoutEditorList();
-    };
-
     async function hydrateFromIndexedDBIfNeeded() {
       activeProfileId = getActiveProfileId();
       const localRaw = localStorage.getItem(getProfileStorageKey());
       const idbState = await idbGet(getProfileStorageKey());
-      if (!localRaw && idbState && Array.isArray(idbState.clients) && idbState.clients.length > 0) {
-        try {
+      if (!localRaw && idbState && Array.isArray(idbState.clients) && idbState.clients.length > 0) {        try {
           localStorage.setItem(getProfileStorageKey(), JSON.stringify(idbState));
         } catch (e) { }
         appState = idbState;
@@ -11921,7 +12024,7 @@ function executeOneClickExitBackup() {
         showToast("App Lock PIN disabled.");
         return;
       }
-      if (!/^\d{4}$/.test(clean)) {
+if (!/^\d{4}$/.test(clean)) {
         showToast("Please enter exactly 4 digits.");
         return;
       }
@@ -11929,67 +12032,17 @@ function executeOneClickExitBackup() {
       showToast("App Lock PIN saved!");
     }
 
-    function generateParentTokenLink(clientId) {
-      const client = appState.clients.find(c => String(c.id) === String(clientId));
-      if (!client) return;
-      const activeMonth = (client.months || [])[client.months.length - 1];
-      const due = (client.months || []).filter(m => !m.isPaid && m.isDue).reduce((s, m) => s + Number(m.calculatedDueFee || 0), 0);
-      const tokenPayload = btoa(unescape(encodeURIComponent(JSON.stringify({
-        name: client.name,
-        month: activeMonth ? activeMonth.monthNumber : 1,
-        done: activeMonth ? activeMonth.sessions.length : 0,
-        quota: activeMonth ? (activeMonth.quota || client.quota) : client.quota,
-        due,
-        currency: getCurrency()
-      }))));
-      const shareUrl = `${location.origin}${location.pathname}#parent=${tokenPayload}`;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          showToast(`Parent link copied for ${client.name}!`);
-        }).catch(() => {
-          prompt("Copy Parent Link:", shareUrl);
-        });
-      } else {
-        prompt("Copy Parent Link:", shareUrl);
-      }
-    }
-
-    function executeTimetableReschedule() {
-      const clientId = document.getElementById('tt-move-client-id')?.value;
-      const monthId = document.getElementById('tt-move-month-id')?.value;
-      const sessionId = document.getElementById('tt-move-session-id')?.value;
-      const newDate = document.getElementById('tt-move-new-date')?.value;
-      const newTime = document.getElementById('tt-move-new-time')?.value || '16:00';
-
-      const client = appState.clients.find(c => String(c.id) === String(clientId));
-      const month = client?.months.find(m => String(m.id) === String(monthId));
-      const sess = month?.sessions.find(s => String(s.id) === String(sessionId));
-      if (!sess || !newDate) {
-        showToast("Please select a valid date and time.");
-        return;
-      }
-      const durMatch = (sess.time || '').match(/\((.*?)\)/);
-      const durCode = durMatch ? durMatch[1].trim() : (client.sessionDuration || '1h');
-      sess.date = newDate;
-      sess.time = `${formatTo24Hour(newTime)} (${durCode})`;
-      saveState();
-      closeModal('modal-tt-move');
-      showToast("Class rescheduled!");
-      renderAll();
-    }
-
     /* ==========================================================================
        CUSTOMIZABLE PAGE & MENU BLOCK ORDER ENGINE
        ========================================================================== */
     const LAYOUT_PAGE_REGISTRY = {
-      home: {selector: '#view-home', skipIds: ['stt-eod-reminder-banner']},
-      payments: {selector: '#view-payments', skipIds: []},
-      matrix: {selector: '#view-matrix', skipIds: []},
+      home: {selector: '#view-home', skipIds: ['stt-eod-reminder-banner']},      payments: {selector: '#view-payments', skipIds: []},      matrix: {selector: '#view-matrix', skipIds: []},
       calendar: {selector: '#view-calendar', skipIds: []},
       'client-detail': {selector: '#view-client-detail', skipIds: []},
-templates: {selector: '#view-templates', skipIds: []},
-        drawer: {selector: '#side-drawer .sidebar-scroll', skipIds: []},
-        settings: {selector: '#view-settings', skipIds: []}};
+      templates: {selector: '#view-templates', skipIds: []},
+      drawer: {selector: '#side-drawer .sidebar-scroll', skipIds: []},
+      settings: {selector: '#view-settings', skipIds: []}
+    };
 
     function getProfileLayoutKey() {
       return activeProfileId === 'default'
@@ -12038,7 +12091,7 @@ templates: {selector: '#view-templates', skipIds: []},
       const usedKeys = new Set();
       const blocks = [];
 
-     Array.from(container.children).forEach((el, idx) => {
+      Array.from(container.children).forEach((el, idx) => {
         if (cfg.skipIds.includes(el.id) || el.classList.contains('snav-divider')) {
           if (cfg.skipIds.includes(el.id)) el.style.order = '-1';
           return;
@@ -12162,17 +12215,18 @@ templates: {selector: '#view-templates', skipIds: []},
         }
       }
 
-    initTheme();
+      initTheme();
       await hydrateFromIndexedDBIfNeeded();
-      initData();
+     initData();
       initSidebarState();
       pruneOldLocalStorageBackups(false);
       populateAllTimePickers();
+      setTimePickerValue('quicklog-time', getAppSettings().defaultTime);
       updateHeaderSttPillAndEodBanner();
       applyAllSavedLayouts();
 
       showMainView('home', false);
-      renderAll();
+      renderAll();;
       setupExitBackupGuards(); if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(() => { });
       }
@@ -12449,7 +12503,7 @@ templates: {selector: '#view-templates', skipIds: []},
       renderClientExamHistory();
     }
 
- function resetExamForm() {
+    function resetExamForm() {
       document.getElementById('form-exam-id').value = '';
       document.getElementById('form-exam-term-name').value = '';
       document.getElementById('form-exam-date').value = toLocalDateStr();
@@ -12482,7 +12536,7 @@ templates: {selector: '#view-templates', skipIds: []},
       const client = getActiveExamModalClient();
       if (!client) return;
 
-    const examId = document.getElementById('form-exam-id').value;
+      const examId = document.getElementById('form-exam-id').value;
       const termName = document.getElementById('form-exam-term-name').value.trim();
       const examDate = document.getElementById('form-exam-date').value || toLocalDateStr();
 

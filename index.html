@@ -3,8 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Class & Month Tracker</title>
 
   <meta name="theme-color" content="#2563eb" id="theme-color-meta">
@@ -4009,11 +4008,16 @@
             <label
               style="font-size: 0.65rem; font-weight: 700; color: var(--brand-primary); display: block; margin-bottom: 0.15rem;">Default
               Time</label>
-            <button type="button" id="form-client-default-time" data-time24="16:00"
+<button type="button" id="form-client-default-time" data-time24="16:00"
               onclick="openCircularClockPicker('form-client-default-time')" class="clock-trigger-btn app-time-picker"
               style="min-height: 36px;">16:00</button>
           </div>
         </div>
+
+        <button type="button" onclick="openFeeCalculatorModal(true)" class="btn btn-subtle"
+          style="width: 100%; font-size: 0.68rem; color: var(--brand-primary);">
+          🧮 Calculate Quota &amp; Fee
+        </button>
 
         <button type="button" id="btn-open-month-rate-range" onclick="openProfileUpdateScopeFromClientModal()"
           class="btn btn-subtle"
@@ -4021,12 +4025,26 @@
           📅 Apply Quota / Fee to Specific Months (From → Till)...
         </button>
 
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+          <div>
+            <label for="form-client-exam-label"
+              style="font-size: 0.65rem; font-weight: 700; color: var(--purple); display: block; margin-bottom: 0.15rem;">Upcoming
+              Exam Label</label>
+            <input type="text" id="form-client-exam-label" placeholder="e.g. Finals">
+          </div>
+          <div>
+            <label for="form-client-exam-date"
+              style="font-size: 0.65rem; font-weight: 700; color: var(--purple); display: block; margin-bottom: 0.15rem;">Exam
+              Date (Countdown)</label>
+            <input type="date" id="form-client-exam-date">
+          </div>
+        </div>
+
         <div>
           <label
             style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Scheduled
             Days (Class Days)</label>
-          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="form-days-picker">
-            <button type="button" data-day="Mon" onclick="toggleFormDayPicker(this)" class="btn btn-subtle"
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="form-days-picker">            <button type="button" data-day="Mon" onclick="toggleFormDayPicker(this)" class="btn btn-subtle"
               style="padding: 0.25rem 0;">M</button>
             <button type="button" data-day="Tue" onclick="toggleFormDayPicker(this)" class="btn btn-subtle"
               style="padding: 0.25rem 0;">T</button>
@@ -4492,7 +4510,46 @@
           <button type="button" id="btn-delete-planner-slot"
             onclick="deletePlannerSlot(document.getElementById('planner-slot-id').value)" class="btn btn-danger"
             style="display: none; padding: 0.45rem 0.6rem;">Delete</button>
-          <button type="button" onclick="savePlannerSlot()" class="btn btn-primary" style="flex: 1;">Save Slot</button>
+<button type="button" onclick="savePlannerSlot()" class="btn btn-primary" style="flex: 1;">Save Slot</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP PIN LOCK / SETUP MODAL -->
+  <div id="modal-app-pin-lock" class="modal-overlay" style="z-index: 200;">
+    <div class="modal-dialog" style="max-width: 340px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+        <h3 id="pin-modal-title" style="font-size: 0.92rem; font-weight: 800; color: var(--brand-primary);">🔒 Enter App
+          PIN</h3>
+        <button type="button" id="pin-modal-close-btn" onclick="closeModal('modal-app-pin-lock')" class="btn btn-subtle"
+          style="padding: 0.2rem 0.4rem;">✕</button>
+      </div>
+      <p id="pin-modal-subtitle" style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.55rem;">
+        Enter your 4-digit security PIN.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 0.45rem;">
+        <div id="pin-current-row" style="display: none;">
+          <label for="pin-current-input"
+            style="font-size: 0.64rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Current
+            PIN</label>
+          <input type="password" id="pin-current-input" inputmode="numeric" maxlength="4" placeholder="••••"
+            autocomplete="off" style="text-align: center; font-size: 1rem; letter-spacing: 0.35em;">
+        </div>
+        <div>
+          <label id="pin-main-label" for="pin-main-input"
+            style="font-size: 0.64rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">4-Digit
+            PIN</label>
+          <input type="password" id="pin-main-input" inputmode="numeric" maxlength="4" placeholder="••••"
+            autocomplete="off" onkeydown="if(event.key==='Enter') submitAppPinModal()"
+            style="text-align: center; font-size: 1.15rem; letter-spacing: 0.4em;">
+        </div>
+        <p id="pin-modal-error" style="display: none; font-size: 0.68rem; font-weight: 700; color: var(--danger);"></p>
+        <div style="display: flex; gap: 0.35rem; margin-top: 0.2rem;">
+          <button type="button" id="pin-modal-disable-btn" onclick="disableAppPinFromModal()" class="btn btn-danger"
+            style="display: none; flex: 1;">Disable PIN</button>
+          <button type="button" id="pin-modal-submit-btn" onclick="submitAppPinModal()" class="btn btn-primary"
+            style="flex: 1;">Unlock</button>
         </div>
       </div>
     </div>
@@ -4502,7 +4559,7 @@
     const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
     const ACTIVE_PROFILE_KEY = 'month_tracker_v12_active_profile_id';
     const THEME_KEY = 'month_tracker_v12_theme';
-    const DAILY_BACKUP_ENABLED_KEY = 'month_tracker_v12_daily_backup_enabled';
+        const DAILY_BACKUP_ENABLED_KEY = 'month_tracker_v12_daily_backup_enabled';
     const VIEW_STATE_KEY = 'month_tracker_active_view';
 
     let activeProfileId = 'default';
@@ -4572,23 +4629,25 @@
       const newName = prompt("Rename user profile:", prof.name);
       if (!newName || !newName.trim()) return;
       prof.name = newName.trim();
-      saveUserProfilesList(list);
+saveUserProfilesList(list);
       if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
       showToast("Profile renamed!");
     }
 
-    function switchUserProfile(profileId) {
+    async function switchUserProfile(profileId) {
       const list = getUserProfilesList();
       const prof = list.find(p => p.id === profileId);
       if (!prof) return;
       activeProfileId = prof.id;
       localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
       appState = {clients: []};
+      await hydrateFromIndexedDBIfNeeded();
       initData();
       populateAllTimePickers();
       setTimePickerValue('quicklog-time', getAppSettings().defaultTime);
       applyAllSavedLayouts();
       renderAll();
+      if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
       showToast(`Switched to ${prof.name}`);
     }
 
@@ -4597,7 +4656,7 @@
       if (list.length <= 1) {
         showToast("Cannot delete the only remaining user profile.");
         return;
-      }
+            }
       const prof = list.find(p => p.id === profileId);
       if (!prof) return;
 
@@ -4904,25 +4963,26 @@
       showToast("Settings saved!");
       renderAll();
     }
-    function renderSettingsScreen() {
+function renderSettingsScreen() {
       const profilesContainer = document.getElementById('settings-profiles-list');
       if (profilesContainer) {
         const list = getUserProfilesList();
         profilesContainer.innerHTML = list.map(p => {
           const isCurrent = p.id === activeProfileId;
+          const safeId = escapeJsStr(p.id);
           return `
          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.6rem; background: ${isCurrent ? 'var(--brand-surface)' : 'var(--bg-subtle)'}; border: 1.5px solid ${isCurrent ? 'var(--brand-primary)' : 'var(--border-color)'}; border-radius: var(--radius-sm); gap: 0.35rem;">
            <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0;">
              <span style="font-size: 0.9rem;">👤</span>
              <div style="min-width: 0;">
-               <strong class="truncate-text" style="font-size: 0.75rem; display: block;">${p.name}</strong>
+               <strong class="truncate-text" style="font-size: 0.75rem; display: block;">${escapeHtmlAttr(p.name)}</strong>
                <span style="font-size: 0.6rem; color: ${isCurrent ? 'var(--brand-primary)' : 'var(--text-muted)'}; font-weight: 700;">${isCurrent ? 'Active Now' : 'Tap Switch to open'}</span>
              </div>
            </div>
            <div style="display: flex; gap: 0.25rem; flex-shrink: 0;">
-             ${!isCurrent ? `<button type="button" onclick="switchUserProfile('${p.id}'); renderSettingsScreen();" class="btn btn-primary" style="font-size: 0.62rem; padding: 0.2rem 0.45rem;">Switch</button>` : ''}
-             <button type="button" onclick="renameUserProfile('${p.id}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.2rem 0.4rem;">Rename</button>
-             ${list.length > 1 ? `<button type="button" onclick="deleteUserProfile('${p.id}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.2rem 0.4rem; color: var(--danger);">✕</button>` : ''}
+             ${!isCurrent ? `<button type="button" onclick="switchUserProfile('${safeId}')" class="btn btn-primary" style="font-size: 0.62rem; padding: 0.2rem 0.45rem;">Switch</button>` : ''}
+             <button type="button" onclick="renameUserProfile('${safeId}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.2rem 0.4rem;">Rename</button>
+             ${list.length > 1 ? `<button type="button" onclick="deleteUserProfile('${safeId}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.2rem 0.4rem; color: var(--danger);">✕</button>` : ''}
            </div>
          </div>
        `;
@@ -4931,7 +4991,7 @@
 
       const s = getAppSettings();
       populateAllTimePickers();
-      const fmtIn = document.getElementById('settings-time-format');
+            const fmtIn = document.getElementById('settings-time-format');
       if (fmtIn) fmtIn.value = s.timeFormat || '24h';
       const curIn = document.getElementById('settings-currency-input');
       const timeIn = document.getElementById('settings-default-time');
@@ -5157,23 +5217,23 @@
         return;
       }
 
-      container.innerHTML = filtered.map(n => {
+container.innerHTML = filtered.map(n => {
         const meta = catMeta[n.category] || catMeta.system;
         return `
           <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.5rem; padding:0.55rem 0.65rem; border-radius:var(--radius-sm); background:${n.read ? 'var(--bg-subtle)' : 'var(--bg-surface)'}; border:1px solid ${n.read ? 'var(--border-color)' : 'var(--brand-primary)'};">
-            <div style="min-width:0; flex:1;" onclick="markSingleNotificationRead('${n.id}')">
+            <div style="min-width:0; flex:1;" onclick="markSingleNotificationRead('${escapeJsStr(n.id)}')">
               <div style="display:flex; align-items:center; gap:0.35rem; margin-bottom:0.2rem; flex-wrap:wrap;">
                 ${!n.read ? '<span style="width:7px; height:7px; border-radius:50%; background:var(--brand-primary); flex-shrink:0;"></span>' : ''}
                 <span style="font-size:0.6rem; font-weight:700; padding:1px 6px; border-radius:9999px; background:${meta.bg}; color:${meta.color};">${meta.label}</span>
                 <span style="font-size:0.62rem; color:var(--text-soft);">${formatNotifTimestamp(n.timestamp)}</span>
               </div>
-              <p style="font-size:0.74rem; font-weight:${n.read ? '500' : '700'}; color:var(--text-main); line-height:1.35;">${n.message}</p>
+              <p style="font-size:0.74rem; font-weight:${n.read ? '500' : '700'}; color:var(--text-main); line-height:1.35;">${escapeHtmlAttr(n.message)}</p>
             </div>
-            <button type="button" onclick="deleteSingleNotification('${n.id}')" class="btn btn-subtle" style="padding:0.2rem 0.4rem; min-height:26px; font-size:0.65rem; color:var(--text-muted);" title="Dismiss">✕</button>
+            <button type="button" onclick="deleteSingleNotification('${escapeJsStr(n.id)}')" class="btn btn-subtle" style="padding:0.2rem 0.4rem; min-height:26px; font-size:0.65rem; color:var(--text-muted);" title="Dismiss">✕</button>
           </div>
         `;
       }).join('');
-    }
+        }
 
     function markSingleNotificationRead(notifId) {
       const log = getNotificationsLog();
@@ -5574,7 +5634,7 @@
         return matchesQuery && matchesStatus;
       });
 
-      if (filtered.length === 0) {
+if (filtered.length === 0) {
         container.innerHTML = `<span style="font-size:0.68rem; color:var(--text-muted); padding:0.25rem;">No clients match.</span>`;
         return;
       }
@@ -5587,16 +5647,16 @@
         const clientColor = getClientColor(c);
 
         return `
-          <div onclick="selectClientFromDrawer('${c.id}')" style="padding: 0.35rem 0.45rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1.5px solid var(--border-color); border-left: 4px solid ${clientColor}; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
+          <div onclick="selectClientFromDrawer('${escapeJsStr(c.id)}')" style="padding: 0.35rem 0.45rem; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1.5px solid var(--border-color); border-left: 4px solid ${clientColor}; cursor: pointer; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 0.35rem; min-width: 0;">
               <span style="width: 9px; height: 9px; border-radius: 50%; background: ${clientColor}; flex-shrink: 0; ${isScheduledToday && !isArchived ? `box-shadow: 0 0 0 3px ${clientColor}44;` : ''}"></span>
-              <div style="min-width: 0;">                <p class="truncate-text" style="font-size: 0.72rem; font-weight: 700;">${c.name}</p>
+              <div style="min-width: 0;">
+                <p class="truncate-text" style="font-size: 0.72rem; font-weight: 700;">${escapeHtmlAttr(c.name)}</p>
                 <p style="font-size: 0.62rem; color: var(--text-muted);">M${activeMonth ? activeMonth.monthNumber : 1}: ${count}/${activeMonth ? activeMonth.quota : c.quota} ${isArchived ? '(Archived)' : ''}</p>
               </div>
             </div>
             <span style="font-size: 0.65rem; font-weight: 800; color: ${isArchived ? 'var(--text-muted)' : 'var(--brand-primary)'};">&rarr;</span>
           </div>
-</div>
         `;
       }).join('');
     }
@@ -5605,7 +5665,6 @@
       toggleDrawer(false);
       viewClientDetail(clientId);
     }
-
     function getLastStudentClassTime(client) {
       if (client && client.defaultTime) return client.defaultTime;
       let lastTime = "16:00";
@@ -5663,7 +5722,7 @@
       appState.clients.forEach(c => {
         (c.months || []).forEach(m => {
           (m.sessions || []).forEach((s, idx) => {
-            rows += `<tr><td>${c.name}</td><td>Month ${m.monthNumber}</td><td>#${idx + 1}</td><td>${formatDisplayDate(s.date, true)}</td><td>${s.time}</td><td>${s.notes || '-'}</td></tr>`;
+            rows += `<tr><td>${escapeHtmlAttr(c.name)}</td><td>Month ${m.monthNumber}</td><td>#${idx + 1}</td><td>${formatDisplayDate(s.date, true)}</td><td>${escapeHtmlAttr(s.time)}</td><td>${escapeHtmlAttr(s.notes || '-')}</td></tr>`;
           });
         });
       });
@@ -5858,18 +5917,18 @@
         return a.isPaid ? 1 : -1;
       });
 
-      if (reminderList.length === 0) {
+if (reminderList.length === 0) {
         container.innerHTML = `<span style="font-size: 0.7rem; color: var(--text-muted); text-align: center; padding: 0.4rem;">No completed months pending review.</span>`;
         return;
       }
 
       container.innerHTML = reminderList.map(item => `
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0.55rem; background: var(--bg-surface); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); font-size: 0.72rem;">
-          <div style="min-width: 0; cursor: pointer;" onclick="closeModal('modal-reminders'); viewClientDetail('${item.client.id}')">
-            <p class="truncate-text" style="font-weight: 800;">${item.client.name} - Month ${item.monthNumber}</p>
+          <div style="min-width: 0; cursor: pointer;" onclick="closeModal('modal-reminders'); viewClientDetail('${escapeJsStr(item.client.id)}')">
+            <p class="truncate-text" style="font-weight: 800;">${escapeHtmlAttr(item.client.name)} - Month ${item.monthNumber}</p>
             <p style="font-size: 0.62rem; color: var(--text-muted);">${item.month.sessions.length} classes | Fee: ${item.fee} ${getCurrency()}</p>
           </div>
-          <button type="button" onclick="toggleReminderPaidStatus('${item.client.id}', '${item.month.id}')" class="btn" style="font-size: 0.62rem; padding: 0.2rem 0.5rem; ${item.isPaid ? 'background: var(--success-surface); color: var(--success); border-color: var(--success);' : 'background: var(--warning-surface); color: var(--warning); border-color: var(--warning);'}">
+          <button type="button" onclick="toggleReminderPaidStatus('${escapeJsStr(item.client.id)}', '${escapeJsStr(item.month.id)}')" class="btn" style="font-size: 0.62rem; padding: 0.2rem 0.5rem; ${item.isPaid ? 'background: var(--success-surface); color: var(--success); border-color: var(--success);' : 'background: var(--warning-surface); color: var(--warning); border-color: var(--warning);'}">
             ${item.isPaid ? '✓ PAID' : 'DUE'}
           </button>
         </div>
@@ -5879,7 +5938,7 @@
     function toggleReminderPaidStatus(clientId, monthId) {
       const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
-      const month = client.months.find(m => String(m.id) === String(monthId));
+            const month = client.months.find(m => String(m.id) === String(monthId));
       if (!month) return;
       const fee = month.calculatedDueFee || 0;
 
@@ -5971,7 +6030,7 @@
           }
         }
       });
-      if (!oldestTs) return 0;
+if (!oldestTs) return 0;
       return Math.max(0, Math.floor((Date.now() - oldestTs) / 86400000));
     }
 
@@ -5981,7 +6040,8 @@
       const examMid = parseLocalDate(client.examDate);
       const diffDays = Math.round((examMid - todayMid) / 86400000);
       if (diffDays < 0 || diffDays > 45) return '';
-      const label = diffDays === 0 ? `${client.examLabel || 'Exam'} TODAY` : `${client.examLabel || 'Exam'} in ${diffDays}d`;
+      const safeExamLabel = escapeHtmlAttr(client.examLabel || 'Exam');
+      const label = diffDays === 0 ? `${safeExamLabel} TODAY` : `${safeExamLabel} in ${diffDays}d`;
       return `<span style="font-size:0.55rem; font-weight:800; background:var(--purple-surface); color:var(--purple); border:1px solid var(--purple); padding:0px 4px; border-radius:4px; margin-left:3px;">🎯 ${label}</span>`;
     }
 
@@ -5989,8 +6049,7 @@
     function handleRosterCardTouchStart(e) {
       rosterTouchStartX = e.changedTouches[0].screenX;
     }
-    function handleRosterCardTouchEnd(e, clientId, targetDateStr) {
-      const deltaX = e.changedTouches[0].screenX - rosterTouchStartX;
+    function handleRosterCardTouchEnd(e, clientId, targetDateStr) {      const deltaX = e.changedTouches[0].screenX - rosterTouchStartX;
       if (deltaX > 65) {
         executeScheduledTodayAdd(clientId, targetDateStr);
       } else if (deltaX < -65) {
@@ -6046,22 +6105,22 @@
           const showDot = isScheduledToday && !alreadyLogged;
           const isChecked = rosterSelectedClientIds.has(String(c.id));
 
-          return `
+return `
             <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: ${isChecked ? 'var(--brand-surface)' : 'var(--bg-surface)'}; border: 1.5px solid ${isChecked || showDot ? 'var(--brand-primary)' : 'var(--border-color)'}; border-radius: var(--radius-sm);">
-              <div onclick="${rosterMultiSelectActive ? `toggleRosterClientSelection('${c.id}')` : `openQuickAddModalPreselect('${c.id}')`}" style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; cursor: pointer; flex: 1;">
+              <div onclick="${rosterMultiSelectActive ? `toggleRosterClientSelection('${escapeJsStr(c.id)}')` : `openQuickAddModalPreselect('${escapeJsStr(c.id)}')`}" style="display: flex; align-items: center; gap: 0.4rem; min-width: 0; cursor: pointer; flex: 1;">
                 ${rosterMultiSelectActive
               ? `<input type="checkbox" ${isChecked ? 'checked' : ''} style="width:15px; height:15px; pointer-events:none;">`
               : (showDot ? '<span class="pulse-dot"></span>' : '<span style="width: 6px; height: 6px; border-radius: 50%; background: var(--border-color); flex-shrink: 0;"></span>')}
                 <div style="min-width: 0;">
                   <p class="truncate-text" style="font-size: 0.72rem; font-weight: 800;">
-                    ${c.name}
+                    ${escapeHtmlAttr(c.name)}
                     ${isBlockedToday ? '<span style="font-size:0.55rem; font-weight:800; background:var(--danger-surface); color:var(--danger); border:1px solid var(--danger); padding:0px 4px; border-radius:4px; margin-left:2px;">Busy</span>' : ''}
                     ${makeupDue > 0 ? `<span style="font-size:0.55rem; font-weight:800; background:var(--warning-surface); color:var(--warning); border:1px solid var(--warning); padding:0px 4px; border-radius:4px; margin-left:2px;">${makeupDue} Makeup</span>` : ''}
                   </p>
                   <p style="font-size: 0.62rem; color: var(--text-muted);">M${activeMonth ? activeMonth.monthNumber : 1}: <strong>${count}/${quota}</strong> ${extraCount > 0 ? `<span style="color:var(--purple); font-weight:700;">*${extraCount} extra*</span>` : ''}</p>
                 </div>
               </div>
-              ${!rosterMultiSelectActive ? `<button type="button" onclick="executeQuickAddDirect('${c.id}')" class="btn btn-success" style="font-size: 0.62rem; padding: 0.2rem 0.45rem; flex-shrink: 0;">${durLabel}</button>` : ''}
+              ${!rosterMultiSelectActive ? `<button type="button" onclick="executeQuickAddDirect('${escapeJsStr(c.id)}')" class="btn btn-success" style="font-size: 0.62rem; padding: 0.2rem 0.45rem; flex-shrink: 0;">${durLabel}</button>` : ''}
             </div>
           `;
         }).join('');
@@ -6090,16 +6149,16 @@
           scheduledBlock.innerHTML = scheduledClients.map(c => {
             const alreadyLogged = (c.months || []).some(m => (m.sessions || []).some(s => s.date === targetDateStr));
             return `
-              <div ontouchstart="handleRosterCardTouchStart(event)" ontouchend="handleRosterCardTouchEnd(event, '${c.id}', '${targetDateStr}')" style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); gap: 0.4rem;">
-                <div style="min-width: 0; cursor:pointer; flex: 1;" onclick="viewClientDetail('${c.id}')">
-                  <p class="truncate-text" style="font-size: 0.72rem; font-weight: 800;">${c.name}${getExamCountdownBadgeHtml(c)}</p>
-                  <p style="font-size: 0.62rem; color: var(--text-muted);">${c.grade || '1-on-1'} ${c.phone ? '• ' + c.phone : ''}</p>
+              <div ontouchstart="handleRosterCardTouchStart(event)" ontouchend="handleRosterCardTouchEnd(event, '${escapeJsStr(c.id)}', '${targetDateStr}')" style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); gap: 0.4rem;">
+                <div style="min-width: 0; cursor:pointer; flex: 1;" onclick="viewClientDetail('${escapeJsStr(c.id)}')">
+                  <p class="truncate-text" style="font-size: 0.72rem; font-weight: 800;">${escapeHtmlAttr(c.name)}${getExamCountdownBadgeHtml(c)}</p>
+                  <p style="font-size: 0.62rem; color: var(--text-muted);">${escapeHtmlAttr(c.grade || '1-on-1')} ${c.phone ? '• ' + escapeHtmlAttr(c.phone) : ''}</p>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
-                  <button type="button" onclick="prepareWhatsAppClassReminder('${c.id}')" class="btn btn-whatsapp" style="font-size: 0.65rem; padding: 0.28rem 0.5rem;" title="WhatsApp class reminder">
+                  <button type="button" onclick="prepareWhatsAppClassReminder('${escapeJsStr(c.id)}')" class="btn btn-whatsapp" style="font-size: 0.65rem; padding: 0.28rem 0.5rem;" title="WhatsApp class reminder">
                     WhatsApp
                   </button>
-                  ${alreadyLogged ? '<span style="font-size: 0.65rem; color: var(--success); font-weight: 700; padding: 0.2rem 0.35rem;">✓ Logged</span>' : `<button type="button" onclick="executeScheduledTodayAdd('${c.id}', '${targetDateStr}')" class="btn btn-success" style="font-size: 0.68rem; padding: 0.28rem 0.55rem;">+1 Class</button>`}
+                  ${alreadyLogged ? '<span style="font-size: 0.65rem; color: var(--success); font-weight: 700; padding: 0.2rem 0.35rem;">✓ Logged</span>' : `<button type="button" onclick="executeScheduledTodayAdd('${escapeJsStr(c.id)}', '${targetDateStr}')" class="btn btn-success" style="font-size: 0.68rem; padding: 0.28rem 0.55rem;">+1 Class</button>`}
                 </div>
               </div>
             `;
@@ -6152,14 +6211,14 @@
             <div style="display: flex; flex-direction: column; gap: 0.3rem; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid ${unpaidDue > 0 ? 'var(--danger)' : 'var(--border-color)'};">
               <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem;">
                 <div style="display: flex; align-items: center; gap: 0.3rem; min-width: 0; flex: 1; flex-wrap: wrap;">
-                  <span class="truncate-text" style="font-size: 0.74rem; font-weight: 800; cursor: pointer;" onclick="viewClientDetail('${c.id}')">${c.name} ${extraCount > 0 ? `<span style="color:var(--purple); font-weight:700;">*${extraCount} extra*</span>` : ''}</span>
+                  <span class="truncate-text" style="font-size: 0.74rem; font-weight: 800; cursor: pointer;" onclick="viewClientDetail('${escapeJsStr(c.id)}')">${escapeHtmlAttr(c.name)} ${extraCount > 0 ? `<span style="color:var(--purple); font-weight:700;">*${extraCount} extra*</span>` : ''}</span>
                   ${getExamCountdownBadgeHtml(c)}
                   ${makeupDue > 0 ? `<span style="font-size: 0.58rem; font-weight: 800; background: var(--warning-surface); color: var(--warning); border: 1px solid var(--warning); padding: 1px 5px; border-radius: 9999px;">${makeupDue} Makeup</span>` : ''}
                   ${unpaidDue > 0 ? `<span class="num-tabular" style="font-size: 0.58rem; font-weight: 800; background: var(--danger-surface); color: var(--danger); border: 1px solid var(--danger); padding: 1px 5px; border-radius: 9999px; flex-shrink: 0;">${unpaidDue} ${getCurrency()} Due${agingDays > 0 ? ` • ${agingDays}d` : ''}</span>` : ''}
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
                   <span class="num-tabular" style="font-size: 0.65rem; font-weight: 700;">${count}/${quota} (${pct}%)</span>
-                  <button type="button" onclick="prepareWhatsAppClassReminder('${c.id}')" class="btn btn-whatsapp" style="font-size: 0.6rem; padding: 0.15rem 0.4rem;" title="WhatsApp">💬</button>
+                  <button type="button" onclick="prepareWhatsAppClassReminder('${escapeJsStr(c.id)}')" class="btn btn-whatsapp" style="font-size: 0.6rem; padding: 0.15rem 0.4rem;" title="WhatsApp">💬</button>
                 </div>
               </div>
               <div style="width: 100%; height: 6px; background: var(--border-color); border-radius: 9999px; overflow: hidden;">
@@ -6175,7 +6234,6 @@
       rosterScheduledDayOffset += delta;
       renderRosterPage();
     }
-
     function resetRosterScheduledDay() {
       rosterScheduledDayOffset = 0;
       renderRosterPage();
@@ -6376,7 +6434,7 @@
         });
       }
 
-      if (list.length === 0) {
+if (list.length === 0) {
         container.innerHTML = `<span style="font-size:0.7rem; color:var(--text-muted); padding:0.4rem; text-align:center;">No clients found.</span>`;
         return;
       }
@@ -6386,16 +6444,17 @@
         const count = activeMonth ? activeMonth.sessions.length : 0;
         const quota = activeMonth ? activeMonth.quota : c.quota;
         const isArchived = (c.status === 'archived');
+        const safeId = escapeJsStr(c.id);
 
         return `
           <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.65rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color);">
-            <div style="min-width: 0; cursor:pointer; flex:1;" onclick="viewClientDetail('${c.id}')">
-              <p class="truncate-text" style="font-size: 0.78rem; font-weight: 800;">${c.name} ${isArchived ? '(Archived)' : ''}</p>
-              <p style="font-size: 0.65rem; color: var(--text-muted);">${c.grade || '1-on-1'} • M${activeMonth ? activeMonth.monthNumber : 1}: ${count}/${quota} classes</p>
+            <div style="min-width: 0; cursor:pointer; flex:1;" onclick="viewClientDetail('${safeId}')">
+              <p class="truncate-text" style="font-size: 0.78rem; font-weight: 800;">${escapeHtmlAttr(c.name)} ${isArchived ? '(Archived)' : ''}</p>
+              <p style="font-size: 0.65rem; color: var(--text-muted);">${escapeHtmlAttr(c.grade || '1-on-1')} • M${activeMonth ? activeMonth.monthNumber : 1}: ${count}/${quota} classes</p>
             </div>
             <div style="display: flex; gap: 0.3rem;">
-              <button type="button" onclick="openClientModal('${c.id}')" class="btn btn-subtle" style="padding: 0.25rem 0.5rem; font-size: 0.68rem;">Edit</button>
-              <button type="button" onclick="viewClientDetail('${c.id}')" class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.68rem;">View</button>
+              <button type="button" onclick="openClientModal('${safeId}')" class="btn btn-subtle" style="padding: 0.25rem 0.5rem; font-size: 0.68rem;">Edit</button>
+              <button type="button" onclick="viewClientDetail('${safeId}')" class="btn btn-primary" style="padding: 0.25rem 0.5rem; font-size: 0.68rem;">View</button>
             </div>
           </div>
         `;
@@ -6405,7 +6464,7 @@
     function renderCalendarView() {
       const strip = document.getElementById('horizontal-calendar-strip');
       if (!strip) return;
-      strip.innerHTML = '';
+            strip.innerHTML = '';
 
       const baseDate = parseLocalDate(calendarSelectedDate);
       const viewHeader = document.getElementById('calendar-view-header-title');
@@ -6456,7 +6515,7 @@
         });
       });
 
-      if (daySessions.length === 0) {
+if (daySessions.length === 0) {
         container.innerHTML = `<span style="font-size: 0.72rem; color: var(--text-muted); padding: 0.5rem; text-align: center;">No classes scheduled for this date. Use '+ Add Class' above.</span>`;
         return;
       }
@@ -6464,14 +6523,14 @@
       container.innerHTML = daySessions.map(item => `
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); font-size: 0.72rem;">
           <div>
-            <span style="font-weight: 800; color: var(--brand-primary);">${item.client.name}</span>
-            <span style="color: var(--text-muted);"> | Month ${item.month.monthNumber} • ${item.session.time} ${item.session.tag === 'extra' ? '<span style="color:var(--purple); font-weight:700;">[Extra]</span>' : ''}</span>
-            ${item.session.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${item.session.notes}</p>` : ''}
-            ${item.session.classTest ? `<p style="font-size: 0.62rem; color: var(--brand-primary); font-weight: 800; margin-top: 2px;">📝 Test (${item.session.classTest.subject}): ${item.session.classTest.score}/${item.session.classTest.maxScore}</p>` : ''}
+            <span style="font-weight: 800; color: var(--brand-primary);">${escapeHtmlAttr(item.client.name)}</span>
+            <span style="color: var(--text-muted);"> | Month ${item.month.monthNumber} • ${escapeHtmlAttr(item.session.time)} ${item.session.tag === 'extra' ? '<span style="color:var(--purple); font-weight:700;">[Extra]</span>' : ''}</span>
+            ${item.session.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${escapeHtmlAttr(item.session.notes)}</p>` : ''}
+            ${item.session.classTest ? `<p style="font-size: 0.62rem; color: var(--brand-primary); font-weight: 800; margin-top: 2px;">📝 Test (${escapeHtmlAttr(item.session.classTest.subject)}): ${item.session.classTest.score}/${item.session.classTest.maxScore}</p>` : ''}
           </div>
           <div style="display: flex; gap: 0.25rem;">
-            <button type="button" onclick="openLogClassModal('${item.client.id}', '${item.month.id}', '${item.session.id}')" class="btn btn-subtle" style="padding: 0.2rem 0.4rem; font-size: 0.65rem;">Edit</button>
-            <button type="button" onclick="confirmDeleteSession('${item.client.id}', '${item.month.id}', '${item.session.id}')" class="btn btn-subtle" style="padding: 0.2rem 0.4rem; color: var(--danger); font-size: 0.65rem;">✕</button>
+            <button type="button" onclick="openLogClassModal('${escapeJsStr(item.client.id)}', '${escapeJsStr(item.month.id)}', '${escapeJsStr(item.session.id)}')" class="btn btn-subtle" style="padding: 0.2rem 0.4rem; font-size: 0.65rem;">Edit</button>
+            <button type="button" onclick="confirmDeleteSession('${escapeJsStr(item.client.id)}', '${escapeJsStr(item.month.id)}', '${escapeJsStr(item.session.id)}')" class="btn btn-subtle" style="padding: 0.2rem 0.4rem; color: var(--danger); font-size: 0.65rem;">✕</button>
           </div>
         </div>
       `).join('');
@@ -6564,24 +6623,24 @@
 
       const totalDueAmount = (client.months || []).filter(m => !m.isPaid).reduce((sum, m) => sum + (m.calculatedDueFee || 0), 0);
 
-      const isArchived = (client.status === 'archived');
+const isArchived = (client.status === 'archived');
       const header = document.getElementById('client-detail-header-card');
       header.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
           <div style="min-width: 0;">
             <div style="display:flex; align-items:center; gap:0.35rem;">
-              <h2 class="truncate-text" style="font-size: 0.95rem; font-weight: 800;">${client.name}</h2>
+              <h2 class="truncate-text" style="font-size: 0.95rem; font-weight: 800;">${escapeHtmlAttr(client.name)}</h2>
               ${isArchived ? '<span style="font-size:0.6rem; padding:0.1rem 0.35rem; background:var(--warning-surface); color:var(--warning); border-radius:4px; font-weight:700;">Archived</span>' : ''}
             </div>
-         <p style="font-size: 0.7rem; color: var(--text-muted);">${client.grade || '1-on-1'} • Model: ${client.pricingModel === 'per_class' ? 'Per-Class' : 'Retainer'} ${client.phone ? '• ' + client.phone : ''}</p>
+         <p style="font-size: 0.7rem; color: var(--text-muted);">${escapeHtmlAttr(client.grade || '1-on-1')} • Model: ${client.pricingModel === 'per_class' ? 'Per-Class' : 'Retainer'} ${client.phone ? '• ' + escapeHtmlAttr(client.phone) : ''}</p>
          ${(client.scheduledDays && client.scheduledDays.length > 0) || (client.blockedDays && client.blockedDays.length > 0) ? `
            <div style="display:flex; flex-wrap:wrap; gap:0.25rem; margin-top:0.3rem; align-items:center;">
-${(client.scheduledDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--brand-surface); color:var(--brand-primary); border:1px solid var(--brand-primary);">${d}</span>`).join('')}
-             ${(client.blockedDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--danger-surface); color:var(--danger); border:1px solid var(--danger); text-decoration:line-through;" title="Unavailable / Busy">${d}</span>`).join('')}
+${(client.scheduledDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--brand-surface); color:var(--brand-primary); border:1px solid var(--brand-primary);">${escapeHtmlAttr(d)}</span>`).join('')}
+             ${(client.blockedDays || []).map(d => `<span style="font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:4px; background:var(--danger-surface); color:var(--danger); border:1px solid var(--danger); text-decoration:line-through;" title="Unavailable / Busy">${escapeHtmlAttr(d)}</span>`).join('')}
            </div>
          ` : ''}
           </div>
-    <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
+              <div style="display:flex; gap:0.25rem; flex-wrap: wrap; justify-content: flex-end;">
             ${(totalDueAmount > 0 && (client.advanceBalance || 0) > 0) ? `<button type="button" onclick="autoSettleClientDues('${client.id}')" class="btn btn-success" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;">⚡ Auto-Settle</button>` : ''}
            <button type="button" onclick="openMarksScreenForClient('${client.id}')" class="btn btn-purple" style="font-size: 0.65rem; padding: 0.25rem 0.45rem;">🎓 Marks &amp; Exams</button>
          <button type="button" onclick="toggleArchiveClient('${client.id}')" class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.3rem 0.5rem;"> 
@@ -6686,21 +6745,21 @@ ${(client.scheduledDays || []).map(d => `<span style="font-size:0.58rem; font-we
               <button type="button" onclick="openLogClassModal('${client.id}', '${month.id}')" class="btn btn-primary" style="font-size: 0.65rem; padding: 0.25rem 0.5rem;">+ Class</button>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+<div style="display: flex; flex-direction: column; gap: 0.25rem;">
               ${sortedSessions.length === 0 ? '<span style="font-size: 0.7rem; color: var(--text-muted);">No classes recorded.</span>' : ''}
               ${sortedSessions.map(({s, originalIdx}) => `
                 <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.3rem 0.45rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); font-size: 0.72rem;">
                   <div>
                     <span style="font-weight: 700;">${originalIdx + 1}. ${formatDisplayDate(s.date, false)}</span>
-                  <span style="color: var(--text-muted); font-size: 0.65rem;"> | ${s.time} ${s.tag === 'extra' ? '• <span style="color:var(--purple); font-weight:700;">[Extra]</span>' : ''}</span>
-${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${s.notes}</p>` : ''}
-                ${s.homework ? `<p style="font-size: 0.62rem; color: var(--brand-primary); font-weight: 700; margin-top: 1px;">Next: ${s.homework}</p>` : ''}
-                ${s.classTest ? `<p style="font-size: 0.62rem; color: var(--success); font-weight: 800; margin-top: 2px;">📝 Class Test (${s.classTest.subject}): ${s.classTest.score}/${s.classTest.maxScore} (${s.classTest.maxScore > 0 ? Math.round((s.classTest.score / s.classTest.maxScore) * 100) : 0}%)</p>` : ''}
+                  <span style="color: var(--text-muted); font-size: 0.65rem;"> | ${escapeHtmlAttr(s.time)} ${s.tag === 'extra' ? '• <span style="color:var(--purple); font-weight:700;">[Extra]</span>' : ''}</span>
+${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${escapeHtmlAttr(s.notes)}</p>` : ''}
+                ${s.homework ? `<p style="font-size: 0.62rem; color: var(--brand-primary); font-weight: 700; margin-top: 1px;">Next: ${escapeHtmlAttr(s.homework)}</p>` : ''}
+                ${s.classTest ? `<p style="font-size: 0.62rem; color: var(--success); font-weight: 800; margin-top: 2px;">📝 Class Test (${escapeHtmlAttr(s.classTest.subject)}): ${s.classTest.score}/${s.classTest.maxScore} (${s.classTest.maxScore > 0 ? Math.round((s.classTest.score / s.classTest.maxScore) * 100) : 0}%)</p>` : ''}
                   </div>
                   <div style="display: flex; gap: 0.2rem;">
-                    <button type="button" onclick="openLogClassModal('${client.id}', '${month.id}', '${s.id}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Edit</button>
-                    <button type="button" onclick="openReassignModal('${client.id}', '${s.id}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Move</button>
-                    <button type="button" onclick="confirmDeleteSession('${client.id}', '${month.id}', '${s.id}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; color: var(--danger); font-size: 0.6rem;">✕</button>
+                    <button type="button" onclick="openLogClassModal('${escapeJsStr(client.id)}', '${escapeJsStr(month.id)}', '${escapeJsStr(s.id)}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Edit</button>
+                    <button type="button" onclick="openReassignModal('${escapeJsStr(client.id)}', '${escapeJsStr(s.id)}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Move</button>
+                    <button type="button" onclick="confirmDeleteSession('${escapeJsStr(client.id)}', '${escapeJsStr(month.id)}', '${escapeJsStr(s.id)}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; color: var(--danger); font-size: 0.6rem;">✕</button>
                   </div>
                 </div>
               `).join('')}
@@ -6726,19 +6785,18 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0.55rem; background: var(--bg-subtle); border-radius: var(--radius-sm); border: 1.5px solid var(--border-color);">
               <div>
                 <p style="font-size: 0.72rem; font-weight: 800;">${formatDisplayDate(item.inst.date, true)}</p>
-                <p style="font-size: 0.62rem; color: var(--text-muted);">Month ${item.month.monthNumber} ${item.inst.note ? '• ' + item.inst.note : ''}</p>
+                <p style="font-size: 0.62rem; color: var(--text-muted);">Month ${item.month.monthNumber} ${item.inst.note ? '• ' + escapeHtmlAttr(item.inst.note) : ''}</p>
               </div>
               <div style="display: flex; align-items: center; gap: 0.4rem;">
                 <strong class="num-tabular" style="color: var(--success); font-size: 0.75rem;">+${item.inst.amount} ${getCurrency()}</strong>
-                <button type="button" onclick="openEditPaymentModal('${client.id}', '${item.month.id}', '${item.inst.id}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Edit</button>
-                <button type="button" onclick="confirmDeletePayment('${client.id}', '${item.month.id}', '${item.inst.id}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; color: var(--danger); font-size: 0.6rem;">✕</button>
+                <button type="button" onclick="openEditPaymentModal('${escapeJsStr(client.id)}', '${escapeJsStr(item.month.id)}', '${escapeJsStr(item.inst.id)}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Edit</button>
+                <button type="button" onclick="confirmDeletePayment('${escapeJsStr(client.id)}', '${escapeJsStr(item.month.id)}', '${escapeJsStr(item.inst.id)}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; color: var(--danger); font-size: 0.6rem;">✕</button>
               </div>
             </div>
           `).join('');
         }
       }
     }
-
     function toggleClientDetailSort() {
       clientDetailSortOrder = (clientDetailSortOrder === 'newest') ? 'oldest' : 'newest';
       renderClientDetailView();
@@ -6918,7 +6976,7 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
           if (onlyDue && m.isPaid) continue;
 
           (m.sessions || []).forEach(s => {
-            s.tag = 'normal';
+            if (!s.tag) s.tag = 'normal';
             allSessions.push(s);
           });
           m.sessions = [];
@@ -6952,7 +7010,7 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
           return;
         }
 
-        let allSessions = [];
+       let allSessions = [];
         let earliestEligibleIdx = -1;
         for (let i = 0; i <= toIdx; i++) {
           const m = client.months[i];
@@ -6960,7 +7018,7 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
           if (earliestEligibleIdx === -1) earliestEligibleIdx = i;
 
           (m.sessions || []).forEach(s => {
-            s.tag = 'normal';
+            if (!s.tag) s.tag = 'normal';
             allSessions.push(s);
           });
           m.sessions = [];
@@ -7299,16 +7357,16 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
         foldersGrid.style.display = 'grid';
         listContainer.style.display = 'none';
 
-        foldersGrid.innerHTML = cats.map(c => {
+foldersGrid.innerHTML = cats.map(c => {
           const count = allTemplates.filter(t => t.category === c.id).length;
           const isCustom = !DEFAULT_WA_CATEGORIES.some(dc => dc.id === c.id);
           return `
-            <div onclick="openTemplateFolder('${c.id}')" style="padding: 0.65rem 0.75rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; display: flex; flex-direction: column; gap: 0.3rem; transition: border-color 0.15s;">
+            <div onclick="openTemplateFolder('${escapeJsStr(c.id)}')" style="padding: 0.65rem 0.75rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); cursor: pointer; display: flex; flex-direction: column; gap: 0.3rem; transition: border-color 0.15s;">
               <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-size: 1.25rem;">📁</span>
-                ${isCustom ? `<button type="button" onclick="deleteCustomTemplateCategory('${c.id}', event)" class="btn btn-subtle" style="padding: 0.1rem 0.3rem; font-size: 0.6rem; color: var(--danger);" title="Delete Empty Folder">✕</button>` : ''}
+                ${isCustom ? `<button type="button" onclick="deleteCustomTemplateCategory('${escapeJsStr(c.id)}', event)" class="btn btn-subtle" style="padding: 0.1rem 0.3rem; font-size: 0.6rem; color: var(--danger);" title="Delete Empty Folder">✕</button>` : ''}
               </div>
-              <strong class="truncate-text" style="font-size: 0.75rem; color: var(--text-main);">${c.name}</strong>
+              <strong class="truncate-text" style="font-size: 0.75rem; color: var(--text-main);">${escapeHtmlAttr(c.name)}</strong>
               <span style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">${count} template${count === 1 ? '' : 's'}</span>
             </div>
           `;
@@ -7329,18 +7387,17 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
         listContainer.innerHTML = folderTemplates.map(t => `
           <div style="padding: 0.5rem 0.65rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 0.3rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem;">
-              <strong class="truncate-text" style="font-size: 0.75rem;">${t.title}</strong>
+              <strong class="truncate-text" style="font-size: 0.75rem;">${escapeHtmlAttr(t.title)}</strong>
               <div style="display: flex; gap: 0.25rem; flex-shrink: 0;">
-                <button type="button" onclick="editSavedWhatsAppTemplate('${t.id}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.15rem 0.4rem;">Edit</button>
-                <button type="button" onclick="deleteSavedWhatsAppTemplate('${t.id}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.15rem 0.4rem; color: var(--danger);">✕</button>
+                <button type="button" onclick="editSavedWhatsAppTemplate('${escapeJsStr(t.id)}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.15rem 0.4rem;">Edit</button>
+                <button type="button" onclick="deleteSavedWhatsAppTemplate('${escapeJsStr(t.id)}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.15rem 0.4rem; color: var(--danger);">✕</button>
               </div>
             </div>
-            <p style="font-size: 0.68rem; color: var(--text-muted); line-height: 1.3; white-space: pre-wrap;">${t.body}</p>
+            <p style="font-size: 0.68rem; color: var(--text-muted); line-height: 1.3; white-space: pre-wrap;">${escapeHtmlAttr(t.body)}</p>
           </div>
         `).join('');
       }
     }
-
     function populateWhatsAppPreviewDropdown(defaultCategory) {
       const sel = document.getElementById('wa-preview-template-select');
       if (!sel) return;
@@ -7877,18 +7934,18 @@ document.getElementById('logclass-session-id').value = '';
 
         totalSessionsAll += totalSessions;
         totalBilledAll += totalBilled;
-        totalPaidAll += totalPaid;
+totalPaidAll += totalPaid;
         totalDueAll += bal;
 
         html += `
           <tr>
-            <td class="pivot-td-client">${c.name}</td>
+            <td class="pivot-td-client">${escapeHtmlAttr(c.name)}</td>
             <td class="num-tabular">${monthsToConsider.length}</td>
             <td class="num-tabular">${totalSessions}</td>
             <td class="num-tabular">${totalBilled}</td>
             <td class="num-tabular" style="color:var(--success); font-weight:700;">${totalPaid}</td>
             <td class="num-tabular" style="color:${bal > 0 ? 'var(--danger)' : 'var(--text-muted)'}; font-weight:700;">${bal}</td>
-          </tr>
+                      </tr>
         `;
       });
 
@@ -7983,7 +8040,7 @@ document.getElementById('logclass-session-id').value = '';
       processedList.forEach(item => {
         html += `
           <tr>
-            <td class="pivot-td-client">${item.client.name}</td>
+            <td class="pivot-td-client">${escapeHtmlAttr(item.client.name)}</td>
             <td class="num-tabular">${item.fee} ${getCurrency()}</td>
             <td class="num-tabular" style="color:var(--success); font-weight:700;">${item.paid} ${getCurrency()}</td>
             <td class="num-tabular" style="color:${item.due > 0 ? 'var(--danger)' : 'var(--text-muted)'}; font-weight:700;">${item.due} ${getCurrency()}</td>
@@ -8037,7 +8094,7 @@ document.getElementById('logclass-session-id').value = '';
         const due = (c.months || []).filter(m => !m.isPaid).reduce((sum, m) => sum + (m.calculatedDueFee || 0), 0);
         html += `
           <tr>
-            <td style="font-weight:700;">${c.name}</td>
+            <td style="font-weight:700;">${escapeHtmlAttr(c.name)}</td>
             <td class="num-tabular" style="color:var(--brand-primary); font-weight:800;">${bal} ${getCurrency()}</td>
             <td class="num-tabular" style="color:${due > 0 ? 'var(--danger)' : 'var(--text-muted)'}; font-weight:800;">${due} ${getCurrency()}</td>
             <td>${due > 0 ? '<span style="color:var(--danger); font-weight:700;">Payment Due</span>' : (bal > 0 ? '<span style="color:var(--success); font-weight:700;">Advance Credited</span>' : '<span style="color:var(--text-muted);">Settled</span>')}</td>
@@ -8074,18 +8131,48 @@ document.getElementById('logclass-session-id').value = '';
       const forecasterCard = document.getElementById('cashflow-forecaster-card');
       const forecasterContent = document.getElementById('cashflow-forecaster-content');
 
-      const yoyEnabled = getFeatureToggle('yoy');
+const yoyEnabled = getFeatureToggle('yoy');
       const forecasterEnabled = getFeatureToggle('forecaster');
 
       if (yoyCard) yoyCard.style.display = yoyEnabled ? 'block' : 'none';
       if (forecasterCard) forecasterCard.style.display = forecasterEnabled ? 'block' : 'none';
 
       if (yoyEnabled && yoyContent) {
-        const curMonthEarned = appState.clients.reduce((acc, c) => {
-          const m = c.months?.[c.months.length - 1];
-          return acc + Number(m?.calculatedDueFee || 0);
-        }, 0);
-        yoyContent.innerHTML = `This month active billing stands at <strong>${curMonthEarned} ${getCurrency()}</strong>. (Estimated YoY Growth: +12% vs same month last year).`;
+        const now = new Date();
+        const curY = now.getFullYear();
+        const curM = String(now.getMonth() + 1).padStart(2, '0');
+        const thisPrefix = `${curY}-${curM}`;
+        const prevPrefix = `${curY - 1}-${curM}`;
+        const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const monthLbl = monthNamesShort[now.getMonth()];
+
+        let thisEarned = 0, prevEarned = 0, thisCash = 0, prevCash = 0;
+        appState.clients.forEach(c => {
+          (c.months || []).forEach(m => {
+            const quota = m.quota || c.quota || 4;
+            const mFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount || c.fee || 0);
+            const unitVal = quota > 0 ? (mFee / quota) : 0;
+
+            (m.sessions || []).forEach(s => {
+              if (!s.date || !['normal', 'noshow'].includes(s.tag || 'normal')) return;
+              if (s.date.startsWith(thisPrefix)) thisEarned += unitVal;
+              else if (s.date.startsWith(prevPrefix)) prevEarned += unitVal;
+            });
+            (m.installments || []).forEach(inst => {
+              if (!inst.date) return;
+              if (inst.date.startsWith(thisPrefix)) thisCash += Number(inst.amount || 0);
+              else if (inst.date.startsWith(prevPrefix)) prevCash += Number(inst.amount || 0);
+            });
+          });
+        });
+
+        const curVal = Math.round(thisEarned);
+        const prevVal = Math.round(prevEarned);
+        const diffText = prevVal > 0
+          ? `${curVal >= prevVal ? '+' : ''}${Math.round(((curVal - prevVal) / prevVal) * 100)}% vs ${monthLbl} ${curY - 1} (${prevVal} ${getCurrency()})`
+          : `No earned data recorded for ${monthLbl} ${curY - 1}`;
+
+        yoyContent.innerHTML = `${monthLbl} ${curY} earned: <strong>${curVal} ${getCurrency()}</strong> (Cash: <strong>${Math.round(thisCash)} ${getCurrency()}</strong>) &bull; ${diffText}.`;
       }
 
       if (forecasterEnabled && forecasterContent) {
@@ -8093,7 +8180,7 @@ document.getElementById('logclass-session-id').value = '';
           return acc + Number(c.fee || 500);
         }, 0);
         forecasterContent.innerHTML = `Projected next month recurring revenue from active students: <strong>${expectedNextMonth} ${getCurrency()}</strong>.`;
-      }
+            }
 
       const matrixClientSel = document.getElementById('matrix-client-search');
       if (matrixClientSel) {
@@ -8367,9 +8454,11 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
         document.getElementById('form-client-model').value = 'retainer';
         document.getElementById('form-client-quota').value = s.defaultQuota || 4;
         document.getElementById('form-client-fee').value = s.defaultFee || 500;
-        document.getElementById('form-client-duration').value = '1h';
+document.getElementById('form-client-duration').value = '1h';
         setTimePickerValue('form-client-default-time', s.defaultTime || '16:00');
         document.getElementById('form-client-status').value = 'active';
+        if (document.getElementById('form-client-exam-label')) document.getElementById('form-client-exam-label').value = '';
+        if (document.getElementById('form-client-exam-date')) document.getElementById('form-client-exam-date').value = '';
         selectedFormDays = [];
         selectedBlockedDays = [];
       } else {
@@ -8386,10 +8475,11 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
         document.getElementById('form-client-duration').value = client.sessionDuration || '1h';
         setTimePickerValue('form-client-default-time', client.defaultTime || '16:00');
         document.getElementById('form-client-status').value = client.status || 'active';
+        if (document.getElementById('form-client-exam-label')) document.getElementById('form-client-exam-label').value = client.examLabel || '';
+        if (document.getElementById('form-client-exam-date')) document.getElementById('form-client-exam-date').value = client.examDate || '';
         selectedFormDays = [...(client.scheduledDays || [])];
         selectedBlockedDays = [...(client.blockedDays || [])];
       }
-
       updateFormDaysPickerUI();
       openModal('modal-client');
     }
@@ -8416,9 +8506,11 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
       const phone = document.getElementById('form-client-phone').value.trim(); const pricingModel = document.getElementById('form-client-model').value;
       const quota = Number(document.getElementById('form-client-quota').value) || 4;
       const fee = Number(document.getElementById('form-client-fee').value) || 500;
-      const sessionDuration = document.getElementById('form-client-duration').value || '1h';
+const sessionDuration = document.getElementById('form-client-duration').value || '1h';
       const status = document.getElementById('form-client-status').value || "active";
       const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
+      const examLabel = (document.getElementById('form-client-exam-label')?.value || '').trim();
+      const examDate = document.getElementById('form-client-exam-date')?.value || '';
 
       if (idVal) {
         const c = appState.clients.find(x => String(x.id) === String(idVal));
@@ -8429,7 +8521,7 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
           if (quotaChanged || feeChanged) {
             pendingProfileUpdate = {
               clientId: c.id,
-              name, studentTag, accentColor, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status,
+              name, studentTag, accentColor, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status, examLabel, examDate,
               oldQuota: Number(c.quota) || 4,
               oldFee: Number(c.fee) || 0,
               quotaChanged,
@@ -8453,6 +8545,8 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
           c.sessionDuration = sessionDuration;
           c.status = status;
           c.defaultTime = defaultTime;
+          c.examLabel = examLabel;
+          c.examDate = examDate;
           c.scheduledDays = [...selectedFormDays];
           c.blockedDays = [...selectedBlockedDays];
           showToast(`Updated profile for ${name}!`);
@@ -8460,7 +8554,7 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
       } else {
         appState.clients.push({
           id: generateId(),
-          name, studentTag, accentColor, grade, phone, status, pricingModel, quota, fee, sessionDuration, defaultTime,
+          name, studentTag, accentColor, grade, phone, status, pricingModel, quota, fee, sessionDuration, defaultTime, examLabel, examDate,
           advanceBalance: 0,
           scheduledDays: [...selectedFormDays],
           blockedDays: [...selectedBlockedDays],
@@ -8478,7 +8572,7 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
         showToast(`Client ${name} added successfully!`);
       }
 
-closeModal('modal-client');
+      closeModal('modal-client');
       saveState();
       renderAll();
     }
@@ -8490,7 +8584,8 @@ closeModal('modal-client');
 
       const name = (document.getElementById('form-client-name')?.value || '').trim() || c.name;
       const grade = (document.getElementById('form-client-grade')?.value || '').trim();
-      const studentTag = (document.getElementById('form-client-tag')?.value || '').trim();      const accentColor = (document.getElementById('form-client-color')?.value || c.accentColor || '#2563eb').toLowerCase();
+      const studentTag = (document.getElementById('form-client-tag')?.value || '').trim();
+      const accentColor = (document.getElementById('form-client-color')?.value || c.accentColor || '#2563eb').toLowerCase();
       const phone = (document.getElementById('form-client-phone')?.value || '').trim();
       const pricingModel = document.getElementById('form-client-model')?.value || 'retainer';
       const quota = Number(document.getElementById('form-client-quota')?.value) || 4;
@@ -8498,10 +8593,12 @@ closeModal('modal-client');
       const sessionDuration = document.getElementById('form-client-duration')?.value || '1h';
       const status = document.getElementById('form-client-status')?.value || 'active';
       const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
+      const examLabel = (document.getElementById('form-client-exam-label')?.value || '').trim();
+      const examDate = document.getElementById('form-client-exam-date')?.value || '';
 
       pendingProfileUpdate = {
         clientId: c.id,
-        name, studentTag, accentColor, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status,
+        name, studentTag, accentColor, grade, phone, pricingModel, quota, fee, sessionDuration, defaultTime, status, examLabel, examDate,
         oldQuota: Number(c.quota) || 4,
         oldFee: Number(c.fee) || 0,
         quotaChanged: true,
@@ -8512,7 +8609,6 @@ closeModal('modal-client');
       closeModal('modal-client');
       openProfileUpdateScopeModal();
     }
-
     function openProfileUpdateScopeModal() {
       if (!pendingProfileUpdate) return;
       const u = pendingProfileUpdate;
@@ -8687,6 +8783,8 @@ closeModal('modal-client');
       c.blockedDays = update.blockedDays || [];
       c.defaultTime = update.defaultTime || '16:00';
       c.sessionDuration = update.sessionDuration || '1h';
+      c.examLabel = update.examLabel || '';
+      c.examDate = update.examDate || '';
 
       const applyQuota = document.getElementById('scope-apply-quota')?.checked ?? true;
       const applyFee = document.getElementById('scope-apply-fee')?.checked ?? true;
@@ -9049,14 +9147,14 @@ const settleClientSel = document.getElementById('settle-filter-client');
           hHtml += `
             <tr>
               <td class="num-tabular">${formatDisplayDate(r.inst.date, false)}</td>
-              <td style="font-weight:700;">${r.client.name}</td>
+              <td style="font-weight:700;">${escapeHtmlAttr(r.client.name)}</td>
               <td class="num-tabular">M${r.month.monthNumber}</td>
               <td class="num-tabular" style="color:var(--success); font-weight:700;">+${r.inst.amount} ${getCurrency()}</td>
-              <td class="truncate-text" style="max-width:120px;">${r.inst.note || '-'}</td>
+              <td class="truncate-text" style="max-width:120px;">${escapeHtmlAttr(r.inst.note || '-')}</td>
               <td>
                 <div style="display:flex; gap:0.2rem;">
-                  <button type="button" onclick="openEditPaymentModal('${r.client.id}', '${r.month.id}', '${r.inst.id}')" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.35rem;">Edit</button>
-                  <button type="button" onclick="confirmDeletePayment('${r.client.id}', '${r.month.id}', '${r.inst.id}')" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.35rem; color:var(--danger);">✕</button>
+                  <button type="button" onclick="openEditPaymentModal('${escapeJsStr(r.client.id)}', '${escapeJsStr(r.month.id)}', '${escapeJsStr(r.inst.id)}')" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.35rem;">Edit</button>
+                  <button type="button" onclick="confirmDeletePayment('${escapeJsStr(r.client.id)}', '${escapeJsStr(r.month.id)}', '${escapeJsStr(r.inst.id)}')" class="btn btn-subtle" style="font-size:0.6rem; padding:0.15rem 0.35rem; color:var(--danger);">✕</button>
                 </div>
               </td>
             </tr>
@@ -9117,7 +9215,7 @@ const settleClientSel = document.getElementById('settle-filter-client');
 
         html += `
           <tr>
-            <td style="font-weight:700;">${c.name}</td>
+            <td style="font-weight:700;">${escapeHtmlAttr(c.name)}</td>
             <td class="num-tabular" style="color:var(--success); font-weight:700;">${cashIn} ${getCurrency()}</td>
             <td class="num-tabular">${settled} ${getCurrency()}</td>
             <td class="num-tabular" style="color:var(--brand-primary); font-weight:800;">${availCash} ${getCurrency()}</td>
@@ -9168,10 +9266,10 @@ const settleClientSel = document.getElementById('settle-filter-client');
       const showStatus = document.getElementById('snap-toggle-status')?.checked ?? true;
       const showSummary = document.getElementById('snap-toggle-summary')?.checked ?? true;
 
-      let renderedHtml = `
+     let renderedHtml = `
         <div style="font-family:'Plus Jakarta Sans', sans-serif; color:#0f172a; padding:12px; background:#ffffff;">
           <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #2563eb; padding-bottom:8px; margin-bottom:12px;">
-            <h3 style="font-size:16px; font-weight:800; color:#2563eb; margin:0;">${activeSnapshotData.titleText}</h3>
+            <h3 style="font-size:16px; font-weight:800; color:#2563eb; margin:0;">${escapeHtmlAttr(activeSnapshotData.titleText)}</h3>
             <span style="font-size:11px; color:#64748b;">${new Date().toLocaleDateString()}</span>
           </div>
       `;
@@ -9207,19 +9305,21 @@ const actionsCols = previewBox.querySelectorAll('th:last-child, td:last-child');
 
     function downloadOrShareCustomSnapshot(action = 'download') {
       const previewBox = document.getElementById('snapshot-preview-content');
-      if (!previewBox) return;
+      if (!previewBox || !activeSnapshotData) return;
+      const sourceTable = document.getElementById(activeSnapshotData.tableId);
+      const rowCount = sourceTable ? sourceTable.querySelectorAll('tr').length : 0;
+      const logicalHeight = Math.max(480, 120 + (rowCount * 26));
       const canvas = document.createElement('canvas');
       const scale = 2;
       canvas.width = 720 * scale;
-      canvas.height = Math.max(480, (previewBox.offsetHeight || 500) + 40) * scale;
+      canvas.height = logicalHeight * scale;
       const ctx = canvas.getContext('2d');
       ctx.scale(scale, scale);
 
       ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, 720, canvas.height / scale);
+      ctx.fillRect(0, 0, 720, logicalHeight);
 
       drawSnapshotTableToCanvas(ctx, 720, activeSnapshotData.titleText);
-
       canvas.toBlob(blob => {
         if (!blob) return;
         const fileName = activeSnapshotData?.filename || "Snapshot.png";
@@ -9339,11 +9439,11 @@ startY += rowHeight;
           </div>
       `;
 
-      // Student Name is COMPULSORY and always displayed
+// Student Name is COMPULSORY and always displayed
       html += `
         <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:10px 14px; margin-bottom:14px; font-size:12px;">
-          <p style="font-size:13px; font-weight:800; color:#0f172a;"><strong>Student:</strong> ${client.name}</p>
-          ${showDetails ? `<p style="color:#64748b; margin-top:3px; font-size:11px;">Grade: ${client.grade || '1-on-1'} ${client.phone ? '• Phone: ' + client.phone : ''}</p>` : ''}
+          <p style="font-size:13px; font-weight:800; color:#0f172a;"><strong>Student:</strong> ${escapeHtmlAttr(client.name)}</p>
+          ${showDetails ? `<p style="color:#64748b; margin-top:3px; font-size:11px;">Grade: ${escapeHtmlAttr(client.grade || '1-on-1')} ${client.phone ? '• Phone: ' + escapeHtmlAttr(client.phone) : ''}</p>` : ''}
         </div>
       `;
 
@@ -9369,13 +9469,12 @@ startY += rowHeight;
               <tr style="background:${idx % 2 === 0 ? '#ffffff' : '#f8fafc'};">
                 <td style="padding:6px 8px; border:1px solid #cbd5e1;">${idx + 1}</td>
                 <td style="padding:6px 8px; border:1px solid #cbd5e1; font-weight:700;">${formatDisplayDate(s.date, true)}</td>
-                <td style="padding:6px 8px; border:1px solid #cbd5e1;">${s.time} ${s.tag === 'extra' ? '[Extra]' : ''}</td>
-                ${showNotes ? `<td style="padding:6px 8px; border:1px solid #cbd5e1; color:#64748b;">${s.notes || '-'}</td>` : ''}
+                <td style="padding:6px 8px; border:1px solid #cbd5e1;">${escapeHtmlAttr(s.time)} ${s.tag === 'extra' ? '[Extra]' : ''}</td>
+                ${showNotes ? `<td style="padding:6px 8px; border:1px solid #cbd5e1; color:#64748b;">${escapeHtmlAttr(s.notes || '-')}</td>` : ''}
               </tr>
             `;
           });
         }
-
         html += `</tbody></table>`;
       }
 
@@ -9528,13 +9627,15 @@ startY += rowHeight;
       if (!container) return;
 
       const printWin = window.open('', '_blank');
+      if (!printWin) {
+        showToast("Popup blocked! Please allow popups for this site to print.");
+        return;
+      }
       printWin.document.write(`
         <html>
           <head>
             <title>Classes Summary</title>
             <style>
-              body { font-family: sans-serif; padding: 24px; color: #0f172a; }
-            </style>
           </head>
           <body>
             ${container.innerHTML}
@@ -10586,13 +10687,15 @@ function openPlannerSlotModal(slotId = null, presetDay = null) {
     function updatePlannerDaysPickerUI() {
       document.querySelectorAll('#planner-slot-days-picker button').forEach(b => {
         const d = b.getAttribute('data-day');
-        b.className = plannerSelectedDays.includes(d) ? 'btn btn-primary' : 'btn btn-subtle';
+       b.className = plannerSelectedDays.includes(d) ? 'btn btn-primary' : 'btn btn-subtle';
       });
     }
 
     function savePlannerSlot() {
       const slotId = document.getElementById('planner-slot-id')?.value;
-      const clientId = Number(document.getElementById('planner-slot-client')?.value);
+      const rawClientId = document.getElementById('planner-slot-client')?.value;
+      const matchedClient = appState.clients.find(c => String(c.id) === String(rawClientId));
+      const clientId = matchedClient ? matchedClient.id : null;
       const startTime = formatTo24Hour(getTimePickerValue('planner-slot-time') || '16:00');
       const duration = document.getElementById('planner-slot-duration')?.value || '1h';
       const subject = (document.getElementById('planner-slot-subject')?.value || '').trim();
@@ -11679,9 +11782,9 @@ saveRejectedSttLogs([]);
           return;
         }
 
-        // Close the topmost active modal (highest z-index) first
+      // Close the topmost active modal (highest z-index) first
         const activeModals = Array.from(document.querySelectorAll('.modal-overlay.active'))
-          .filter(m => m.id !== 'modal-exit-backup');
+          .filter(m => m.id !== 'modal-exit-backup' && m.id !== 'modal-app-pin-lock');
         if (activeModals.length > 0) {
           activeModals.sort((a, b) => (parseInt(getComputedStyle(b).zIndex, 10) || 0) - (parseInt(getComputedStyle(a).zIndex, 10) || 0));
           activeModals[0].classList.remove('active');
@@ -12003,41 +12106,154 @@ showToast("Folder/file unavailable — please pick again.");
       return val === null ? true : val === 'true';
     }
 
-    function toggleFeatureToggle(key, state) {
+function toggleFeatureToggle(key, state) {
       localStorage.setItem(`month_tracker_v12_feat_${key}`, state ? 'true' : 'false');
       showToast(`Feature updated!`);
       renderAll();
     }
 
+    let appPinModalMode = 'unlock';
+    let appPinUnlockCallback = null;
+
+    async function hashPinString(pin) {
+      const salted = `ct_v12_pin::${pin}`;
+      if (window.crypto && window.crypto.subtle) {
+        const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted));
+        const hex = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        return `sha256:${hex}`;
+      }
+      let h = 2166136261;
+      for (let i = 0; i < salted.length; i++) {
+        h ^= salted.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return `h:${(h >>> 0).toString(16)}`;
+    }
+
+    async function verifyPinAgainstStored(inputPin, storedVal) {
+      if (!storedVal) return true;
+      if (storedVal.startsWith('sha256:') || storedVal.startsWith('h:')) {
+        const hashed = await hashPinString(inputPin);
+        return hashed === storedVal;
+      }
+      if (inputPin === storedVal.trim()) {
+        localStorage.setItem('month_tracker_v12_app_pin', await hashPinString(inputPin));
+        return true;
+      }
+      return false;
+    }
+
+    function openAppPinModal(mode, onUnlocked = null) {
+      appPinModalMode = mode;
+      appPinUnlockCallback = onUnlocked;
+      const modal = document.getElementById('modal-app-pin-lock');
+      const titleEl = document.getElementById('pin-modal-title');
+      const subEl = document.getElementById('pin-modal-subtitle');
+      const closeBtn = document.getElementById('pin-modal-close-btn');
+      const curRow = document.getElementById('pin-current-row');
+      const curIn = document.getElementById('pin-current-input');
+      const mainLbl = document.getElementById('pin-main-label');
+      const mainIn = document.getElementById('pin-main-input');
+      const errEl = document.getElementById('pin-modal-error');
+      const disBtn = document.getElementById('pin-modal-disable-btn');
+      const subBtn = document.getElementById('pin-modal-submit-btn');
+      if (!modal) return;
+
+      const hasExisting = Boolean((localStorage.getItem('month_tracker_v12_app_pin') || '').trim());
+      if (curIn) curIn.value = '';
+      if (mainIn) mainIn.value = '';
+      if (errEl) {errEl.style.display = 'none'; errEl.textContent = '';}
+
+      if (mode === 'unlock') {
+        modal.style.background = 'var(--bg-main)';
+        if (titleEl) titleEl.textContent = '🔒 App Locked';
+        if (subEl) subEl.textContent = 'Enter your 4-digit security PIN to continue.';
+        if (closeBtn) closeBtn.style.display = 'none';
+        if (curRow) curRow.style.display = 'none';
+        if (mainLbl) mainLbl.textContent = '4-Digit PIN';
+        if (disBtn) disBtn.style.display = 'none';
+        if (subBtn) subBtn.textContent = 'Unlock';
+      } else {
+        modal.style.background = '';
+        if (titleEl) titleEl.textContent = hasExisting ? '🔒 Change Security PIN' : '🔒 Set Security PIN';
+        if (subEl) subEl.textContent = hasExisting ? 'Verify your current PIN to change or disable App Lock.' : 'Choose a 4-digit PIN to protect the app on startup.';
+        if (closeBtn) closeBtn.style.display = 'inline-flex';
+        if (curRow) curRow.style.display = hasExisting ? 'block' : 'none';
+        if (mainLbl) mainLbl.textContent = 'New 4-Digit PIN';
+        if (disBtn) disBtn.style.display = hasExisting ? 'inline-flex' : 'none';
+        if (subBtn) subBtn.textContent = 'Save PIN';
+      }
+
+      modal.classList.add('active');
+      setTimeout(() => (mode === 'setup' && hasExisting ? curIn : mainIn)?.focus(), 60);
+    }
+
+    async function submitAppPinModal() {
+      const errEl = document.getElementById('pin-modal-error');
+      const showErr = (msg) => {
+        if (errEl) {errEl.textContent = msg; errEl.style.display = 'block';}
+      };
+
+      const stored = (localStorage.getItem('month_tracker_v12_app_pin') || '').trim();
+      const mainVal = (document.getElementById('pin-main-input')?.value || '').trim();
+
+      if (appPinModalMode === 'unlock') {
+        if (!/^\d{4}$/.test(mainVal)) {
+          showErr('Enter your 4-digit PIN.');
+          return;
+        }
+        const ok = await verifyPinAgainstStored(mainVal, stored);
+        if (!ok) {
+          showErr('Incorrect PIN. Please try again.');
+          const inp = document.getElementById('pin-main-input');
+          if (inp) {inp.value = ''; inp.focus();}
+          return;
+        }
+        closeModal('modal-app-pin-lock');
+        const cb = appPinUnlockCallback;
+        appPinUnlockCallback = null;
+        if (typeof cb === 'function') await cb();
+      } else {
+        if (stored) {
+          const curVal = (document.getElementById('pin-current-input')?.value || '').trim();
+          const ok = await verifyPinAgainstStored(curVal, stored);
+          if (!ok) {
+            showErr('Current PIN is incorrect.');
+            return;
+          }
+        }
+        if (!/^\d{4}$/.test(mainVal)) {
+          showErr('New PIN must be exactly 4 digits.');
+          return;
+        }
+        localStorage.setItem('month_tracker_v12_app_pin', await hashPinString(mainVal));
+        closeModal('modal-app-pin-lock');
+        showToast('App Lock PIN saved!');
+      }
+    }
+
+    async function disableAppPinFromModal() {
+      const stored = (localStorage.getItem('month_tracker_v12_app_pin') || '').trim();
+      const curVal = (document.getElementById('pin-current-input')?.value || '').trim();
+      const errEl = document.getElementById('pin-modal-error');
+      if (stored && !(await verifyPinAgainstStored(curVal, stored))) {
+        if (errEl) {errEl.textContent = 'Enter your current PIN to disable App Lock.'; errEl.style.display = 'block';}
+        return;
+      }
+      localStorage.removeItem('month_tracker_v12_app_pin');
+      closeModal('modal-app-pin-lock');
+      showToast('App Lock PIN disabled.');
+    }
+
     function promptSetupAppPin() {
-      const current = localStorage.getItem('month_tracker_v12_app_pin') || '';
-      const entered = prompt(
-        current
-          ? "Enter a new 4-digit PIN (or leave blank to disable App Lock):"
-          : "Enter a 4-digit PIN to lock the app on startup:",
-        current
-      );
-      if (entered === null) return;
-      const clean = entered.trim();
-      if (!clean) {
-        localStorage.removeItem('month_tracker_v12_app_pin');
-        showToast("App Lock PIN disabled.");
-        return;
-      }
-if (!/^\d{4}$/.test(clean)) {
-        showToast("Please enter exactly 4 digits.");
-        return;
-      }
-      localStorage.setItem('month_tracker_v12_app_pin', clean);
-      showToast("App Lock PIN saved!");
+      openAppPinModal('setup');
     }
 
     /* ==========================================================================
        CUSTOMIZABLE PAGE & MENU BLOCK ORDER ENGINE
        ========================================================================== */
     const LAYOUT_PAGE_REGISTRY = {
-      home: {selector: '#view-home', skipIds: ['stt-eod-reminder-banner']},      payments: {selector: '#view-payments', skipIds: []},      matrix: {selector: '#view-matrix', skipIds: []},
-      calendar: {selector: '#view-calendar', skipIds: []},
+      home: {selector: '#view-home', skipIds: ['stt-eod-reminder-banner']},      payments: {selector: '#view-payments', skipIds: []},      matrix: {selector: '#view-matrix', skipIds: []},      calendar: {selector: '#view-calendar', skipIds: []},
       'client-detail': {selector: '#view-client-detail', skipIds: []},
       templates: {selector: '#view-templates', skipIds: []},
       drawer: {selector: '#side-drawer .sidebar-scroll', skipIds: []},
@@ -12200,24 +12416,14 @@ if (!/^\d{4}$/.test(clean)) {
       delete savedMap[pageId];
       savePageLayouts(savedMap);
 
-      applyLayoutForPage(pageId);
+applyLayoutForPage(pageId);
       renderLayoutEditorList();
       showToast("Page layout reset to default!");
     }
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      const savedPin = localStorage.getItem('month_tracker_v12_app_pin'); if (savedPin && savedPin.trim().length > 0) {
-        const entered = prompt("🔒 App is locked. Enter your 4-digit security PIN:");
-        if (entered !== savedPin.trim()) {
-          alert("Incorrect PIN. Access denied.");
-          document.body.innerHTML = "<h2 style='text-align:center; margin-top:20vh; font-family:sans-serif;'>🔒 App Locked</h2>";
-          return;
-        }
-      }
-
-      initTheme();
+    async function bootAppAfterPinUnlock() {
       await hydrateFromIndexedDBIfNeeded();
-     initData();
+      initData();
       initSidebarState();
       pruneOldLocalStorageBackups(false);
       populateAllTimePickers();
@@ -12226,9 +12432,20 @@ if (!/^\d{4}$/.test(clean)) {
       applyAllSavedLayouts();
 
       showMainView('home', false);
-      renderAll();;
-      setupExitBackupGuards(); if ('serviceWorker' in navigator) {
+      renderAll();
+      setupExitBackupGuards();
+      if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(() => { });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      initTheme();
+      const savedPin = (localStorage.getItem('month_tracker_v12_app_pin') || '').trim();
+      if (savedPin.length > 0) {
+        openAppPinModal('unlock', bootAppAfterPinUnlock);
+      } else {
+        await bootAppAfterPinUnlock();
       }
     });
     // --- CLASS TEST HELPERS & DEDICATED MARKS SCREEN + SCHOOL EXAM CONTROLLER ---
@@ -12399,36 +12616,39 @@ if (!/^\d{4}$/.test(clean)) {
         return;
       }
 
-      container.innerHTML = visible.map(item => {
+container.innerHTML = visible.map(item => {
         const clientColor = getClientColor(item.client);
+        const safeClientId = escapeJsStr(item.client.id);
+        const safeClientName = escapeHtmlAttr(item.client.name);
         if (item.source === 'school') {
           const ex = item.exam;
+          const safeExId = escapeJsStr(ex.id);
           return `
             <div class="card" style="padding: 0.65rem; border-left: 4px solid var(--purple); display: flex; flex-direction: column; gap: 0.4rem;">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.4rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.35rem;">
                 <div style="min-width: 0;">
                   <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 2px;">
                     <span style="font-size: 0.58rem; font-weight: 800; padding: 1px 6px; border-radius: 9999px; background: var(--purple-surface); color: var(--purple); border: 1px solid var(--purple);">🏫 School Score</span>
-                    <span onclick="viewClientDetail('${item.client.id}')" style="font-size: 0.72rem; font-weight: 800; color: ${clientColor}; cursor: pointer;">${item.client.name}</span>
+                    <span onclick="viewClientDetail('${safeClientId}')" style="font-size: 0.72rem; font-weight: 800; color: ${clientColor}; cursor: pointer;">${safeClientName}</span>
                     <span style="font-size: 0.62rem; color: var(--text-muted);">• ${formatDisplayDate(ex.examDate, true)}</span>
                   </div>
-                  <strong style="font-size: 0.78rem; color: var(--text-main);">${ex.termName}</strong>
+                  <strong style="font-size: 0.78rem; color: var(--text-main);">${escapeHtmlAttr(ex.termName)}</strong>
                 </div>
                 <div style="display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
                   <span class="num-tabular" style="font-size: 0.74rem; font-weight: 800; color: var(--success);">${item.totalScore}/${item.totalMax} (${item.pct}%)</span>
-                  <button type="button" onclick="openExamRecordsModal('${item.client.id}', '${ex.id}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.18rem 0.4rem;">Edit</button>
-                  <button type="button" onclick="deleteClientExamRecord('${ex.id}', '${item.client.id}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.18rem 0.35rem; color: var(--danger);">✕</button>
+                  <button type="button" onclick="openExamRecordsModal('${safeClientId}', '${safeExId}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.18rem 0.4rem;">Edit</button>
+                  <button type="button" onclick="deleteClientExamRecord('${safeExId}', '${safeClientId}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.18rem 0.35rem; color: var(--danger);">✕</button>
                 </div>
               </div>
               <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 0.3rem;">
                 ${(ex.subjects || []).map(s => `
                   <div style="background: var(--bg-subtle); padding: 0.32rem 0.45rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 0.68rem;">
                     <div style="display: flex; justify-content: space-between; font-weight: 700; gap: 4px;">
-                      <span class="truncate-text">${s.subjectName}</span>
+                      <span class="truncate-text">${escapeHtmlAttr(s.subjectName)}</span>
                       <span class="num-tabular" style="color: var(--purple);">${s.score}/${s.maxScore}</span>
                     </div>
-                    ${s.gradeLetter ? `<span style="font-size: 0.58rem; color: var(--success); font-weight: 800;">Grade: ${s.gradeLetter}</span>` : ''}
-                    ${s.notes ? `<div style="font-size: 0.58rem; color: var(--text-muted);">${s.notes}</div>` : ''}
+                    ${s.gradeLetter ? `<span style="font-size: 0.58rem; color: var(--success); font-weight: 800;">Grade: ${escapeHtmlAttr(s.gradeLetter)}</span>` : ''}
+                    ${s.notes ? `<div style="font-size: 0.58rem; color: var(--text-muted);">${escapeHtmlAttr(s.notes)}</div>` : ''}
                   </div>
                 `).join('')}
               </div>
@@ -12440,25 +12660,24 @@ if (!/^\d{4}$/.test(clean)) {
               <div style="min-width: 0; flex: 1;">
                 <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 2px;">
                   <span style="font-size: 0.58rem; font-weight: 800; padding: 1px 6px; border-radius: 9999px; background: var(--brand-surface); color: var(--brand-primary); border: 1px solid var(--brand-primary);">📝 Tuition Score</span>
-                  <span onclick="viewClientDetail('${item.client.id}')" style="font-size: 0.72rem; font-weight: 800; color: ${clientColor}; cursor: pointer;">${item.client.name}</span>
+                  <span onclick="viewClientDetail('${safeClientId}')" style="font-size: 0.72rem; font-weight: 800; color: ${clientColor}; cursor: pointer;">${safeClientName}</span>
                   <span style="font-size: 0.62rem; color: var(--text-muted);">• M${item.month.monthNumber} • ${formatDisplayDate(item.session.date, true)}</span>
                 </div>
-                <strong style="font-size: 0.78rem; color: var(--text-main); display: block;">${item.test.subject}</strong>
-                ${item.session.notes ? `<span style="font-size: 0.62rem; color: var(--text-muted);">Session: ${item.session.notes}</span>` : ''}
+                <strong style="font-size: 0.78rem; color: var(--text-main); display: block;">${escapeHtmlAttr(item.test.subject)}</strong>
+                ${item.session.notes ? `<span style="font-size: 0.62rem; color: var(--text-muted);">Session: ${escapeHtmlAttr(item.session.notes)}</span>` : ''}
               </div>
               <div style="display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0;">
                 <div style="text-align: right;">
                   <strong class="num-tabular" style="font-size: 0.82rem; color: var(--brand-primary); display: block;">${item.totalScore}/${item.totalMax}</strong>
                   <span class="num-tabular" style="font-size: 0.62rem; font-weight: 800; color: var(--success);">${item.pct}%</span>
                 </div>
-                <button type="button" onclick="openLogClassModal('${item.client.id}', '${item.month.id}', '${item.session.id}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.22rem 0.45rem;">Edit</button>
+                <button type="button" onclick="openLogClassModal('${safeClientId}', '${escapeJsStr(item.month.id)}', '${escapeJsStr(item.session.id)}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.22rem 0.45rem;">Edit</button>
               </div>
             </div>
           `;
         }
       }).join('');
     }
-
     function getActiveExamModalClient() {
       const selId = document.getElementById('exam-modal-student-select')?.value || appState.selectedClientId;
       return appState.clients.find(c => String(c.id) === String(selId)) || appState.clients[0] || null;
@@ -12603,35 +12822,37 @@ if (!/^\d{4}$/.test(clean)) {
         return;
       }
 
-      const sortedExams = [...exams].sort((a, b) => new Date(b.examDate) - new Date(a.examDate));
+const sortedExams = [...exams].sort((a, b) => new Date(b.examDate) - new Date(a.examDate));
 
       container.innerHTML = sortedExams.map(ex => {
         const totalScore = ex.subjects.reduce((sum, s) => sum + s.score, 0);
         const totalMax = ex.subjects.reduce((sum, s) => sum + s.maxScore, 0);
         const percentage = totalMax > 0 ? Math.round((totalScore / totalMax) * 100) : 0;
+        const safeExId = escapeJsStr(ex.id);
+        const safeClientId = escapeJsStr(client.id);
 
         return `
         <div class="card" style="padding: 0.6rem; display: flex; flex-direction: column; gap: 0.35rem;">
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--border-color); padding-bottom: 0.3rem;">
             <div>
-              <strong style="font-size: 0.76rem; color: var(--brand-primary);">${ex.termName}</strong>
+              <strong style="font-size: 0.76rem; color: var(--brand-primary);">${escapeHtmlAttr(ex.termName)}</strong>
               <span style="font-size: 0.62rem; color: var(--text-muted); margin-left: 4px;">(${formatDisplayDate(ex.examDate, true)})</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.4rem;">
               <span class="num-tabular" style="font-size: 0.7rem; font-weight: 800; color: var(--success);">${totalScore}/${totalMax} (${percentage}%)</span>
-              <button type="button" onclick="editClientExamRecord('${ex.id}', '${client.id}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.35rem;">Edit</button>
-              <button type="button" onclick="deleteClientExamRecord('${ex.id}', '${client.id}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.35rem; color: var(--danger);">✕</button>
+              <button type="button" onclick="editClientExamRecord('${safeExId}', '${safeClientId}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.35rem;">Edit</button>
+              <button type="button" onclick="deleteClientExamRecord('${safeExId}', '${safeClientId}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.15rem 0.35rem; color: var(--danger);">✕</button>
             </div>
           </div>
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.25rem;">
             ${ex.subjects.map(s => `
               <div style="background: var(--bg-subtle); padding: 0.3rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-color); font-size: 0.68rem;">
                 <div style="display: flex; justify-content: space-between; font-weight: 700;">
-                  <span>${s.subjectName}</span>
+                  <span>${escapeHtmlAttr(s.subjectName)}</span>
                   <span class="num-tabular" style="color: var(--brand-primary);">${s.score}/${s.maxScore}</span>
                 </div>
-                ${s.gradeLetter ? `<span style="font-size: 0.6rem; color: var(--success); font-weight: 800;">Grade: ${s.gradeLetter}</span>` : ''}
-                ${s.notes ? `<div style="font-size: 0.58rem; color: var(--text-muted);">${s.notes}</div>` : ''}
+                ${s.gradeLetter ? `<span style="font-size: 0.6rem; color: var(--success); font-weight: 800;">Grade: ${escapeHtmlAttr(s.gradeLetter)}</span>` : ''}
+                ${s.notes ? `<div style="font-size: 0.58rem; color: var(--text-muted);">${escapeHtmlAttr(s.notes)}</div>` : ''}
               </div>
             `).join('')}
           </div>
@@ -12639,7 +12860,6 @@ if (!/^\d{4}$/.test(clean)) {
       `;
       }).join('');
     }
-
     function editClientExamRecord(examId, clientId = null) {
       const client = clientId
         ? appState.clients.find(c => String(c.id) === String(clientId))

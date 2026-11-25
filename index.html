@@ -15,19 +15,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+   href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
     rel="stylesheet">
   <style>
     :root {
-      --bg-main: #f4f6f9;
+      --bg-main: #eaedf3;
       --bg-surface: #ffffff;
-      --bg-subtle: #f8fafc;
-      --bg-glass: rgba(255, 255, 255, 0.92);
-      --border-color: #e2e8f0;
-      --border-strong: #cbd5e1;
+      --bg-subtle: #f1f5f9;
+      --bg-glass: rgba(255, 255, 255, 0.95);
+      --border-color: #cbd5e1;
+      --border-strong: #94a3b8;
       --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-soft: #64748b;
+      --text-muted: #334155;
+      --text-soft: #475569;
 
       --brand-primary: #2563eb;
       --brand-primary-hover: #1d4ed8;
@@ -62,12 +62,12 @@
       --bg-main: #090d16;
       --bg-surface: #111827;
       --bg-subtle: #182234;
-      --bg-glass: rgba(17, 24, 39, 0.92);
-      --border-color: #1f2937;
-      --border-strong: #334155;
+      --bg-glass: rgba(17, 24, 39, 0.95);
+      --border-color: #334155;
+      --border-strong: #475569;
       --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --text-soft: #64748b;
+      --text-muted: #cbd5e1;
+      --text-soft: #94a3b8;
 
       --brand-primary: #3b82f6;
       --brand-primary-hover: #2563eb;
@@ -969,13 +969,13 @@
       transform: translateX(18px);
     }
 
-    /* HORIZONTAL CALENDAR STRIP */
+/* HORIZONTAL CALENDAR STRIP */
     .h-calendar-strip {
       display: flex;
       gap: 0.4rem;
       overflow-x: auto;
       scroll-behavior: smooth;
-      padding: 0.45rem 0;
+      padding: 0.45rem 0.15rem;
       scrollbar-width: none;
     }
 
@@ -984,10 +984,11 @@
     }
 
     .h-calendar-pill {
+      position: relative;
       min-width: 58px;
-      padding: 0.5rem 0.35rem;
+      padding: 0.55rem 0.35rem 0.45rem;
       background: var(--bg-subtle);
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--border-color);
       border-radius: var(--radius-sm);
       text-align: center;
       cursor: pointer;
@@ -1002,12 +1003,34 @@
       box-shadow: 0 4px 10px -2px rgba(37, 99, 235, 0.35);
     }
 
+    .h-calendar-count-badge {
+      position: absolute;
+      top: 2px;
+      right: 3px;
+      min-width: 15px;
+      height: 15px;
+      padding: 0 3px;
+      border-radius: 9999px;
+      background: var(--brand-primary);
+      color: #ffffff;
+      font-size: 0.54rem;
+      font-weight: 800;
+      line-height: 15px;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.25);
+    }
+
+    .h-calendar-pill.active .h-calendar-count-badge {
+      background: #ffffff;
+      color: var(--brand-primary);
+    }
+
     /* HEATMAP */
     .heatmap-wrapper {
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      padding: 0.45rem 0;
+            padding: 0.45rem 0;
       align-items: flex-end;
     }
 
@@ -1292,12 +1315,12 @@
     }
 
     /* STICKY PIVOT TOOLBARS */
-    .sticky-pivot-toolbar {
+.sticky-pivot-toolbar {
       position: sticky;
       top: 0;
       z-index: 20;
       background: var(--bg-surface);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1.5px solid var(--border-strong);
       padding: 0.65rem 0.75rem;
       display: flex;
       flex-direction: column;
@@ -1307,7 +1330,170 @@
     .pivot-scroll-container {
       max-height: 440px;
       overflow: auto;
+      margin: 0.55rem;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+    }
+
+    .table-frame-box {
+      overflow: auto;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+    }
+
+    .table-frame-inset {
+      margin: 0.55rem;
+    }
+
+    /* SESSIONS BAR GRAPH (MATRIX VIEW) */
+    .sgraph-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 3px;
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+    }
+
+    .sgraph-tab-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.63rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 0.36rem 0.15rem;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .sgraph-tab-btn.active {
+      background: var(--text-main);
+      color: var(--bg-surface);
+    }
+
+    .sgraph-range-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+    }
+
+    .sgraph-canvas-wrap {
+      position: relative;
+      display: flex;
+      gap: 6px;
+      align-items: stretch;
+      height: 170px;
+      padding: 0.5rem 0.55rem 0.25rem 0.35rem;
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+    }
+
+    .sgraph-yaxis {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+      width: 26px;
+      flex-shrink: 0;
+      padding-bottom: 18px;
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: var(--text-soft);
+    }
+
+    .sgraph-plot-area {
+      position: relative;
+flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sgraph-bars-row {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      align-items: stretch;
+      gap: 2px;
+      border-bottom: 1.5px solid var(--border-strong);
+      background-image: linear-gradient(to bottom, var(--border-color) 1px, transparent 1px);
+      background-size: 100% 50%;
+      overflow-x: auto;
+      padding: 2px 2px 0;
+    }
+
+    .sbar-col {
+      flex: 1 1 0;
+      min-width: 6px;
+      height: 100%;
+      display: flex;
+            flex-direction: column;
+      justify-content: flex-end;
+      align-items: stretch;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 3px 3px 0 0;
+      transition: background 0.12s ease;
+    }
+
+    .sbar-col:hover,
+    .sbar-col.selected {
+      background: rgba(37, 99, 235, 0.14);
+    }
+
+    .sbar-stack {
       width: 100%;
+      display: flex;
+      flex-direction: column-reverse;
+      border-radius: 3px 3px 0 0;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .sbar-col.selected .sbar-stack {
+      outline: 1.5px solid var(--text-main);
+    }
+
+    .sbar-seg {
+      width: 100%;
+      min-height: 2px;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .sgraph-xaxis {
+      height: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.56rem;
+      font-weight: 700;
+      color: var(--text-soft);
+      padding-top: 3px;
+    }
+
+    .sgraph-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.35rem;
+    }
+
+    .sgraph-stat-box {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.42rem 0.5rem;
+      text-align: center;
     }
 
     /* SCHEDULE GRID & 90-DEGREE FULL-SCREEN ROTATION */
@@ -1315,7 +1501,7 @@
       width: 100%;
       overflow: auto;
       border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-sm);
+            border-radius: var(--radius-sm);
       background: var(--bg-surface);
     }
 
@@ -1713,10 +1899,245 @@
       margin-top: -13px;
     }
 
-    .clock-num-btn.selected {
+   .clock-num-btn.selected {
       background: var(--brand-primary);
       color: #ffffff !important;
       font-weight: 800;
+    }
+
+    /* MODAL SCROLL LOCK & FIXED HEADER/FOOTER LAYOUT */
+    html.modal-open,
+    body.modal-open {
+      overflow: hidden !important;
+      overscroll-behavior: none;
+    }
+
+    /* STRONGER COMPONENT BOUNDARIES */
+    .app-header {
+      border-bottom: 1.5px solid var(--border-strong);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+    }
+
+    .bottom-nav {
+      border-top: 1.5px solid var(--border-strong);
+      box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.08);
+    }
+
+    .card {
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+    }
+
+    .btn-subtle {
+      border: 1.5px solid var(--border-strong);
+    }
+
+    .modal-overlay {
+      overscroll-behavior: contain;
+    }
+
+    .modal-dialog {
+      border: 1.5px solid var(--border-strong);
+      box-shadow: 0 18px 40px -8px rgba(15, 23, 42, 0.35);
+      overscroll-behavior: contain;
+    }
+
+    .modal-dialog.modal-dialog-fixed-layout {
+      display: flex;
+      flex-direction: column;
+      padding: 0 !important;
+      overflow: hidden !important;
+      max-height: 88vh;
+    }
+
+    .modal-dialog.modal-dialog-fixed-layout::before {
+      display: none !important;
+    }
+
+    .modal-fixed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1.5px solid var(--border-strong);
+      background: var(--bg-surface);
+      flex-shrink: 0;
+    }
+
+    .modal-scroll-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 0.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.48rem;
+    }
+
+    .modal-fixed-footer {
+      display: flex;
+      gap: 0.35rem;
+      padding: 0.65rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px)) 1rem;
+      border-top: 1.5px solid var(--border-strong);
+      background: var(--bg-subtle);
+      flex-shrink: 0;
+    }
+
+    /* UPCOMING EXAM DROPDOWN IN CLIENT MODAL */
+    .exam-details-dropdown {
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      overflow: hidden;
+    }
+
+    .exam-details-dropdown>summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+      padding: 0.48rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--purple);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .exam-details-dropdown>summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .exam-details-dropdown[open] .exam-dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .exam-dropdown-arrow {
+      display: inline-block;
+      transition: transform 0.18s ease;
+      font-size: 0.75rem;
+    }
+
+    /* FRAMED SCROLL CONTAINERS (PREVENT ITEMS BLEEDING UNDER HEADERS/LABELS) */
+    #quicklog-clients-grid,
+    #clients-list-view-container,
+    #client-payment-history-container,
+    #notifications-list-container,
+    #drawer-clients-container,
+    #stt-settings-tab-pending,
+    #stt-settings-tab-rejected,
+    #stt-settings-tab-deleted,
+    #modal-reminders-container,
+    #client-exam-history-container,
+    #stt-sync-diff-container {
+      border: 1.5px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-main);
+      padding: 0.45rem;
+      overscroll-behavior: contain;
+    }
+
+    .sticky-pivot-toolbar {
+      border-bottom: 1.5px solid var(--border-strong);
+    }
+
+    .pivot-table th,
+    .matrix-table th {
+      border-bottom: 1.5px solid var(--border-strong);
+    }
+
+    .pivot-th-client,
+    .pivot-td-client,
+    .matrix-th-class,
+    .matrix-td-class {
+      border-right: 1.5px solid var(--border-strong) !important;
+    }
+
+    .matrix-outer-box {
+      border: 1.5px solid var(--border-strong);
+    }
+
+    /* UNIVERSAL COLLAPSIBLE BLOCKS */
+    .card-collapse-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+    }
+
+    .card-collapse-trigger {
+      cursor: pointer;
+    }
+
+    .card-collapse-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
+      min-height: 26px;
+      border-radius: 7px;
+      border: 1.5px solid var(--border-strong);
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.18s ease, background 0.15s ease, color 0.15s ease;
+    }
+
+    .card-collapse-btn:hover {
+      background: var(--brand-surface);
+      color: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+
+    .card.is-collapsed .card-collapse-btn {
+      transform: rotate(-90deg);
+    }
+
+    .card.is-collapsed {
+      padding-top: 0.65rem !important;
+      padding-bottom: 0.65rem !important;
+    }
+
+    .card.is-collapsed>:not(.card-collapse-header):not(.sticky-pivot-toolbar):not(.card-collapse-header-wrap) {
+      display: none !important;
+    }
+
+    .card.is-collapsed>.card-collapse-header {
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      border-bottom: none !important;
+    }
+
+    .card.is-collapsed>.card-collapse-header-wrap {
+      margin-bottom: 0 !important;
+    }
+
+    .card.is-collapsed>.card-collapse-header-wrap>:not(.card-collapse-header) {
+      display: none !important;
+    }
+
+    .card.is-collapsed>.sticky-pivot-toolbar {
+      border-bottom: none !important;
+      padding-top: 0.55rem !important;
+      padding-bottom: 0.55rem !important;
+    }
+
+    .card.is-collapsed>.sticky-pivot-toolbar>:not(.card-collapse-header) {
+      display: none !important;
+    }
+
+    .settings-card-highlight {
+      outline: 2.5px solid var(--brand-primary);
+      outline-offset: 2px;
+      transition: outline-color 0.3s ease;
     }
   </style>
 </head>
@@ -2323,9 +2744,60 @@
             <div class="heatmap-grid-7row" id="system-heatmap-grid"></div>
           </div>
         </div>
-        <div id="system-heatmap-inspector"
+<div id="system-heatmap-inspector"
           style="margin-top:0.4rem; padding:0.35rem 0.5rem; background:var(--bg-subtle); border-radius:4px; font-size:0.7rem; display:none;">
         </div>
+      </div>
+
+      <!-- SESSIONS BAR GRAPH -->
+      <div id="matrix-sessions-graph-card" class="card" style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+          <h3 style="font-size: 0.82rem; font-weight: 800; color: var(--brand-primary);">📊 Sessions Bar Graph</h3>
+          <div style="display: flex; gap: 0.3rem; align-items: center;">
+            <select id="matrix-chart-client" onchange="renderMatrixSessionsBarGraph()"
+              style="width: auto; max-width: 150px; min-height: 30px; font-size: 0.68rem; padding: 0.2rem 0.45rem;">
+              <option value="all">All Clients</option>
+            </select>
+            <select id="matrix-chart-metric" onchange="renderMatrixSessionsBarGraph()"
+              style="width: auto; min-height: 30px; font-size: 0.68rem; padding: 0.2rem 0.4rem;">
+              <option value="sessions" selected>Sessions</option>
+              <option value="hours">Hours</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="sgraph-canvas-wrap">
+          <div id="matrix-chart-yaxis" class="sgraph-yaxis num-tabular">
+            <span>0</span><span>0</span><span>0</span>
+          </div>
+          <div class="sgraph-plot-area">
+            <div id="matrix-chart-bars" class="sgraph-bars-row"></div>
+            <div id="matrix-chart-xaxis" class="sgraph-xaxis num-tabular"></div>
+          </div>
+        </div>
+
+        <div id="matrix-chart-inspector"
+          style="display: none; padding: 0.4rem 0.55rem; background: var(--bg-subtle); border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 0.68rem;">
+        </div>
+
+        <div class="sgraph-tabs" id="matrix-chart-period-tabs">
+          <button type="button" data-period="daily" onclick="setMatrixChartPeriod('daily')"
+            class="sgraph-tab-btn active">Daily</button>
+          <button type="button" data-period="weekly" onclick="setMatrixChartPeriod('weekly')"
+            class="sgraph-tab-btn">Weekly</button>
+          <button type="button" data-period="monthly" onclick="setMatrixChartPeriod('monthly')"
+            class="sgraph-tab-btn">Monthly</button>
+          <button type="button" data-period="yearly" onclick="setMatrixChartPeriod('yearly')"
+            class="sgraph-tab-btn">Yearly</button>
+          <button type="button" data-period="all_time" onclick="setMatrixChartPeriod('all_time')"
+            class="sgraph-tab-btn">All Time</button>
+        </div>
+
+        <div class="sgraph-range-row" id="matrix-chart-range-tabs"></div>
+
+        <div id="matrix-chart-stats" class="sgraph-stats-grid"></div>
+
+        <div id="matrix-chart-legend" style="display: flex; flex-wrap: wrap; gap: 0.3rem;"></div>
       </div>
 
       <div class="card" style="padding: 0; overflow: hidden;">
@@ -2333,7 +2805,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;">
             <h3 style="font-size: 0.82rem; font-weight: 800;">Summary Pivot</h3>
             <div style="display: flex; gap: 0.25rem;">
-              <button type="button" onclick="downloadExcelPivot()" class="btn btn-subtle"
+                            <button type="button" onclick="downloadExcelPivot()" class="btn btn-subtle"
                 style="font-size: 0.68rem; padding: 0.3rem 0.55rem;">📥 Excel</button>
               <button type="button"
                 onclick="openSnapshotCustomizer('analytics-pivot-table', 'Summary Pivot', 'Summary_Pivot.png', 'pivot')"
@@ -2462,20 +2934,20 @@
               style="font-size: 0.72rem; min-height: 32px; padding: 0.28rem 0.5rem;">
               <option value="all">All Clients</option>
             </select>
-            <select id="payments-filter-month" onchange="renderPaymentsView()"
+<select id="payments-filter-month" onchange="renderPaymentsView()"
               style="font-size: 0.72rem; min-height: 32px; padding: 0.28rem 0.5rem;">
               <option value="all">All Months</option>
             </select>
           </div>
         </div>
-        <div style="overflow-x: auto; max-height: 400px;">
+        <div class="table-frame-box table-frame-inset" style="max-height: 400px;">
           <table class="pivot-table" id="payments-history-table"></table>
         </div>
       </div>
     </section>
 
     <!-- VIEW 7: BALANCES -->
-    <section id="view-balances" style="display: none; flex-direction: column; gap: 0.75rem;">
+         <section id="view-balances" style="display: none; flex-direction: column; gap: 0.75rem;">
       <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem;">
         <label style="font-size: 0.7rem; display: flex; align-items: center; gap: 0.3rem; cursor: pointer;">
           <input type="checkbox" id="balances-hide-archived" checked onchange="renderBalancesTable()"> Hide Archived
@@ -2495,17 +2967,17 @@
           <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">Advance & Due Balances</h3>
           <span style="font-size: 0.65rem; color: var(--text-muted);">Balances are strictly non-negative</span>
         </div>
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+<p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
           Advance cash balances are applied automatically to settle due monthly blocks.
         </p>
-        <div style="overflow-x: auto;">
+        <div class="table-frame-box">
           <table class="pivot-table" id="balances-table"></table>
         </div>
       </div>
     </section>
 
     <!-- VIEW 8: DOUBLE LEDGER -->
-    <section id="view-ledger" style="display: none; flex-direction: column; gap: 0.75rem;">
+         <section id="view-ledger" style="display: none; flex-direction: column; gap: 0.75rem;">
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
           <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Double Ledger Account</h3>
@@ -2513,15 +2985,14 @@
             onclick="openSnapshotCustomizer('double-ledger-table', 'Double Ledger Report', 'Double_Ledger.png', 'ledger')"
             class="btn btn-subtle" style="font-size: 0.65rem; padding: 0.2rem 0.4rem;">📷 Snapshot</button>
         </div>
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+<p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.5rem;">
           Tracks cash received independently from monthly due ledger entries.
         </p>
-        <div style="overflow-x: auto; max-height: 60vh;">
+        <div class="table-frame-box" style="max-height: 60vh;">
           <table class="pivot-table" id="double-ledger-table"></table>
         </div>
       </div>
     </section>
-
 
     <!-- VIEW 10: WHATSAPP TEMPLATES -->
     <section id="view-templates" style="display: none; flex-direction: column; gap: 0.75rem;">
@@ -2716,7 +3187,7 @@
         <div id="planner-list-view"
           style="display: none; flex-direction: column; gap: 0.45rem; max-height: 62vh; overflow-y: auto;"></div>
 
-        <div id="planner-slot-inspector"
+<div id="planner-slot-inspector"
           style="margin-top: 0.4rem; padding: 0.45rem 0.6rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: 6px; font-size: 0.7rem; display: none;">
         </div>
       </div>
@@ -2724,12 +3195,25 @@
     <!-- VIEW 11: SETTINGS -->
     <section id="view-settings" style="display: none; flex-direction: column; gap: 0.75rem;">
 
+      <!-- UNSAVED CHANGES / NEW ITEMS GUIDANCE BANNER -->
+      <div id="settings-guidance-banner" class="card" data-no-collapse="true"
+        style="display: none; background: var(--warning-surface); border: 1.5px solid var(--warning); flex-direction: column; gap: 0.45rem;">
+        <div>
+          <strong id="settings-guidance-title" style="font-size: 0.78rem; color: var(--warning); display: block;">⚠️ Attention Needed</strong>
+          <p id="settings-guidance-desc" style="font-size: 0.68rem; color: var(--text-main); margin-top: 2px; line-height: 1.35;"></p>
+        </div>
+        <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+          <button type="button" id="settings-guidance-backup-now-btn" onclick="promptSaveBackupFile('save')" class="btn btn-primary" style="flex: 1; font-size: 0.7rem;">💾 Backup Now</button>
+          <button type="button" id="settings-guidance-jump-backup-btn" onclick="jumpToSettingsCard('settings-card-backup')" class="btn btn-subtle" style="flex: 1; font-size: 0.7rem;">↓ Go to Backup</button>
+          <button type="button" id="settings-guidance-jump-stt-btn" onclick="jumpToSettingsCard('settings-card-stt')" class="btn btn-purple" style="display: none; flex: 1; font-size: 0.7rem;">🔄 Go to STT Queue</button>
+        </div>
+      </div>
+
       <!-- CATEGORY 1: USER PROFILES -->
       <div class="card card-accent-brand">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
           <div>
-            <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">👤 User Profiles</h3>
-            <p style="font-size: 0.64rem; color: var(--text-muted);">Each profile has separate clients and records</p>
+            <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">👤 User Profiles</h3>            <p style="font-size: 0.64rem; color: var(--text-muted);">Each profile has separate clients and records</p>
           </div>
           <button type="button" onclick="promptCreateNewProfile()" class="btn btn-primary"
             style="font-size: 0.68rem; padding: 0.3rem 0.6rem;">+ Create User</button>
@@ -2869,13 +3353,13 @@
             <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--whatsapp);">WhatsApp Templates</h3>
             <p style="font-size: 0.65rem; color: var(--text-muted);">Create folders and customize message presets</p>
           </div>
-          <button type="button" onclick="showMainView('templates')" class="btn btn-whatsapp"
+         <button type="button" onclick="showMainView('templates')" class="btn btn-whatsapp"
             style="font-size: 0.7rem; padding: 0.35rem 0.65rem;">Open Manager &rarr;</button>
         </div>
       </div>
 
       <!-- STT SYNC QUEUE & REJECTED LOGS -->
-      <div class="card card-accent-brand">
+      <div id="settings-card-stt" class="card card-accent-brand">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
           <div>
             <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--brand-primary);">🔄 STT Sync Queue & Rejected
@@ -2904,12 +3388,12 @@
           style="display: flex; flex-direction: column; gap: 0.35rem; max-height: 280px; overflow-y: auto;"></div>
         <div id="stt-settings-tab-rejected"
           style="display: none; flex-direction: column; gap: 0.35rem; max-height: 280px; overflow-y: auto;"></div>
-        <div id="stt-settings-tab-deleted"
+       <div id="stt-settings-tab-deleted"
           style="display: none; flex-direction: column; gap: 0.35rem; max-height: 280px; overflow-y: auto;"></div>
       </div>
 
       <!-- BACKUP, RESTORE & EXPORT -->
-      <div class="card">
+      <div id="settings-card-backup" class="card">
         <h3 style="font-size: 0.85rem; font-weight: 800; color: var(--purple); margin-bottom: 0.5rem;">Backup & Data
         </h3>
         <div style="display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.72rem;">
@@ -2919,7 +3403,7 @@
               <span style="font-weight: 800; display: block;">Backup Daily (Auto)</span>
               <span id="settings-daily-backup-status" style="font-size: 0.62rem; color: var(--success);">Enabled</span>
             </div>
-            <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
+<label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-weight: 800;">
               <input type="checkbox" id="settings-toggle-daily-backup"
                 onchange="toggleDailyBackupSetting(this.checked); renderSettingsScreen();"
                 style="width: 16px; height: 16px;">
@@ -2927,13 +3411,32 @@
             </label>
           </div>
 
+          <details id="settings-daily-backups-panel" class="exam-details-dropdown"
+            ontoggle="if(this.open) renderDailyBackupsListUI()">
+            <summary style="color: var(--brand-primary);">
+              <span>🗂️ Daily Auto-Backups (<span id="settings-daily-backups-count">0</span> saved)</span>
+              <span class="exam-dropdown-arrow">▾</span>
+            </summary>
+            <div
+              style="padding: 0.5rem; border-top: 1px solid var(--border-color); background: var(--bg-surface); display: flex; flex-direction: column; gap: 0.4rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem;">
+                <span style="font-size: 0.62rem; color: var(--text-muted);">Stored in IndexedDB (up to 14 days, auto-updates on edits)</span>
+                <button type="button" onclick="runDailyAutoBackupCheck(true, true, true)" class="btn btn-subtle"
+                  style="font-size: 0.62rem; padding: 0.2rem 0.45rem; min-height: 26px;">🔄 Snapshot Now</button>
+              </div>
+              <div id="settings-daily-backups-list"
+                style="display: flex; flex-direction: column; gap: 0.3rem; max-height: 210px; overflow-y: auto;">
+                <span style="font-size: 0.66rem; color: var(--text-muted); text-align: center; padding: 0.4rem;">Loading snapshots...</span>
+              </div>
+            </div>
+          </details>
+
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
             <button type="button" onclick="promptSaveBackupFile('save')" class="btn btn-primary"
               style="padding: 0.5rem;">💾 Backup Now</button>
             <button type="button" onclick="openModal('modal-export-options')" class="btn btn-purple"
               style="padding: 0.5rem;">📤 Export Data</button>
           </div>
-
           <label class="btn btn-subtle"
             style="cursor: pointer; width: 100%; padding: 0.5rem; text-align: center; border: 1.5px dashed var(--border-strong);">
             <span>📂 Restore Backup (.JSON)</span>
@@ -3912,7 +4415,7 @@
         <button type="button" onclick="clearMassTable()" class="btn btn-subtle"
           style="font-size: 0.7rem;">Clear</button>
       </div>
-      <div style="display: flex; gap: 0.35rem;">
+<div style="display: flex; gap: 0.35rem;">
         <button type="button" onclick="closeModal('modal-mass-import')" class="btn btn-subtle"
           style="flex: 1;">Cancel</button>
         <button type="button" onclick="executeMassImportFromTable()" class="btn btn-primary" style="flex: 1;">Save
@@ -3923,17 +4426,18 @@
 
   <!-- ADD / EDIT CLIENT MODAL -->
   <div id="modal-client" class="modal-overlay">
-    <div class="modal-dialog">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+    <div class="modal-dialog modal-dialog-fixed-layout">
+      <div class="modal-fixed-header">
         <h3 id="client-modal-title" style="font-size: 0.9rem; font-weight: 800;">Client Profile</h3>
         <button type="button" onclick="closeModal('modal-client')" class="btn btn-subtle"
           style="padding: 0.2rem 0.4rem;">✕</button>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 0.45rem;">
+      <div class="modal-scroll-body">
         <input type="hidden" id="form-client-id">
         <div>
           <label style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">Name *</label>
-          <input type="text" id="form-client-name" placeholder="e.g. Aiden Parker">
+          <input type="text" id="form-client-name" placeholder="e.g. Aiden Parker" style="text-transform: capitalize;"
+            onblur="this.value = formatProperName(this.value)">
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
           <div>
@@ -4008,7 +4512,7 @@
             <label
               style="font-size: 0.65rem; font-weight: 700; color: var(--brand-primary); display: block; margin-bottom: 0.15rem;">Default
               Time</label>
-<button type="button" id="form-client-default-time" data-time24="16:00"
+            <button type="button" id="form-client-default-time" data-time24="16:00"
               onclick="openCircularClockPicker('form-client-default-time')" class="clock-trigger-btn app-time-picker"
               style="min-height: 36px;">16:00</button>
           </div>
@@ -4025,26 +4529,36 @@
           📅 Apply Quota / Fee to Specific Months (From → Till)...
         </button>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
-          <div>
-            <label for="form-client-exam-label"
-              style="font-size: 0.65rem; font-weight: 700; color: var(--purple); display: block; margin-bottom: 0.15rem;">Upcoming
-              Exam Label</label>
-            <input type="text" id="form-client-exam-label" placeholder="e.g. Finals">
+        <details id="form-client-exam-dropdown" class="exam-details-dropdown">
+          <summary>
+            <span>🎯 Upcoming Exam Countdown <span id="form-client-exam-badge"
+                style="font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">(Optional)</span></span>
+            <span class="exam-dropdown-arrow">▾</span>
+          </summary>
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; padding: 0.5rem 0.55rem; border-top: 1px solid var(--border-color); background: var(--bg-surface);">
+            <div>
+              <label for="form-client-exam-label"
+                style="font-size: 0.65rem; font-weight: 700; color: var(--purple); display: block; margin-bottom: 0.15rem;">Upcoming
+                Exam Label</label>
+              <input type="text" id="form-client-exam-label" placeholder="e.g. Finals"
+                oninput="updateClientExamDropdownBadge()">
+            </div>
+            <div>
+              <label for="form-client-exam-date"
+                style="font-size: 0.65rem; font-weight: 700; color: var(--purple); display: block; margin-bottom: 0.15rem;">Exam
+                Date (Countdown)</label>
+              <input type="date" id="form-client-exam-date" onchange="updateClientExamDropdownBadge()">
+            </div>
           </div>
-          <div>
-            <label for="form-client-exam-date"
-              style="font-size: 0.65rem; font-weight: 700; color: var(--purple); display: block; margin-bottom: 0.15rem;">Exam
-              Date (Countdown)</label>
-            <input type="date" id="form-client-exam-date">
-          </div>
-        </div>
+        </details>
 
         <div>
           <label
             style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.15rem;">Scheduled
             Days (Class Days)</label>
-          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="form-days-picker">            <button type="button" data-day="Mon" onclick="toggleFormDayPicker(this)" class="btn btn-subtle"
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;" id="form-days-picker">
+            <button type="button" data-day="Mon" onclick="toggleFormDayPicker(this)" class="btn btn-subtle"
               style="padding: 0.25rem 0;">M</button>
             <button type="button" data-day="Tue" onclick="toggleFormDayPicker(this)" class="btn btn-subtle"
               style="padding: 0.25rem 0;">T</button>
@@ -4083,15 +4597,14 @@
               style="padding: 0.25rem 0;">S</button>
           </div>
         </div>
-
-        <div style="display: flex; gap: 0.35rem; margin-top: 0.35rem;">
-          <button type="button" onclick="closeModal('modal-client')" class="btn btn-subtle"
-            style="flex: 1;">Cancel</button>
-          <button type="button" id="btn-delete-client"
-            onclick="confirmDeleteClient(document.getElementById('form-client-id').value)" class="btn btn-danger"
-            style="display:none; padding:0.45rem 0.6rem;">Delete</button>
-          <button type="button" onclick="handleSaveClientForm()" class="btn btn-primary" style="flex: 1;">Save</button>
-        </div>
+      </div>
+      <div class="modal-fixed-footer">
+        <button type="button" onclick="closeModal('modal-client')" class="btn btn-subtle"
+          style="flex: 1;">Cancel</button>
+        <button type="button" id="btn-delete-client"
+          onclick="confirmDeleteClient(document.getElementById('form-client-id').value)" class="btn btn-danger"
+          style="display:none; padding:0.45rem 0.6rem;">Delete</button>
+        <button type="button" onclick="handleSaveClientForm()" class="btn btn-primary" style="flex: 1;">Save</button>
       </div>
     </div>
   </div>
@@ -4100,8 +4613,7 @@
   <div id="modal-profile-update-scope" class="modal-overlay" style="z-index: 85;">
     <div class="modal-dialog">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Apply Rate &amp; Quota Changes
-        </h3>
+        <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--brand-primary);">Apply Rate &amp; Quota Changes        </h3>
         <button type="button" onclick="closeModal('modal-profile-update-scope')" class="btn btn-subtle"
           style="padding: 0.2rem 0.4rem;">✕</button>
       </div>
@@ -4635,18 +5147,24 @@ saveUserProfilesList(list);
     }
 
     async function switchUserProfile(profileId) {
-      const list = getUserProfilesList();
+const list = getUserProfilesList();
       const prof = list.find(p => p.id === profileId);
       if (!prof) return;
       activeProfileId = prof.id;
       localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
       appState = {clients: []};
+      activeTimetableClientId = null;
+      activeTimetableEventKey = null;
+      activePlannerSlotId = null;
+      activeOpenTemplateFolder = null;
+      currentActiveMatrixFilters = {};
+      rosterSelectedClientIds.clear();
       await hydrateFromIndexedDBIfNeeded();
       initData();
       populateAllTimePickers();
       setTimePickerValue('quicklog-time', getAppSettings().defaultTime);
       applyAllSavedLayouts();
-      renderAll();
+            renderAll();
       if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
       showToast(`Switched to ${prof.name}`);
     }
@@ -4663,19 +5181,21 @@ saveUserProfilesList(list);
       requestConfirmation(`Delete user profile "${prof.name}" and all its local data?`, () => {
         const updated = list.filter(p => p.id !== profileId);
         saveUserProfilesList(updated);
-        if (profileId !== 'default') {
+if (profileId !== 'default') {
           localStorage.removeItem(`month_tracker_v12_store_${profileId}`);
           localStorage.removeItem(`month_tracker_v12_daily_backup_${profileId}`);
+          localStorage.removeItem(`last_auto_backup_date_${profileId}`);
+          localStorage.removeItem(`last_auto_backup_ts_${profileId}`);
           localStorage.removeItem(`month_tracker_v12_wa_templates_${profileId}`);
           localStorage.removeItem(`month_tracker_v12_wa_categories_${profileId}`);
           localStorage.removeItem(`month_tracker_v12_settings_${profileId}`);
+          idbSet(`month_tracker_v12_daily_backup_${profileId}`, null);
         }
         if (activeProfileId === profileId) {
           switchUserProfile(updated[0].id);
         }
         if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
-        showToast(`Deleted profile "${prof.name}".`);
-      });
+        showToast(`Deleted profile "${prof.name}".`);      });
     }
 
     let clientDetailSortOrder = 'newest';
@@ -4801,18 +5321,21 @@ saveUserProfilesList(list);
       });
     }
 
-    function openCircularClockPicker(targetId, saveSettingsAfter = false) {
+function openCircularClockPicker(targetId, saveSettingsAfter = false) {
       clockTargetElementId = targetId;
       clockTriggerSettingsSave = saveSettingsAfter;
       const cur24 = getTimePickerValue(targetId);
       const parts = cur24.split(':');
-      clockSelectedHour24 = parseInt(parts[0], 10) || 16;
-      clockSelectedMinute = parseInt(parts[1], 10) || 0;
+      const parsedH = parseInt(parts[0], 10);
+      const parsedM = parseInt(parts[1], 10);
+      clockSelectedHour24 = isNaN(parsedH) ? 16 : parsedH;
+      clockSelectedMinute = isNaN(parsedM) ? 0 : parsedM;
       clockDialMode = 'hour';
 
       renderCircularClockDial();
       const modal = document.getElementById('modal-circular-clock');
       if (modal) modal.classList.add('active');
+      syncModalBodyScrollLock();
     }
 
     function setClockDialMode(mode) {
@@ -4949,18 +5472,19 @@ saveUserProfilesList(list);
 
       numsContainer.innerHTML = html;
     }
-    function saveAppSettings() {
+function saveAppSettings() {
       const currency = (document.getElementById('settings-currency-input')?.value || 'AED').trim().toUpperCase() || 'AED';
       const timeFormat = document.getElementById('settings-time-format')?.value || '24h';
       const defaultTime = getTimePickerValue('settings-default-time') || '16:00';
       const defaultQuota = Number(document.getElementById('settings-default-quota')?.value) || 4;
-      const defaultFee = Number(document.getElementById('settings-default-fee')?.value) || 500;
+      const defaultFeeRaw = document.getElementById('settings-default-fee')?.value;
+      const defaultFee = (defaultFeeRaw !== undefined && defaultFeeRaw !== '' && !isNaN(Number(defaultFeeRaw))) ? Math.max(0, Number(defaultFeeRaw)) : 500;
 
       localStorage.setItem(getProfileSettingsKey(), JSON.stringify({currency, timeFormat, defaultTime, defaultQuota, defaultFee}));
       populateAllTimePickers();
       const qTime = document.getElementById('quicklog-time');
       if (qTime) setTimePickerValue('quicklog-time', defaultTime);
-      showToast("Settings saved!");
+            showToast("Settings saved!");
       renderAll();
     }
 function renderSettingsScreen() {
@@ -5006,20 +5530,22 @@ function renderSettingsScreen() {
       const themeBtn = document.getElementById('settings-theme-btn');
       if (themeBtn) themeBtn.textContent = isDark ? 'Dark Mode' : 'Light Mode';
 
-      const backupOn = isDailyBackupEnabled();
+const backupOn = isDailyBackupEnabled();
       const bCb = document.getElementById('settings-toggle-daily-backup');
       const bLbl = document.getElementById('settings-daily-backup-label');
       const bStat = document.getElementById('settings-daily-backup-status');
       if (bCb) bCb.checked = backupOn;
       if (bLbl) bLbl.textContent = backupOn ? 'ON' : 'OFF';
       if (bStat) {
-        bStat.textContent = backupOn ? 'Enabled (Auto-saves daily)' : 'Disabled';
+        const lastTs = localStorage.getItem(`last_auto_backup_ts_${activeProfileId}`);
+        const lastLabel = lastTs ? `Last saved: ${formatNotifTimestamp(lastTs)}` : 'Waiting for first snapshot';
+        bStat.textContent = backupOn ? `Enabled • ${lastLabel}` : 'Disabled';
         bStat.style.color = backupOn ? 'var(--success)' : 'var(--text-muted)';
       }
+      renderDailyBackupsListUI();
 
       const sttOn = isSttFeatureEnabled();
-      const sttCb = document.getElementById('settings-toggle-stt-feature');
-      const sttLbl = document.getElementById('settings-stt-feature-label');
+      const sttCb = document.getElementById('settings-toggle-stt-feature');      const sttLbl = document.getElementById('settings-stt-feature-label');
       const sttStat = document.getElementById('settings-stt-feature-status');
       if (sttCb) sttCb.checked = sttOn;
       if (sttLbl) sttLbl.textContent = sttOn ? 'ON' : 'OFF';
@@ -5040,10 +5566,12 @@ function renderSettingsScreen() {
       if (fcCb) fcCb.checked = fcOn;
       if (fcLbl) fcLbl.textContent = fcOn ? 'ON' : 'OFF';
 
-      renderSettingsSttQueueTabs();
+     renderSettingsSttQueueTabs();
       updateStorageMeterUI();
       renderNotificationManagerSettingsUI();
       renderLayoutEditorList();
+      updateSettingsGuidanceBanner();
+      enhanceCollapsibleCards(document.getElementById('view-settings'));
     }
     function confirmFactoryReset() {
       requestConfirmation("Are you sure you want to delete ALL clients, classes, and payment records permanently?", async () => {
@@ -5298,7 +5826,7 @@ container.innerHTML = filtered.map(n => {
       showToast("Notification preferences updated!", "system");
     }
 
-    function formatDisplayDate(dateStr, includeYear = true) {
+function formatDisplayDate(dateStr, includeYear = true) {
       if (!dateStr || dateStr === '-') return '-';
       const parts = dateStr.split('-');
       if (parts.length < 3) return dateStr;
@@ -5309,14 +5837,28 @@ container.innerHTML = filtered.map(n => {
       return includeYear ? `${d} ${monthName} ${parts[0]}` : `${d} ${monthName}`;
     }
 
+    function formatProperName(name) {
+      return String(name || '')
+        .trim()
+        .replace(/(^|[\s\-'(])([a-z])/g, (match, sep, ch) => sep + ch.toUpperCase());
+    }
+
+    function syncModalBodyScrollLock() {
+      const hasOpenModal = Boolean(document.querySelector('.modal-overlay.active'));
+      document.documentElement.classList.toggle('modal-open', hasOpenModal);
+      document.body.classList.toggle('modal-open', hasOpenModal);
+    }
+
     window.openModal = function (id) {
       if (typeof populateAllTimePickers === 'function') populateAllTimePickers();
       const el = document.getElementById(id);
       if (el) el.classList.add('active');
+      syncModalBodyScrollLock();
       if (id === 'modal-reminders') renderRemindersModalList();
     }; window.closeModal = function (id) {
       const el = document.getElementById(id);
       if (el) el.classList.remove('active');
+      syncModalBodyScrollLock();
     };
 
     window.requestConfirmation = function (message, onConfirm) {
@@ -5325,7 +5867,6 @@ container.innerHTML = filtered.map(n => {
       pendingConfirmationCallback = onConfirm;
       openModal('modal-confirm-action');
     };
-
     window.executeConfirmedAction = function () {
       if (typeof pendingConfirmationCallback === 'function') {
         pendingConfirmationCallback();
@@ -5338,10 +5879,18 @@ container.innerHTML = filtered.map(n => {
       activeProfileId = getActiveProfileId();
       const stored = localStorage.getItem(getProfileStorageKey()) || (activeProfileId === 'default' ? localStorage.getItem('month_tracker_v11_store') : null);
       if (stored) {
-        try {
+try {
           appState = JSON.parse(stored);
           if (appState.clients) {
+            let needsNameSave = false;
             appState.clients.forEach(c => {
+              if (c.name) {
+                const capName = formatProperName(c.name);
+                if (capName !== c.name) {
+                  c.name = capName;
+                  needsNameSave = true;
+                }
+              }
               if (!c.status) c.status = 'active';
               if (!c.sessionDuration) c.sessionDuration = '1h';
               if (c.pricingModel === undefined) c.pricingModel = 'retainer';
@@ -5353,12 +5902,12 @@ container.innerHTML = filtered.map(n => {
                 });
               });
             });
-            if (ensureUniqueClientColors(appState.clients)) {
+            if (ensureUniqueClientColors(appState.clients) || needsNameSave) {
               localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));
             }
           }
         } catch (e) { }
-      }
+            }
 
       if (!appState.clients || appState.clients.length === 0) {
         const todayStr = toLocalDateStr();
@@ -5393,10 +5942,10 @@ container.innerHTML = filtered.map(n => {
         saveState();
       }
 
-      if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
+if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
 
-      runDailyAutoBackupCheck();
       processAdvanceBalances();
+      runDailyAutoBackupCheck(false);
     }
     let hasUnsavedChangesSinceBackup = false;
     let unsavedEditCount = 0;
@@ -5413,9 +5962,9 @@ container.innerHTML = filtered.map(n => {
         pruneOldLocalStorageBackups(false);
         try {localStorage.setItem(getProfileStorageKey(), JSON.stringify(appState));} catch (e2) { }
       }
+      scheduleTodayDailyBackupUpdate();
       updateStorageMeterUI();
     }
-
     function processAdvanceBalances() {
       appState.clients.forEach(c => {
         if (c.advanceBalance === undefined || c.advanceBalance < 0) c.advanceBalance = 0;
@@ -5517,6 +6066,7 @@ container.innerHTML = filtered.map(n => {
         if (meta[1]) meta[1]();
       }
       updateSidebarActiveState(viewName);
+      enhanceCollapsibleCards(document.getElementById(`view-${viewName}`));
     }
 
     const SIDEBAR_RAIL_KEY = 'month_tracker_sidebar_rail_collapsed';
@@ -5681,8 +6231,11 @@ if (filtered.length === 0) {
           break;
         }
       }
-      return lastTime;
+return lastTime;
     }
+    const MAX_DAILY_AUTO_BACKUPS = 14;
+    let dailyBackupDebounceTimer = null;
+
     function isDailyBackupEnabled() {
       const val = localStorage.getItem(DAILY_BACKUP_ENABLED_KEY);
       return val === null ? true : val === 'true';
@@ -5691,30 +6244,239 @@ if (filtered.length === 0) {
     function toggleDailyBackupSetting(checked) {
       localStorage.setItem(DAILY_BACKUP_ENABLED_KEY, checked ? 'true' : 'false');
       showToast(checked ? "Daily auto-backup turned ON" : "Daily auto-backup turned OFF");
-      if (checked) runDailyAutoBackupCheck();
+      if (checked) runDailyAutoBackupCheck(true, false);
     }
 
-    function runDailyAutoBackupCheck() {
+    function scheduleTodayDailyBackupUpdate() {
       if (!isDailyBackupEnabled()) return;
+      if (dailyBackupDebounceTimer) clearTimeout(dailyBackupDebounceTimer);
+      dailyBackupDebounceTimer = setTimeout(() => {
+        runDailyAutoBackupCheck(true, false);
+      }, 1500);
+    }
+
+    async function getDailyAutoBackupsList() {
+      const key = getProfileDailyBackupKey();
+      let idbList = [];
+      try {
+        const stored = await idbGet(key);
+        if (Array.isArray(stored)) idbList = stored;
+      } catch (e) { }
+
+      // Migrate any legacy snapshots stored in localStorage into IndexedDB so nothing is lost
+      let migrated = false;
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const legacyList = JSON.parse(raw);
+          if (Array.isArray(legacyList) && legacyList.length > 0) {
+            const existingDates = new Set(idbList.map(b => b.backupDate));
+            legacyList.forEach(item => {
+              if (item && item.backupDate && !existingDates.has(item.backupDate)) {
+                idbList.push(item);
+                existingDates.add(item.backupDate);
+                migrated = true;
+              }
+            });
+          }
+          // Free up localStorage quota once migrated to IndexedDB
+          if (window.indexedDB) localStorage.removeItem(key);
+        }
+      } catch (e) { }
+
+      idbList.sort((a, b) => String(b.backupDate || '').localeCompare(String(a.backupDate || '')));
+      if (idbList.length > MAX_DAILY_AUTO_BACKUPS) {
+        idbList = idbList.slice(0, MAX_DAILY_AUTO_BACKUPS);
+      }
+
+      if (migrated) {
+        await saveDailyAutoBackupsList(idbList);
+      }
+      return idbList;
+    }
+
+    async function saveDailyAutoBackupsList(list) {
+      const key = getProfileDailyBackupKey();
+      const trimmed = (Array.isArray(list) ? list : [])
+        .sort((a, b) => String(b.backupDate || '').localeCompare(String(a.backupDate || '')))
+        .slice(0, MAX_DAILY_AUTO_BACKUPS);
+
+      const savedToIdb = await idbSet(key, trimmed);
+      if (!savedToIdb) {
+        // Fallback if IndexedDB is unavailable: safely store latest 2 snapshots in localStorage
+        try {
+          localStorage.setItem(key, JSON.stringify(trimmed.slice(0, 2)));
+        } catch (e) { }
+      }
+      return trimmed;
+    }
+
+    async function runDailyAutoBackupCheck(forceUpdateToday = false, showFeedback = false, allowWhenDisabled = false) {
+      if (!allowWhenDisabled && !isDailyBackupEnabled()) return;
+      if (!appState || !Array.isArray(appState.clients)) return;
+
       const todayDate = toLocalDateStr();
       const profileDateKey = `last_auto_backup_date_${activeProfileId}`;
-      const lastBackupDate = localStorage.getItem(profileDateKey);
-      if (lastBackupDate !== todayDate) {
-        let backupList = [];
-        try {
-          backupList = JSON.parse(localStorage.getItem(getProfileDailyBackupKey()) || '[]');
-          if (!Array.isArray(backupList)) backupList = [];
-        } catch (e) {backupList = [];}
+      const profileTsKey = `last_auto_backup_ts_${activeProfileId}`;
 
-        backupList.unshift({
+      try {
+        const backupList = await getDailyAutoBackupsList();
+        const existingIdx = backupList.findIndex(b => b.backupDate === todayDate);
+
+        if (existingIdx !== -1 && !forceUpdateToday) {
+          try {localStorage.setItem(profileDateKey, todayDate);} catch (e) { }
+          return;
+        }
+
+        const nowIso = new Date().toISOString();
+        const fullPayload = JSON.parse(buildFullBackupPayloadString());
+        const sessionCount = appState.clients.reduce((sum, c) =>
+          sum + (c.months || []).reduce((mSum, m) => mSum + (m.sessions || []).length, 0), 0);
+
+        const snapshotEntry = {
           backupDate: todayDate,
-          state: appState
-        });
-        if (backupList.length > 7) backupList = backupList.slice(0, 7);
+          updatedAt: nowIso,
+          clientCount: appState.clients.length,
+          sessionCount,
+          payload: fullPayload
+        };
 
-        localStorage.setItem(getProfileDailyBackupKey(), JSON.stringify(backupList));
-        localStorage.setItem(profileDateKey, todayDate);
+        if (existingIdx !== -1) {
+          backupList[existingIdx] = snapshotEntry;
+        } else {
+          backupList.unshift(snapshotEntry);
+        }
+
+        await saveDailyAutoBackupsList(backupList);
+
+        try {
+          localStorage.setItem(profileDateKey, todayDate);
+          localStorage.setItem(profileTsKey, nowIso);
+        } catch (e) { }
+
+        if (document.getElementById('view-settings')?.style.display === 'flex') {
+          const bStat = document.getElementById('settings-daily-backup-status');
+          if (bStat && isDailyBackupEnabled()) {
+            bStat.textContent = `Enabled • Last saved: ${formatNotifTimestamp(nowIso)}`;
+          }
+          renderDailyBackupsListUI();
+        }
+        if (showFeedback) {
+          showToast(`Saved daily snapshot for ${formatDisplayDate(todayDate, true)}!`);
+        }
+      } catch (err) {
+        if (showFeedback) showToast("Could not save daily snapshot.");
       }
+    }
+
+    async function renderDailyBackupsListUI() {
+      const container = document.getElementById('settings-daily-backups-list');
+      const countEl = document.getElementById('settings-daily-backups-count');
+      if (!container && !countEl) return;
+
+      const list = await getDailyAutoBackupsList();
+      if (countEl) countEl.textContent = String(list.length);
+      if (!container) return;
+
+      if (list.length === 0) {
+        container.innerHTML = `<span style="font-size: 0.66rem; color: var(--text-muted); text-align: center; padding: 0.5rem;">No daily auto-backups saved yet. Tap <strong>Snapshot Now</strong> above.</span>`;
+        return;
+      }
+
+      const todayStr = toLocalDateStr();
+      container.innerHTML = list.map(item => {
+        const isToday = item.backupDate === todayStr;
+        const clientsLen = item.clientCount !== undefined
+          ? item.clientCount
+          : ((item.payload?.data?.clients || item.state?.clients || []).length);
+        const sessLen = item.sessionCount !== undefined
+          ? item.sessionCount
+          : ((item.payload?.data?.clients || item.state?.clients || []).reduce((sum, c) =>
+            sum + (c.months || []).reduce((ms, m) => ms + (m.sessions || []).length, 0), 0));
+        const safeDate = escapeJsStr(item.backupDate);
+        const updatedStr = item.updatedAt ? formatNotifTimestamp(item.updatedAt) : formatDisplayDate(item.backupDate, true);
+
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem; padding: 0.42rem 0.55rem; background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.68rem;">
+            <div style="min-width: 0; flex: 1;">
+              <div style="display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap;">
+                <strong style="font-size: 0.72rem;">${formatDisplayDate(item.backupDate, true)}</strong>
+                ${isToday ? '<span style="font-size: 0.56rem; font-weight: 800; padding: 1px 5px; border-radius: 4px; background: var(--success-surface); color: var(--success);">Today</span>' : ''}
+              </div>
+              <span style="font-size: 0.6rem; color: var(--text-muted); display: block;">${clientsLen} client(s) • ${sessLen} class(es) • ${escapeHtmlAttr(updatedStr)}</span>
+            </div>
+            <div style="display: flex; gap: 0.25rem; flex-shrink: 0;">
+              <button type="button" onclick="downloadDailyAutoBackup('${safeDate}')" class="btn btn-subtle" style="font-size: 0.6rem; padding: 0.18rem 0.42rem; min-height: 26px;" title="Download .json file">⬇ .JSON</button>
+              <button type="button" onclick="restoreDailyAutoBackup('${safeDate}')" class="btn btn-primary" style="font-size: 0.6rem; padding: 0.18rem 0.45rem; min-height: 26px;">↩ Restore</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function downloadDailyAutoBackup(backupDate) {
+      const list = await getDailyAutoBackupsList();
+      const entry = list.find(b => b.backupDate === backupDate);
+      if (!entry) {
+        showToast("Daily backup snapshot not found.");
+        return;
+      }
+
+      const payloadObj = entry.payload
+        ? entry.payload
+        : {
+          app: "ClassMonthTracker",
+          version: "13.0_full",
+          timestamp: entry.updatedAt || new Date().toISOString(),
+          data: entry.state || {clients: []}
+        };
+
+      const blob = new Blob([JSON.stringify(payloadObj, null, 2)], {type: 'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `ClassTracker_DailyBackup_${backupDate}.json`;
+      a.click();
+      showToast(`Downloaded backup from ${formatDisplayDate(backupDate, true)}!`);
+    }
+
+    async function restoreDailyAutoBackup(backupDate) {
+      const list = await getDailyAutoBackupsList();
+      const entry = list.find(b => b.backupDate === backupDate);
+      if (!entry) {
+        showToast("Daily backup snapshot not found.");
+        return;
+      }
+
+      requestConfirmation(`Restore all data from the daily backup on ${formatDisplayDate(backupDate, true)}? Current unsaved changes will be replaced.`, () => {
+        const parsed = entry.payload ? entry.payload : {data: entry.state};
+        const restored = parsed.data ? parsed.data : parsed;
+        if (!restored || !Array.isArray(restored.clients)) {
+          showToast("Snapshot is invalid.");
+          return;
+        }
+
+        appState = JSON.parse(JSON.stringify(restored));
+        if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
+        appState.clients.forEach(c => {
+          if (c.name) c.name = formatProperName(c.name);
+          if (!c.status) c.status = 'active';
+        });
+        ensureUniqueClientColors(appState.clients);
+
+        if (parsed.extras) {
+          if (parsed.extras.settings) localStorage.setItem(getProfileSettingsKey(), JSON.stringify(parsed.extras.settings));
+          if (Array.isArray(parsed.extras.waTemplates)) saveWhatsAppTemplatesList(parsed.extras.waTemplates);
+          if (Array.isArray(parsed.extras.waCategories)) saveWhatsAppCategories(parsed.extras.waCategories);
+          if (Array.isArray(parsed.extras.sttPending)) savePendingSttLogs(parsed.extras.sttPending);
+          if (Array.isArray(parsed.extras.sttRejected)) saveRejectedSttLogs(parsed.extras.sttRejected);
+          if (Array.isArray(parsed.extras.deletedTrash) && typeof saveDeletedSessionsList === 'function') saveDeletedSessionsList(parsed.extras.deletedTrash);
+        }
+
+        saveState();
+        showToast(`Restored daily backup from ${formatDisplayDate(backupDate, true)}!`);
+        renderAll();
+        if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
+      });
     }
 
     function exportPrintableHTMLSummary() {
@@ -5722,7 +6484,7 @@ if (filtered.length === 0) {
       appState.clients.forEach(c => {
         (c.months || []).forEach(m => {
           (m.sessions || []).forEach((s, idx) => {
-            rows += `<tr><td>${escapeHtmlAttr(c.name)}</td><td>Month ${m.monthNumber}</td><td>#${idx + 1}</td><td>${formatDisplayDate(s.date, true)}</td><td>${escapeHtmlAttr(s.time)}</td><td>${escapeHtmlAttr(s.notes || '-')}</td></tr>`;
+                        rows += `<tr><td>${escapeHtmlAttr(c.name)}</td><td>Month ${m.monthNumber}</td><td>#${idx + 1}</td><td>${formatDisplayDate(s.date, true)}</td><td>${escapeHtmlAttr(s.time)}</td><td>${escapeHtmlAttr(s.notes || '-')}</td></tr>`;
           });
         });
       });
@@ -5814,6 +6576,7 @@ if (filtered.length === 0) {
             appState = restored;
             if (!Array.isArray(appState.timetableSlots)) appState.timetableSlots = [];
             appState.clients.forEach(c => {
+              if (c.name) c.name = formatProperName(c.name);
               if (!c.status) c.status = 'active';
             });
             ensureUniqueClientColors(appState.clients);
@@ -5821,21 +6584,23 @@ if (filtered.length === 0) {
               if (parsed.extras.settings) localStorage.setItem(getProfileSettingsKey(), JSON.stringify(parsed.extras.settings));
               if (Array.isArray(parsed.extras.waTemplates)) saveWhatsAppTemplatesList(parsed.extras.waTemplates);
               if (Array.isArray(parsed.extras.waCategories)) saveWhatsAppCategories(parsed.extras.waCategories);
-              if (Array.isArray(parsed.extras.sttPending)) savePendingSttLogs(parsed.extras.sttPending);
+if (Array.isArray(parsed.extras.sttPending)) savePendingSttLogs(parsed.extras.sttPending);
               if (Array.isArray(parsed.extras.sttRejected)) saveRejectedSttLogs(parsed.extras.sttRejected);
               if (Array.isArray(parsed.extras.deletedTrash) && typeof saveDeletedSessionsList === 'function') saveDeletedSessionsList(parsed.extras.deletedTrash);
             }
             saveState();
+            populateAllTimePickers();
             showToast("Full database, templates & queues restored!");
             renderAll();
+            if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
           } else {
             showToast("Invalid backup format.");
           }
         } catch (err) {showToast("Corrupt file.");}
       };
       reader.readAsText(file);
+      e.target.value = '';
     }
-
     function exportGoogleSheetsCSV() {
       let csv = `Client,Status,Month,Class #,Date,Time,Tag,Notes,Month Fee (${getCurrency()})\n`;
       appState.clients.forEach(c => {
@@ -6136,7 +6901,7 @@ return `
 
         if (schedTitleEl) {
           if (rosterScheduledDayOffset === 0) {
-            schedTitleEl.textContent = `Scheduled Today (${targetWeekday}) • Swipe → Log / ← WA`;
+            schedTitleEl.textContent = `Scheduled Today (${targetWeekday})`;
           } else {
             schedTitleEl.textContent = `Schedule: ${targetWeekday}, ${formatDisplayDate(targetDateStr, false)}`;
           }
@@ -6368,22 +7133,21 @@ return `
       if (client) {
         const timeInput = document.getElementById('quickmodal-time');
         if (timeInput) setTimePickerValue('quickmodal-time', getLastStudentClassTime(client));
-        const durSel = document.getElementById('quickmodal-duration');
+const durSel = document.getElementById('quickmodal-duration');
         if (durSel && client.sessionDuration) durSel.value = client.sessionDuration;
 
         const lastSess = getLastSessionTopicSummary(client);
         if (banner) {
           if (lastSess) {
-            const nextFocus = lastSess.homework ? ` • Next Focus: <strong>${lastSess.homework}</strong>` : '';
+            const nextFocus = lastSess.homework ? ` • Next Focus: <strong>${escapeHtmlAttr(lastSess.homework)}</strong>` : '';
             banner.style.display = 'block';
-            banner.innerHTML = `<strong>Last (${formatDisplayDate(lastSess.date, false)}):</strong> ${lastSess.notes || 'No topic'}${nextFocus}`;
+            banner.innerHTML = `<strong>Last (${formatDisplayDate(lastSess.date, false)}):</strong> ${escapeHtmlAttr(lastSess.notes || 'No topic')}${nextFocus}`;
           } else {
             banner.style.display = 'none';
           }
         }
       }
     }
-
     function handleSaveQuickModalSession() {
       const clientId = document.getElementById('quickmodal-client-select')?.value;
       const dateVal = document.getElementById('quickmodal-date')?.value || toLocalDateStr();
@@ -6472,8 +7236,17 @@ if (list.length === 0) {
       const activeTitle = document.getElementById('active-date-block-title');
       if (activeTitle) activeTitle.textContent = formatDisplayDate(calendarSelectedDate, true);
 
-      const jumpInput = document.getElementById('calendar-jump-date');
+const jumpInput = document.getElementById('calendar-jump-date');
       if (jumpInput) jumpInput.value = calendarSelectedDate;
+
+      const sessionCountsByDate = {};
+      appState.clients.forEach(c => {
+        (c.months || []).forEach(m => {
+          (m.sessions || []).forEach(s => {
+            if (s.date) sessionCountsByDate[s.date] = (sessionCountsByDate[s.date] || 0) + 1;
+          });
+        });
+      });
 
       for (let i = -30; i <= 30; i++) {
         const d = new Date(baseDate);
@@ -6481,10 +7254,12 @@ if (list.length === 0) {
         const dStr = toLocalDateStr(d);
         const dayName = WEEKDAYS[d.getDay()];
         const dayNum = d.getDate();
+        const dateSessionCount = sessionCountsByDate[dStr] || 0;
 
         const pill = document.createElement('div');
         pill.className = `h-calendar-pill ${dStr === calendarSelectedDate ? 'active' : ''}`;
         pill.innerHTML = `
+          ${dateSessionCount > 0 ? `<span class="h-calendar-count-badge num-tabular">${dateSessionCount}</span>` : ''}
           <div style="font-size: 0.62rem; font-weight: 700; text-transform: uppercase;">${dayName}</div>
           <div style="font-size: 0.85rem; font-weight: 800;" class="num-tabular">${dayNum}</div>
         `;
@@ -6494,7 +7269,6 @@ if (list.length === 0) {
         };
         strip.appendChild(pill);
       }
-
       setTimeout(() => {
         const activePill = strip.querySelector('.h-calendar-pill.active');
         if (activePill) {
@@ -6696,18 +7470,20 @@ ${(client.scheduledDays || []).map(d => `<span style="font-size:0.58rem; font-we
 
       container.innerHTML = sortBarHtml + orderedMonths.map((month) => {
         const actualIdx = client.months.findIndex(m => m.id === month.id);
-        const total = month.sessions.length;
+const total = month.sessions.length;
         const quota = month.quota || client.quota;
         const extraCount = Math.max(0, total - quota);
         const isDue = month.isDue;
         const fee = month.calculatedDueFee || 0;
-        const standardFee = (month.manualFeeOverride !== undefined) ? month.manualFeeOverride : (month.feeAmount || client.fee);
+        const standardFee = (month.manualFeeOverride !== undefined)
+          ? month.manualFeeOverride
+          : (month.feeAmount !== undefined ? month.feeAmount : (client.fee ?? 0));
         const isPaid = !!month.isPaid;
 
         let statusLabel = 'NOT DUE';
         let statusStyle = 'background: var(--bg-subtle); color: var(--text-muted); border-color: var(--border-color);';
         if (isPaid) {
-          statusLabel = '✓ PAID';
+                    statusLabel = '✓ PAID';
           statusStyle = 'background: var(--success-surface); color: var(--success); border-color: var(--success);';
         } else if (isDue) {
           statusLabel = 'DUE';
@@ -6792,10 +7568,11 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
                 <button type="button" onclick="openEditPaymentModal('${escapeJsStr(client.id)}', '${escapeJsStr(item.month.id)}', '${escapeJsStr(item.inst.id)}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; font-size: 0.6rem;">Edit</button>
                 <button type="button" onclick="confirmDeletePayment('${escapeJsStr(client.id)}', '${escapeJsStr(item.month.id)}', '${escapeJsStr(item.inst.id)}')" class="btn btn-subtle" style="padding: 0.15rem 0.3rem; color: var(--danger); font-size: 0.6rem;">✕</button>
               </div>
-            </div>
+          </div>
           `).join('');
         }
       }
+      enhanceCollapsibleCards(document.getElementById('view-client-detail'));
     }
     function toggleClientDetailSort() {
       clientDetailSortOrder = (clientDetailSortOrder === 'newest') ? 'oldest' : 'newest';
@@ -6881,19 +7658,18 @@ ${s.notes ? `<p style="font-size: 0.65rem; color: var(--text-muted); margin-top:
     function applyProRataToEditMonth() {
       const clientId = document.getElementById('edit-month-client-id').value;
       const monthId = document.getElementById('edit-month-id').value;
-      const client = appState.clients.find(c => String(c.id) === String(clientId));
+const client = appState.clients.find(c => String(c.id) === String(clientId));
       const month = client?.months.find(m => String(m.id) === String(monthId));
       if (!client || !month) return;
 
       const quota = month.quota || client.quota || 4;
-      const baseFee = Number(month.feeAmount || client.fee || 0);
+      const baseFee = Number(month.feeAmount !== undefined ? month.feeAmount : (client.fee ?? 0));
       const attendedCount = (month.sessions || []).filter(s => ['normal', 'noshow'].includes(s.tag || 'normal')).length;
       const proRataFee = Math.round((attendedCount / quota) * baseFee);
 
       document.getElementById('edit-month-fee-override').value = proRataFee;
       showToast(`Pro-Rata calculated: ${attendedCount}/${quota} = ${proRataFee} ${getCurrency()}`);
     }
-
     function saveEditedMonth() {
       const clientId = document.getElementById('edit-month-client-id').value;
       const monthId = document.getElementById('edit-month-id').value;
@@ -7532,20 +8308,19 @@ document.getElementById('logclass-session-id').value = '';
         if (document.getElementById('logclass-chatlog')) document.getElementById('logclass-chatlog').value = '';
         resetSessionTestFields('logclass');      }
 
-      const logBanner = document.getElementById('logclass-last-topic-banner');
+const logBanner = document.getElementById('logclass-last-topic-banner');
       if (logBanner) {
         const lastSess = getLastSessionTopicSummary(client);
         if (!sessionId && lastSess) {
-          const nextFocus = lastSess.homework ? ` • Next Focus: <strong>${lastSess.homework}</strong>` : '';
+          const nextFocus = lastSess.homework ? ` • Next Focus: <strong>${escapeHtmlAttr(lastSess.homework)}</strong>` : '';
           logBanner.style.display = 'block';
-          logBanner.innerHTML = `<strong>Last (${formatDisplayDate(lastSess.date, false)}):</strong> ${lastSess.notes || 'No topic'}${nextFocus}`;
+          logBanner.innerHTML = `<strong>Last (${formatDisplayDate(lastSess.date, false)}):</strong> ${escapeHtmlAttr(lastSess.notes || 'No topic')}${nextFocus}`;
         } else {
           logBanner.style.display = 'none';
         }
       }
       openModal('modal-log-class');
     }
-
     function executeLogClassModal() {
       const clientId = document.getElementById('logclass-client-id').value;
       const monthId = document.getElementById('logclass-month-id').value;
@@ -7668,7 +8443,8 @@ document.getElementById('logclass-session-id').value = '';
       if (!client) return;
 
       const quota = Number(document.getElementById('past-month-quota').value) || 4;
-      const fee = Number(document.getElementById('past-month-fee').value) || 500;
+      const feeRaw = document.getElementById('past-month-fee').value;
+      const fee = (feeRaw !== '' && !isNaN(Number(feeRaw))) ? Math.max(0, Number(feeRaw)) : 500;
 
       const sessions = pastMonthDatesList.map((d, sIdx) => ({
         id: generateId() + sIdx,
@@ -7923,19 +8699,23 @@ document.getElementById('logclass-session-id').value = '';
           monthsToConsider = monthsToConsider.filter(m => String(m.monthNumber) === String(fMonth));
         }
 
-        monthsToConsider.forEach(m => {
+monthsToConsider.forEach(m => {
           totalSessions += (m.sessions || []).length;
           if (m.isDue) {
             totalBilled += Number(m.calculatedDueFee || 0);
           }
-          totalPaid += (m.installments || []).reduce((a, b) => a + Number(b.amount || 0), 0);
+          if (fMonth !== 'all') {
+            if (m.isDue && m.isPaid) totalPaid += Number(m.calculatedDueFee || 0);
+          } else {
+            totalPaid += (m.installments || []).reduce((a, b) => a + Number(b.amount || 0), 0);
+          }
         });
         const bal = Math.max(0, totalBilled - totalPaid);
 
         totalSessionsAll += totalSessions;
         totalBilledAll += totalBilled;
-totalPaidAll += totalPaid;
-        totalDueAll += bal;
+        totalPaidAll += totalPaid;
+                totalDueAll += bal;
 
         html += `
           <tr>
@@ -8121,7 +8901,370 @@ totalPaidAll += totalPaid;
           set.add(monthNum);
         }
       }
-      renderAnalytics();
+renderAnalytics();
+    }
+
+    let matrixChartPeriod = 'daily'; // 'daily' | 'weekly' | 'monthly' | 'yearly' | 'all_time'
+    let matrixChartRange = 30;
+    let matrixChartSelectedIdx = null;
+    let matrixChartLastBuckets = [];
+
+    const MATRIX_CHART_RANGE_OPTIONS = {
+      daily: [10, 30, 50],
+      weekly: [10, 26, 52],
+      monthly: [6, 12, 24]
+    };
+
+    function formatHoursMinsCompact(totalMins) {
+      const m = Math.max(0, Math.round(totalMins || 0));
+      const hrs = Math.floor(m / 60);
+      const rem = m % 60;
+      if (hrs === 0) return `${rem}m`;
+      if (rem === 0) return `${hrs}h`;
+      return `${hrs}h ${rem}m`;
+    }
+
+    function setMatrixChartPeriod(period) {
+      matrixChartPeriod = period;
+      matrixChartSelectedIdx = null;
+      const opts = MATRIX_CHART_RANGE_OPTIONS[period];
+      if (opts && !opts.includes(matrixChartRange)) {
+        matrixChartRange = opts[1];
+      }
+      document.querySelectorAll('#matrix-chart-period-tabs .sgraph-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-period') === period);
+      });
+      renderMatrixSessionsBarGraph();
+    }
+
+    function setMatrixChartRange(val) {
+      matrixChartRange = Number(val) || 30;
+      matrixChartSelectedIdx = null;
+      renderMatrixSessionsBarGraph();
+    }
+
+    function selectMatrixChartClientFromLegend(clientId) {
+      const sel = document.getElementById('matrix-chart-client');
+      if (!sel) return;
+      sel.value = (String(sel.value) === String(clientId)) ? 'all' : String(clientId);
+      matrixChartSelectedIdx = null;
+      renderMatrixSessionsBarGraph();
+    }
+
+    function inspectMatrixChartBar(idx) {
+      const inspector = document.getElementById('matrix-chart-inspector');
+      if (!inspector) return;
+      if (matrixChartSelectedIdx === idx) {
+        matrixChartSelectedIdx = null;
+        inspector.style.display = 'none';
+        document.querySelectorAll('#matrix-chart-bars .sbar-col').forEach(el => el.classList.remove('selected'));
+        return;
+      }
+      matrixChartSelectedIdx = idx;
+      const b = matrixChartLastBuckets[idx];
+      document.querySelectorAll('#matrix-chart-bars .sbar-col').forEach((el, i) => {
+        el.classList.toggle('selected', i === idx);
+      });
+      if (!b) return;
+      const segs = Object.values(b.byClient).sort((a, c) => c.count - a.count);
+      inspector.style.display = 'block';
+      inspector.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:0.4rem; margin-bottom:${segs.length ? '0.3rem' : '0'};">
+          <strong>${escapeHtmlAttr(b.fullLabel)}</strong>
+          <span class="num-tabular" style="font-weight:800; color:var(--brand-primary);">${b.totalCount} session${b.totalCount === 1 ? '' : 's'} • ${formatHoursMinsCompact(b.totalMins)}</span>
+        </div>
+        ${segs.length === 0
+          ? `<span style="color:var(--text-muted); font-size:0.64rem;">No sessions recorded in this period.</span>`
+          : `<div style="display:flex; flex-wrap:wrap; gap:0.25rem;">
+              ${segs.map(seg => `
+                <span style="display:inline-flex; align-items:center; gap:4px; padding:2px 6px; border-radius:9999px; background:var(--bg-surface); border:1px solid ${seg.color}; font-size:0.62rem; font-weight:700;">
+                  <span style="width:7px; height:7px; border-radius:50%; background:${seg.color};"></span>
+                  ${escapeHtmlAttr(seg.name)}: <strong class="num-tabular">${seg.count}</strong> (${formatHoursMinsCompact(seg.mins)})
+                </span>
+              `).join('')}
+            </div>`
+        }
+      `;
+    }
+
+    function getMondayStartDate(dateObj) {
+      const d = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 12, 0, 0);
+      const dow = d.getDay();
+      const diff = dow === 0 ? -6 : 1 - dow;
+      d.setDate(d.getDate() + diff);
+      return d;
+    }
+
+    function renderMatrixSessionsBarGraph() {
+      const barsEl = document.getElementById('matrix-chart-bars');
+      const yaxisEl = document.getElementById('matrix-chart-yaxis');
+      const xaxisEl = document.getElementById('matrix-chart-xaxis');
+      const rangeRow = document.getElementById('matrix-chart-range-tabs');
+      const statsEl = document.getElementById('matrix-chart-stats');
+      const legendEl = document.getElementById('matrix-chart-legend');
+      const clientSel = document.getElementById('matrix-chart-client');
+      const inspector = document.getElementById('matrix-chart-inspector');
+      if (!barsEl || !statsEl) return;
+
+      const hideArchived = document.getElementById('matrix-hide-archived')?.checked ?? true;
+      const availableClients = appState.clients
+        .filter(c => hideArchived ? ((c.status || 'active') !== 'archived') : true)
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      if (clientSel) {
+        const prev = clientSel.value || 'all';
+        clientSel.innerHTML = `<option value="all">All Clients</option>` +
+          availableClients.map(c => `<option value="${c.id}">${escapeHtmlAttr(c.name)}</option>`).join('');
+        clientSel.value = availableClients.some(c => String(c.id) === String(prev)) ? prev : 'all';
+      }
+
+      const selectedClientId = clientSel?.value || 'all';
+      const metric = document.getElementById('matrix-chart-metric')?.value || 'sessions';
+
+      // Render range selector row for Daily / Weekly / Monthly
+      const rangeOpts = MATRIX_CHART_RANGE_OPTIONS[matrixChartPeriod];
+      if (rangeRow) {
+        if (rangeOpts) {
+          rangeRow.style.display = 'grid';
+          if (!rangeOpts.includes(matrixChartRange)) matrixChartRange = rangeOpts[1];
+          rangeRow.innerHTML = rangeOpts.map(n => `
+            <button type="button" onclick="setMatrixChartRange(${n})"
+              class="sgraph-tab-btn ${matrixChartRange === n ? 'active' : ''}">${n}</button>
+          `).join('');
+        } else {
+          rangeRow.style.display = 'none';
+        }
+      }
+
+      // Collect sessions matching filter
+      const sessions = [];
+      availableClients.forEach(c => {
+        if (selectedClientId !== 'all' && String(c.id) !== String(selectedClientId)) return;
+        const col = getClientColor(c);
+        const defDur = c.sessionDuration || '1h';
+        (c.months || []).forEach(m => {
+          (m.sessions || []).forEach(s => {
+            if (!s.date) return;
+            const dObj = parseLocalDate(s.date);
+            if (isNaN(dObj)) return;
+            const durMatch = (s.time || '').match(/\((.*?)\)/);
+            const dCode = durMatch ? durMatch[1].trim() : defDur;
+            const mins = DURATION_TO_MINUTES[dCode] || 60;
+            sessions.push({
+              dateStr: s.date,
+              dateObj: dObj,
+              clientId: String(c.id),
+              clientName: c.name,
+              color: col,
+              mins
+            });
+          });
+        });
+      });
+
+      const today = parseLocalDate(toLocalDateStr());
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const buckets = [];
+      const bucketMap = {};
+
+      const addBucket = (key, shortLabel, fullLabel) => {
+        const b = {key, shortLabel, fullLabel, totalCount: 0, totalMins: 0, byClient: {}};
+        buckets.push(b);
+        bucketMap[key] = b;
+      };
+
+      let effectiveMode = matrixChartPeriod;
+      if (matrixChartPeriod === 'all_time') {
+        if (sessions.length === 0) {
+          effectiveMode = 'monthly';
+        } else {
+          const minTs = Math.min(...sessions.map(s => s.dateObj.getTime()));
+          const spanDays = Math.max(1, Math.round((today.getTime() - minTs) / 86400000));
+          if (spanDays <= 45) effectiveMode = 'all_daily';
+          else if (spanDays <= 365) effectiveMode = 'all_weekly';
+          else effectiveMode = 'all_monthly';
+        }
+      }
+
+      if (effectiveMode === 'daily') {
+        for (let i = matrixChartRange - 1; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(today.getDate() - i);
+          const k = toLocalDateStr(d);
+          addBucket(k, `${d.getDate()} ${monthNames[d.getMonth()]}`, formatDisplayDate(k, true));
+        }
+      } else if (effectiveMode === 'weekly') {
+        const thisMon = getMondayStartDate(today);
+        for (let i = matrixChartRange - 1; i >= 0; i--) {
+          const wStart = new Date(thisMon);
+          wStart.setDate(thisMon.getDate() - i * 7);
+          const k = toLocalDateStr(wStart);
+          addBucket(k, `${wStart.getDate()} ${monthNames[wStart.getMonth()]}`, `Week of ${formatDisplayDate(k, true)}`);
+        }
+      } else if (effectiveMode === 'monthly') {
+        const count = matrixChartPeriod === 'all_time' ? 12 : matrixChartRange;
+        for (let i = count - 1; i >= 0; i--) {
+          const d = new Date(today.getFullYear(), today.getMonth() - i, 1, 12, 0, 0);
+          const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          addBucket(k, `${monthNames[d.getMonth()]} ${String(d.getFullYear()).slice(-2)}`, `${monthNames[d.getMonth()]} ${d.getFullYear()}`);
+        }
+      } else if (effectiveMode === 'yearly') {
+        const curY = today.getFullYear();
+        let minY = curY - 4;
+        if (sessions.length > 0) {
+          const earliestY = Math.min(...sessions.map(s => s.dateObj.getFullYear()));
+          minY = Math.min(minY, earliestY);
+        }
+        for (let y = minY; y <= curY; y++) {
+          addBucket(String(y), String(y), `Year ${y}`);
+        }
+      } else if (effectiveMode === 'all_daily') {
+        const minDate = new Date(Math.min(...sessions.map(s => s.dateObj.getTime())));
+        for (let d = new Date(minDate); d <= today; d.setDate(d.getDate() + 1)) {
+          const k = toLocalDateStr(d);
+          addBucket(k, `${d.getDate()} ${monthNames[d.getMonth()]}`, formatDisplayDate(k, true));
+        }
+      } else if (effectiveMode === 'all_weekly') {
+        const minMon = getMondayStartDate(new Date(Math.min(...sessions.map(s => s.dateObj.getTime()))));
+        const endMon = getMondayStartDate(today);
+        for (let d = new Date(minMon); d <= endMon; d.setDate(d.getDate() + 7)) {
+          const k = toLocalDateStr(d);
+          addBucket(k, `${d.getDate()} ${monthNames[d.getMonth()]}`, `Week of ${formatDisplayDate(k, true)}`);
+        }
+      } else if (effectiveMode === 'all_monthly') {
+        const minDate = new Date(Math.min(...sessions.map(s => s.dateObj.getTime())));
+        let y = minDate.getFullYear(), m = minDate.getMonth();
+        const endY = today.getFullYear(), endM = today.getMonth();
+        while (y < endY || (y === endY && m <= endM)) {
+          const k = `${y}-${String(m + 1).padStart(2, '0')}`;
+          addBucket(k, `${monthNames[m]} ${String(y).slice(-2)}`, `${monthNames[m]} ${y}`);
+          m++;
+          if (m > 11) {m = 0; y++;}
+        }
+      }
+
+      // Fill buckets
+      const clientsSeen = {};
+      sessions.forEach(s => {
+        let key = s.dateStr;
+        if (effectiveMode === 'weekly' || effectiveMode === 'all_weekly') {
+          key = toLocalDateStr(getMondayStartDate(s.dateObj));
+        } else if (effectiveMode === 'monthly' || effectiveMode === 'all_monthly') {
+          key = s.dateStr.slice(0, 7);
+        } else if (effectiveMode === 'yearly') {
+          key = s.dateStr.slice(0, 4);
+        }
+        const b = bucketMap[key];
+        if (!b) return;
+        b.totalCount += 1;
+        b.totalMins += s.mins;
+        if (!b.byClient[s.clientId]) {
+          b.byClient[s.clientId] = {clientId: s.clientId, name: s.clientName, color: s.color, count: 0, mins: 0};
+        }
+        b.byClient[s.clientId].count += 1;
+        b.byClient[s.clientId].mins += s.mins;
+        if (!clientsSeen[s.clientId]) {
+          clientsSeen[s.clientId] = {clientId: s.clientId, name: s.clientName, color: s.color, count: 0};
+        }
+        clientsSeen[s.clientId].count += 1;
+      });
+
+      matrixChartLastBuckets = buckets;
+      const getVal = (b) => metric === 'hours' ? (b.totalMins / 60) : b.totalCount;
+      const maxVal = Math.max(metric === 'hours' ? 1 : 1, ...buckets.map(getVal));
+      const maxLabel = metric === 'hours' ? `${Number(maxVal.toFixed(1))}h` : String(Math.ceil(maxVal));
+      const midVal = maxVal / 2;
+      const midLabel = metric === 'hours' ? `${Number(midVal.toFixed(1))}h` : String(Math.round(midVal * 10) / 10);
+
+      if (yaxisEl) {
+        yaxisEl.innerHTML = `<span>${maxLabel}</span><span>${midLabel}</span><span>0</span>`;
+      }
+
+      barsEl.innerHTML = buckets.map((b, idx) => {
+        const val = getVal(b);
+        const barPct = val > 0 ? Math.max(4, Math.round((val / maxVal) * 100)) : 0;
+        const segs = Object.values(b.byClient).sort((a, c) => a.name.localeCompare(c.name));
+        const stackHtml = val > 0
+          ? `<div class="sbar-stack" style="height:${barPct}%;">
+              ${segs.map(seg => {
+                const segShare = metric === 'hours'
+                  ? (b.totalMins > 0 ? (seg.mins / b.totalMins) * 100 : 0)
+                  : (b.totalCount > 0 ? (seg.count / b.totalCount) * 100 : 0);
+                return `<div class="sbar-seg" style="height:${segShare}%; background:${seg.color};"></div>`;
+              }).join('')}
+            </div>`
+          : '';
+        return `<div class="sbar-col ${matrixChartSelectedIdx === idx ? 'selected' : ''}" onclick="inspectMatrixChartBar(${idx})" title="${escapeHtmlAttr(b.fullLabel)}: ${b.totalCount} cls (${formatHoursMinsCompact(b.totalMins)})">${stackHtml}</div>`;
+      }).join('');
+
+if (xaxisEl) {
+        if (buckets.length === 0) {
+          xaxisEl.innerHTML = '';
+        } else if (buckets.length === 1) {
+          xaxisEl.innerHTML = `<span>${buckets[0].shortLabel}</span>`;
+        } else {
+          const midIdx = Math.floor((buckets.length - 1) / 2);
+          xaxisEl.innerHTML = `<span>${buckets[0].shortLabel}</span><span>${buckets[midIdx].shortLabel}</span><span>${buckets[buckets.length - 1].shortLabel}</span>`;
+        }
+      }
+
+      matrixChartSelectedIdx = null;
+      if (inspector) {
+        inspector.style.display = 'none';
+      }
+
+      // Compute reference-style summary stats
+      const totalSessions = buckets.reduce((acc, b) => acc + b.totalCount, 0);
+      const totalMins = buckets.reduce((acc, b) => acc + b.totalMins, 0);
+            const activeBuckets = buckets.filter(b => b.totalCount > 0);
+      const avgAllCount = buckets.length > 0 ? (totalSessions / buckets.length) : 0;
+      const avgAllMins = buckets.length > 0 ? (totalMins / buckets.length) : 0;
+      const avgActiveCount = activeBuckets.length > 0 ? (totalSessions / activeBuckets.length) : 0;
+      const avgActiveMins = activeBuckets.length > 0 ? (totalMins / activeBuckets.length) : 0;
+      let peakBucket = null;
+      buckets.forEach(b => {
+        if (b.totalCount > 0 && (!peakBucket || b.totalCount > peakBucket.totalCount)) peakBucket = b;
+      });
+
+      statsEl.innerHTML = `
+        <div class="sgraph-stat-box">
+          <strong class="num-tabular" style="font-size:0.82rem; color:var(--text-main); display:block;">${avgAllCount.toFixed(1)} cls • ${formatHoursMinsCompact(avgAllMins)}</strong>
+          <span style="font-size:0.58rem; color:var(--text-muted);">Avg (whole range)</span>
+        </div>
+        <div class="sgraph-stat-box">
+          <strong class="num-tabular" style="font-size:0.82rem; color:var(--text-main); display:block;">${avgActiveCount.toFixed(1)} cls • ${formatHoursMinsCompact(avgActiveMins)}</strong>
+          <span style="font-size:0.58rem; color:var(--text-muted);">Avg (without empty)</span>
+        </div>
+        <div class="sgraph-stat-box">
+          <strong class="num-tabular" style="font-size:0.9rem; color:var(--danger); display:block;">${formatHoursMinsCompact(totalMins)}</strong>
+          <span style="font-size:0.58rem; color:var(--text-muted);">Total Duration</span>
+        </div>
+        <div class="sgraph-stat-box">
+          <strong class="num-tabular" style="font-size:0.9rem; color:var(--brand-primary); display:block;">${totalSessions}</strong>
+          <span style="font-size:0.58rem; color:var(--text-muted);">Total Sessions • Peak: ${peakBucket ? peakBucket.totalCount : 0}</span>
+        </div>
+      `;
+
+      // Color-coded clickable legend
+      if (legendEl) {
+        const seenList = Object.values(clientsSeen).sort((a, b) => b.count - a.count);
+        if (seenList.length === 0) {
+          legendEl.innerHTML = `<span style="font-size:0.64rem; color:var(--text-muted);">No sessions recorded in this timeframe.</span>`;
+        } else {
+          legendEl.innerHTML = seenList.map(cl => {
+            const isSel = String(selectedClientId) === String(cl.clientId);
+            return `
+              <button type="button" onclick="selectMatrixChartClientFromLegend('${escapeJsStr(cl.clientId)}')"
+                class="tt-student-chip ${isSel ? 'active' : ''}"
+                style="${isSel ? `border-color:${cl.color}; background:${cl.color}22; color:${cl.color};` : ''}">
+                <span style="width:8px; height:8px; border-radius:50%; background:${cl.color}; flex-shrink:0;"></span>
+                <span>${escapeHtmlAttr(cl.name)}</span>
+                <span class="num-tabular" style="opacity:0.75;">(${cl.count})</span>
+              </button>
+            `;
+          }).join('');
+        }
+      }
     }
 
     function renderAnalytics() {
@@ -8129,7 +9272,7 @@ totalPaidAll += totalPaid;
       const yoyCard = document.getElementById('yoy-comparison-widget-card');
       const yoyContent = document.getElementById('yoy-comparison-content');
       const forecasterCard = document.getElementById('cashflow-forecaster-card');
-      const forecasterContent = document.getElementById('cashflow-forecaster-content');
+            const forecasterContent = document.getElementById('cashflow-forecaster-content');
 
 const yoyEnabled = getFeatureToggle('yoy');
       const forecasterEnabled = getFeatureToggle('forecaster');
@@ -8146,16 +9289,16 @@ const yoyEnabled = getFeatureToggle('yoy');
         const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const monthLbl = monthNamesShort[now.getMonth()];
 
-        let thisEarned = 0, prevEarned = 0, thisCash = 0, prevCash = 0;
+let thisEarned = 0, prevEarned = 0, thisCash = 0, prevCash = 0;
         appState.clients.forEach(c => {
           (c.months || []).forEach(m => {
             const quota = m.quota || c.quota || 4;
-            const mFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount || c.fee || 0);
+            const mFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount !== undefined ? m.feeAmount : (c.fee ?? 0));
             const unitVal = quota > 0 ? (mFee / quota) : 0;
 
             (m.sessions || []).forEach(s => {
               if (!s.date || !['normal', 'noshow'].includes(s.tag || 'normal')) return;
-              if (s.date.startsWith(thisPrefix)) thisEarned += unitVal;
+                            if (s.date.startsWith(thisPrefix)) thisEarned += unitVal;
               else if (s.date.startsWith(prevPrefix)) prevEarned += unitVal;
             });
             (m.installments || []).forEach(inst => {
@@ -8175,13 +9318,12 @@ const yoyEnabled = getFeatureToggle('yoy');
         yoyContent.innerHTML = `${monthLbl} ${curY} earned: <strong>${curVal} ${getCurrency()}</strong> (Cash: <strong>${Math.round(thisCash)} ${getCurrency()}</strong>) &bull; ${diffText}.`;
       }
 
-      if (forecasterEnabled && forecasterContent) {
+if (forecasterEnabled && forecasterContent) {
         const expectedNextMonth = appState.clients.filter(c => (c.status || 'active') !== 'archived').reduce((acc, c) => {
-          return acc + Number(c.fee || 500);
+          return acc + Number(c.fee ?? 0);
         }, 0);
         forecasterContent.innerHTML = `Projected next month recurring revenue from active students: <strong>${expectedNextMonth} ${getCurrency()}</strong>.`;
             }
-
       const matrixClientSel = document.getElementById('matrix-client-search');
       if (matrixClientSel) {
         const prevMVal = matrixClientSel.value || 'all';
@@ -8222,8 +9364,8 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
 
           if (!m.isDue) {
             const quota = m.quota || c.quota || 4;
-            const monthFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount || c.fee || 0);
-            const normalSessions = (m.sessions || []).filter(s => (s.tag || 'normal') === 'normal').length;
+            const monthFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount !== undefined ? m.feeAmount : (c.fee ?? 0));
+            const normalSessions = (m.sessions || []).filter(s => ['normal', 'noshow'].includes(s.tag || 'normal')).length;
             if (normalSessions > 0 && quota > 0) {
               unbilledSessionsCount += normalSessions;
               unbilledMidCycle += (normalSessions / quota) * monthFee;
@@ -8252,11 +9394,11 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
 
         let rangeMins = 0, rangeClasses = 0, rangeEarned = 0, rangeCashReceived = 0;
 
-        filtered.forEach(c => {
+       filtered.forEach(c => {
           const defDur = c.sessionDuration || '1h';
           (c.months || []).forEach(m => {
             const quota = m.quota || c.quota || 4;
-            const mFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount || c.fee || 0);
+            const mFee = (m.manualFeeOverride !== undefined) ? Number(m.manualFeeOverride) : Number(m.feeAmount !== undefined ? m.feeAmount : (c.fee ?? 0));
             const perClassVal = quota > 0 ? (mFee / quota) : 0;
 
             (m.sessions || []).forEach(s => {
@@ -8320,6 +9462,7 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
         `;
       }
       renderHeatmap7Row('system-heatmap-grid', null, 'system-heatmap-inspector', true);
+      renderMatrixSessionsBarGraph();
       renderAnalyticsPivotTable(filtered);
 
       const container = document.getElementById('analytics-matrix-container');
@@ -8352,10 +9495,10 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
           </div>
         `;
 
-        return `
+       return `
           <div class="card" style="padding: 0.65rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
-              <h4 class="truncate-text" style="font-size: 0.78rem; font-weight: 800;">${c.name} <span style="font-size:0.65rem; color:var(--text-muted);">(Classes: ${totalClientClasses})</span></h4>
+              <h4 class="truncate-text" style="font-size: 0.78rem; font-weight: 800;">${escapeHtmlAttr(c.name)} <span style="font-size:0.65rem; color:var(--text-muted);">(Classes: ${totalClientClasses})</span></h4>
               <button type="button" onclick="openSnapshotCustomizer('matrix-table-${c.id}', '${escapeJsStr(c.name)} Matrix', 'Matrix_${escapeJsStr(c.name)}.png', 'matrix')" class="btn btn-subtle" style="padding: 0.25rem 0.45rem; font-size: 0.75rem;" title="Snapshot">
                 📷
               </button>
@@ -8392,7 +9535,7 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
         `;
       }).join('');
 
-      setTimeout(() => {
+     setTimeout(() => {
         filtered.forEach(c => {
           const scrollBox = document.getElementById(`matrix-scroll-${c.id}`);
           if (scrollBox) {
@@ -8400,6 +9543,7 @@ const pivotClientSel = document.getElementById('pivot-filter-client');
           }
         });
       }, 40);
+      enhanceCollapsibleCards(document.getElementById('view-matrix'));
     }
 
     function toggleFormDayPicker(btn) {
@@ -8468,10 +9612,10 @@ document.getElementById('form-client-duration').value = '1h';
         document.getElementById('form-client-name').value = client.name || '';
         if (document.getElementById('form-client-tag')) document.getElementById('form-client-tag').value = client.studentTag || '';
         setClientModalColorPreview(client.accentColor || pickRandomClientColor(appState.clients));
-        document.getElementById('form-client-grade').value = client.grade || '';
+document.getElementById('form-client-grade').value = client.grade || '';
         document.getElementById('form-client-phone').value = client.phone || ''; document.getElementById('form-client-model').value = client.pricingModel || 'retainer';
         document.getElementById('form-client-quota').value = client.quota || 4;
-        document.getElementById('form-client-fee').value = client.fee || 500;
+        document.getElementById('form-client-fee').value = client.fee ?? 500;
         document.getElementById('form-client-duration').value = client.sessionDuration || '1h';
         setTimePickerValue('form-client-default-time', client.defaultTime || '16:00');
         document.getElementById('form-client-status').value = client.status || 'active';
@@ -8480,19 +9624,38 @@ document.getElementById('form-client-duration').value = '1h';
         selectedFormDays = [...(client.scheduledDays || [])];
         selectedBlockedDays = [...(client.blockedDays || [])];
       }
-      updateFormDaysPickerUI();
+      const examDetails = document.getElementById('form-client-exam-dropdown');
+      if (examDetails) examDetails.open = false;
+      updateClientExamDropdownBadge();
+            updateFormDaysPickerUI();
       openModal('modal-client');
+    }
+
+    function updateClientExamDropdownBadge() {
+      const badge = document.getElementById('form-client-exam-badge');
+      if (!badge) return;
+      const lbl = (document.getElementById('form-client-exam-label')?.value || '').trim();
+      const dt = document.getElementById('form-client-exam-date')?.value || '';
+      if (lbl || dt) {
+        const parts = [];
+        if (lbl) parts.push(lbl);
+        if (dt) parts.push(formatDisplayDate(dt, false));
+        badge.textContent = `(${parts.join(' • ')})`;
+        badge.style.color = 'var(--purple)';
+      } else {
+        badge.textContent = '(Optional)';
+        badge.style.color = 'var(--text-muted)';
+      }
     }
 
     function handleSaveClientForm() {
       const idVal = document.getElementById('form-client-id').value;
-      const name = document.getElementById('form-client-name').value.trim();
+      const name = formatProperName(document.getElementById('form-client-name').value);
       if (!name) {
         showToast("Please enter client name.");
         document.getElementById('form-client-name').focus();
         return;
       }
-
       const grade = document.getElementById('form-client-grade').value.trim();
       const studentTag = (document.getElementById('form-client-tag')?.value || '').trim();
       let accentColor = (document.getElementById('form-client-color')?.value || '').toLowerCase();
@@ -8500,18 +9663,18 @@ document.getElementById('form-client-duration').value = '1h';
         (!idVal || String(x.id) !== String(idVal)) &&
         (x.accentColor || '').toLowerCase() === accentColor
       );
-      if (!accentColor || isColorTaken) {
+if (!accentColor || isColorTaken) {
         accentColor = pickRandomClientColor(appState.clients);
       }
       const phone = document.getElementById('form-client-phone').value.trim(); const pricingModel = document.getElementById('form-client-model').value;
       const quota = Number(document.getElementById('form-client-quota').value) || 4;
-      const fee = Number(document.getElementById('form-client-fee').value) || 500;
-const sessionDuration = document.getElementById('form-client-duration').value || '1h';
+      const feeRaw = document.getElementById('form-client-fee').value;
+      const fee = (feeRaw !== '' && !isNaN(Number(feeRaw))) ? Math.max(0, Number(feeRaw)) : 500;
+      const sessionDuration = document.getElementById('form-client-duration').value || '1h';
       const status = document.getElementById('form-client-status').value || "active";
       const defaultTime = getTimePickerValue('form-client-default-time') || '16:00';
       const examLabel = (document.getElementById('form-client-exam-label')?.value || '').trim();
       const examDate = document.getElementById('form-client-exam-date')?.value || '';
-
       if (idVal) {
         const c = appState.clients.find(x => String(x.id) === String(idVal));
         if (c) {
@@ -8577,17 +9740,16 @@ const sessionDuration = document.getElementById('form-client-duration').value ||
       renderAll();
     }
 
-    function openProfileUpdateScopeFromClientModal() {
+function openProfileUpdateScopeFromClientModal() {
       const idVal = document.getElementById('form-client-id')?.value;
       const c = appState.clients.find(x => String(x.id) === String(idVal));
       if (!c) return;
 
-      const name = (document.getElementById('form-client-name')?.value || '').trim() || c.name;
+      const name = formatProperName(document.getElementById('form-client-name')?.value) || formatProperName(c.name);
       const grade = (document.getElementById('form-client-grade')?.value || '').trim();
       const studentTag = (document.getElementById('form-client-tag')?.value || '').trim();
       const accentColor = (document.getElementById('form-client-color')?.value || c.accentColor || '#2563eb').toLowerCase();
-      const phone = (document.getElementById('form-client-phone')?.value || '').trim();
-      const pricingModel = document.getElementById('form-client-model')?.value || 'retainer';
+      const phone = (document.getElementById('form-client-phone')?.value || '').trim();      const pricingModel = document.getElementById('form-client-model')?.value || 'retainer';
       const quota = Number(document.getElementById('form-client-quota')?.value) || 4;
       const fee = Number(document.getElementById('form-client-fee')?.value) || 0;
       const sessionDuration = document.getElementById('form-client-duration')?.value || '1h';
@@ -8946,9 +10108,9 @@ const sessionDuration = document.getElementById('form-client-duration').value ||
         note: "Direct Payment Entry"
       });
 
-      const shouldAutoSettle = document.getElementById('qr-auto-settle-checkbox')?.checked ?? true;
+const shouldAutoSettle = document.getElementById('qr-auto-settle-checkbox')?.checked ?? true;
       document.getElementById('quick-receipt-amount').value = '';
-      saveState();
+      processAdvanceBalances();
 
       if (shouldAutoSettle) {
         let pool = Math.max(0, client.advanceBalance || 0);
@@ -8963,19 +10125,19 @@ const sessionDuration = document.getElementById('form-client-duration').value ||
             }
           }
         });
+        saveState();
         if (settledCount > 0) {
-          saveState();
           showToast(`Recorded ${amount} ${getCurrency()} & settled ${settledCount} month(s)!`);
         } else {
           showToast(`Payment of ${amount} ${getCurrency()} added to Advance!`);
         }
       } else {
+        saveState();
         showToast(`Payment of ${amount} ${getCurrency()} recorded for ${client.name}!`);
       }
       renderPaymentsView();
       renderAll();
     }
-
     function openEditPaymentModal(clientId, monthId, instId) {
       const client = appState.clients.find(c => String(c.id) === String(clientId));
       if (!client) return;
@@ -9366,14 +10528,16 @@ const actionsCols = previewBox.querySelectorAll('th:last-child, td:last-child');
       ctx.lineTo(width - 24, 66);
       ctx.stroke();
 
-      const table = document.getElementById(activeSnapshotData.tableId);
+const table = document.getElementById(activeSnapshotData.tableId);
       if (!table) return;
 
+      const showSummary = document.getElementById('snap-toggle-summary')?.checked ?? true;
       const rows = table.querySelectorAll('tr');
       let startY = 90;
       const rowHeight = 26;
 
       rows.forEach(row => {
+        if (!showSummary && row.classList.contains('pivot-total-row')) return;
         const cells = Array.from(row.querySelectorAll('th, td')).filter(c => !c.querySelector('button') && !c.textContent.includes('Actions'));
         const colWidth = (width - 48) / Math.max(1, cells.length);
 
@@ -9631,11 +10795,11 @@ startY += rowHeight;
         showToast("Popup blocked! Please allow popups for this site to print.");
         return;
       }
-      printWin.document.write(`
+     printWin.document.write(`
         <html>
           <head>
             <title>Classes Summary</title>
-            <style>
+            <style>body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; margin: 16px; }</style>
           </head>
           <body>
             ${container.innerHTML}
@@ -9674,16 +10838,17 @@ startY += rowHeight;
       if (tbody) tbody.innerHTML = '';
     }
 
-    function executeMassImportFromTable() {
+function executeMassImportFromTable() {
       const rows = document.querySelectorAll('#mass-table-body tr');
       let count = 0;
 
-      rows.forEach(r => {
-        const name = r.querySelector('.mass-name')?.value.trim();
+rows.forEach(r => {
+        const name = formatProperName(r.querySelector('.mass-name')?.value);
         if (!name) return;
 
         const quota = Number(r.querySelector('.mass-quota')?.value) || 4;
-        const fee = Number(r.querySelector('.mass-fee')?.value) || 500;
+        const feeRaw = r.querySelector('.mass-fee')?.value;
+        const fee = (feeRaw !== undefined && feeRaw !== '' && !isNaN(Number(feeRaw))) ? Math.max(0, Number(feeRaw)) : 500;
         const rawDates = r.querySelector('.mass-dates')?.value || '';
 
         const dateParts = rawDates.split(',').map(d => d.trim()).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d));
@@ -9987,13 +11152,13 @@ function resetTimetableToCurrentWeek() {
         return;
       }
 
-      dd.innerHTML = weekClients.map(c => {
+     dd.innerHTML = weekClients.map(c => {
         const col = getClientColor(c);
         const isActive = activeTimetableClientId !== null && String(activeTimetableClientId) === String(c.id);
         return `
-          <button type="button" data-student-chip-id="${c.id}" onclick="selectTimetableStudent('${c.id}')" class="tt-student-chip ${isActive ? 'active' : ''}" style="${isActive ? `border-color:${col}; background:${col}22; color:${col};` : ''}">
+          <button type="button" data-student-chip-id="${escapeHtmlAttr(c.id)}" onclick="selectTimetableStudent('${escapeJsStr(c.id)}')" class="tt-student-chip ${isActive ? 'active' : ''}" style="${isActive ? `border-color:${col}; background:${col}22; color:${col};` : ''}">
             <span style="width: 9px; height: 9px; border-radius: 50%; background: ${col}; flex-shrink: 0;"></span>
-            <span>${c.name}</span>
+            <span>${escapeHtmlAttr(c.name)}</span>
           </button>
         `;
       }).join('');
@@ -10061,25 +11226,25 @@ function resetTimetableToCurrentWeek() {
       const actionBtn = ev.projected
         ? `<button type="button" onclick="executeScheduledTodayAdd('${ev.client.id}', '${ev.dateStr}', '${ev.start24} (${ev.durCode})'); clearTimetableSelection();" class="btn btn-success" style="font-size:0.62rem; padding:0.18rem 0.45rem;">+ Log</button>`
         : `<button type="button" onclick="if(isScheduleRotated) toggleTimetableOrientation(); openLogClassModal('${ev.client.id}', '${ev.monthId}', '${ev.sessionId}');" class="btn btn-subtle" style="font-size:0.62rem; padding:0.18rem 0.45rem;">Edit</button>`;
-      inspector.style.display = 'block';
+     inspector.style.display = 'block';
       inspector.style.borderLeft = `4px solid ${col}`;
       inspector.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; gap:0.4rem; flex-wrap:wrap;">
           <div style="display:flex; align-items:center; gap:0.35rem; min-width:0; flex:1; flex-wrap:wrap;">
             <span style="width:10px; height:10px; border-radius:50%; background:${col}; flex-shrink:0;"></span>
-            <strong style="font-size:0.74rem;">${ev.client.name}</strong>
+            <strong style="font-size:0.74rem;">${escapeHtmlAttr(ev.client.name)}</strong>
             ${statusBadge}
           </div>
           <div style="display:flex; align-items:center; gap:0.25rem; flex-shrink:0;">
             ${actionBtn}
-            <button type="button" onclick="if(isScheduleRotated) toggleTimetableOrientation(); viewClientDetail('${ev.client.id}');" class="btn btn-primary" style="font-size:0.62rem; padding:0.18rem 0.45rem;">Profile</button>
+            <button type="button" onclick="if(isScheduleRotated) toggleTimetableOrientation(); viewClientDetail('${escapeJsStr(ev.client.id)}');" class="btn btn-primary" style="font-size:0.62rem; padding:0.18rem 0.45rem;">Profile</button>
             <button type="button" onclick="clearTimetableSelection()" class="btn btn-subtle" style="font-size:0.62rem; padding:0.18rem 0.35rem;">✕</button>
           </div>
         </div>
         <div style="margin-top:0.25rem; font-size:0.66rem; color:var(--text-muted); display:flex; flex-wrap:wrap; gap:0.45rem;">
           <span><strong>${ev.dayName}, ${formatDisplayDate(ev.dateStr, true)}</strong></span>
           <span class="num-tabular">🕒 ${startDisp} – ${endDisp} (${ev.durCode})</span>
-          ${ev.notes ? `<span>📝 ${ev.notes}</span>` : ''}
+          ${ev.notes ? `<span>📝 ${escapeHtmlAttr(ev.notes)}</span>` : ''}
         </div>
       `;
     }
@@ -10222,7 +11387,7 @@ function resetTimetableToCurrentWeek() {
         dayEventsByDate[wd.dateStr] = layoutDayOverlappingEvents(list);
       });
 
-      // Compute visible hour span strictly from this week's actual & remaining projected sessions (+ current time on current week)
+// Compute visible hour span strictly from this week's actual & remaining projected sessions
       let startHour = 14;
       let endHour = 20;
       if (minStartMins !== Infinity && maxEndMins !== -Infinity) {
@@ -10230,28 +11395,21 @@ function resetTimetableToCurrentWeek() {
         endHour = Math.min(24, Math.ceil(maxEndMins / 60));
         if (endHour <= startHour) endHour = Math.min(24, startHour + 1);
       }
-      if (timetableWeekOffset === 0) {
-        const nowHr = Math.floor(nowMins / 60);
-        if (minStartMins === Infinity) {
-          startHour = Math.max(0, nowHr - 2);
-          endHour = Math.min(24, nowHr + 4);
-        } else {
-          if (nowHr < startHour) startHour = nowHr;
-          if (nowHr >= endHour) endHour = Math.min(24, nowHr + 1);
-        }
-      }
 
       const PX_PER_HOUR = 44;
       const pxPerMin = PX_PER_HOUR / 60;
       const totalHours = Math.max(1, endHour - startHour);
       const trackHeight = totalHours * PX_PER_HOUR;
       const gridStartMins = startHour * 60;
+      const gridEndMins = endHour * 60;
       const nowTopPx = (nowMins - gridStartMins) * pxPerMin;
-      const showNowLine = timetableWeekOffset === 0 && nowTopPx >= 0 && nowTopPx <= trackHeight;
+      const showNowLine = timetableWeekOffset === 0 && nowMins >= gridStartMins && nowMins <= gridEndMins;
+
+      if (legendNow) legendNow.style.display = showNowLine ? 'inline-flex' : 'none';
 
       grid.className = 'timetable-grid-landscape';
       grid.style.gridTemplateColumns = '';
-
+      
       // Header row
       let html = `<div class="timetable-th timetable-sticky-col">Time</div>`;
       weekDays.forEach(wd => {
@@ -10275,11 +11433,15 @@ function resetTimetableToCurrentWeek() {
         const laidOut = dayEventsByDate[wd.dateStr] || [];
         html += `<div class="timetable-day-track" style="height:${trackHeight}px;">`;
 
-        // Projected zone gradient + current time colored gradient line on current week
+       // Projected zone gradient + current time colored gradient line on current week
         if (timetableWeekOffset === 0) {
-          if (wd.dateStr === todayStr && showNowLine) {
-            html += `<div class="tt-projected-zone" style="top:${nowTopPx}px; bottom:0;"></div>`;
-            html += `<div class="tt-now-line" style="top:${nowTopPx}px;"><span class="tt-now-dot"></span><span class="tt-now-tag num-tabular">NOW</span></div>`;
+          if (wd.dateStr === todayStr) {
+            if (showNowLine) {
+              html += `<div class="tt-projected-zone" style="top:${nowTopPx}px; bottom:0;"></div>`;
+              html += `<div class="tt-now-line" style="top:${nowTopPx}px;"><span class="tt-now-dot"></span><span class="tt-now-tag num-tabular">NOW</span></div>`;
+            } else if (nowMins < gridStartMins) {
+              html += `<div class="tt-projected-zone tt-projected-full-day"></div>`;
+            }
           } else if (wd.dateStr > todayStr) {
             html += `<div class="tt-projected-zone tt-projected-full-day"></div>`;
           }
@@ -10837,6 +11999,7 @@ renderPlannerView();
       });
       updateHeaderSttPillAndEodBanner();
       updateNotificationBadges();
+      enhanceCollapsibleCards();
     }
 
     function formatTo24Hour(tStr) {
@@ -10976,7 +12139,7 @@ function savePendingSttLogs(list) {
       showToast(checked ? "STT Sync feature turned ON" : "STT Sync feature turned OFF");
     }
 
-    function updateHeaderSttPillAndEodBanner() {
+ function updateHeaderSttPillAndEodBanner() {
       const pill = document.getElementById('header-stt-status-pill');
       const label = document.getElementById('header-stt-label');
       const banner = document.getElementById('stt-eod-reminder-banner');
@@ -10984,7 +12147,10 @@ function savePendingSttLogs(list) {
 
       if (pill) pill.style.display = isEnabled ? 'inline-flex' : 'none';
       if (banner) banner.style.display = 'none'; // Keep banner hidden by default unless explicitly triggered
-      if (!isEnabled) return;
+      if (!isEnabled) {
+        updateSettingsGuidanceBanner();
+        return;
+      }
 
       const pendingList = getPendingSttLogs();
       const todayStr = toLocalDateStr();
@@ -11003,16 +12169,17 @@ function savePendingSttLogs(list) {
         } else if (currentHour >= 19) {
           pill.classList.add('pending');
           label.textContent = 'Sync Due';
-        } else {
+} else {
           label.textContent = 'Sync';
         }
       }
 
-if (banner) {
+      if (banner) {
         const syncNotifsAllowed = getNotificationPrefs().categories.sync !== false;
         const shouldShowBanner = syncNotifsAllowed && ((currentHour >= 19 && !isSyncedToday) || pendingList.length > 0);
         banner.style.display = shouldShowBanner ? 'flex' : 'none';
       }
+      updateSettingsGuidanceBanner();
     }
 
     async function openSttSyncModal() {
@@ -11020,7 +12187,7 @@ if (banner) {
       const lastSync = localStorage.getItem(getSttLastSyncStorageKey());
       const lastSyncEl = document.getElementById('stt-last-sync-label');
       if (lastSyncEl) {
-        lastSyncEl.textContent = lastSync ? `Last synced: ${new Date(lastSync).toLocaleString()}` : 'Never synced yet';
+                lastSyncEl.textContent = lastSync ? `Last synced: ${new Date(lastSync).toLocaleString()}` : 'Never synced yet';
       }
 
       if (pending.length > 0) {
@@ -11071,14 +12238,13 @@ if (banner) {
 
       lines.forEach(line => {
         const parts = line.split('\t');
-        if (parts[0] === 'recordType') {
+if (parts[0] === 'recordType') {
           const rtId = parseInt(parts[1], 10);
           const rawName = (parts[2] || '').trim();
           const isArchived = rawName.startsWith('~');
-          const cleanName = rawName.replace(/^~/, '').trim();
+          const cleanName = formatProperName(rawName.replace(/^~/, '').trim());
           const defaultSec = parseInt(parts[11], 10) || 3600;
           const noteStr = (parts[12] || '').replace(/␤/g, '\n').trim();
-
           let extractedFee = getAppSettings().defaultFee || 500;
           const feeMatch = noteStr.match(/\b([2-9]\d{2,3})\b/);
           if (feeMatch) extractedFee = parseInt(feeMatch[1], 10);
@@ -11118,7 +12284,7 @@ if (banner) {
             if (s.sttRecordId !== undefined && s.sttRecordId !== null) {
               existingRecordIds.add(Number(s.sttRecordId));
             }
-            const timeOnly = (s.time || '').split(' ')[0];
+            const timeOnly = formatTo24Hour(s.time || '');
             existingSignatures.add(`${normC}|${s.date}|${timeOnly}`);
           });
         });
@@ -11788,6 +12954,7 @@ saveRejectedSttLogs([]);
         if (activeModals.length > 0) {
           activeModals.sort((a, b) => (parseInt(getComputedStyle(b).zIndex, 10) || 0) - (parseInt(getComputedStyle(a).zIndex, 10) || 0));
           activeModals[0].classList.remove('active');
+          syncModalBodyScrollLock();
           history.pushState({appGuard: true}, '', location.href);
           return;
         }
@@ -12029,30 +13196,26 @@ showToast("Folder/file unavailable — please pick again.");
       }
     }
 
-    // Auto-prune old daily snapshots from localStorage & mirror unlimited state to IndexedDB
-    function pruneOldLocalStorageBackups(manualTrigger = false) {
+// Auto-prune old daily snapshots from localStorage & mirror unlimited state to IndexedDB
+    async function pruneOldLocalStorageBackups(manualTrigger = false) {
       try {
-        const backupKey = getProfileDailyBackupKey();
-        const raw = localStorage.getItem(backupKey);
-        if (raw) {
-          const list = JSON.parse(raw);
-          if (Array.isArray(list) && list.length > 2) {
-            // Keep only the 2 most recent snapshots in localStorage; full history lives in IndexedDB
-            localStorage.setItem(backupKey, JSON.stringify(list.slice(0, 2)));
-          }
-        }
+        // Safely migrate any legacy localStorage daily backups into IndexedDB (preserving up to 14 days)
+        await getDailyAutoBackupsList();
       } catch (e) { }
 
       // Persist full unlimited database in IndexedDB
-      idbSet(getProfileStorageKey(), appState);
+      await idbSet(getProfileStorageKey(), appState);
       updateStorageMeterUI();
+      if (document.getElementById('view-settings')?.style.display === 'flex') {
+        renderDailyBackupsListUI();
+      }
       if (manualTrigger) showToast("Cache pruned & IndexedDB synced!");
     }
 
     function updateStorageMeterUI() {
       const txtEl = document.getElementById('settings-storage-usage-text');
       const barEl = document.getElementById('settings-storage-bar');
-      if (!txtEl && !barEl) return;
+            if (!txtEl && !barEl) return;
 
       let totalBytes = 0;
       for (let i = 0; i < localStorage.length; i++) {
@@ -12070,15 +13233,68 @@ showToast("Folder/file unavailable — please pick again.");
       }
     }
 
-    function updateUnsavedBackupBadgeUI() {
+function updateUnsavedBackupBadgeUI() {
       const badge = document.getElementById('header-unsaved-badge');
-      if (!badge) return;
-      if (unsavedEditCount > 5) {
-        badge.style.display = 'inline-flex';
-        badge.textContent = unsavedEditCount > 99 ? '99+' : String(unsavedEditCount);
-      } else {
-        badge.style.display = 'none';
+      const settingsBtn = document.getElementById('header-settings-btn');
+      if (badge) {
+        if (unsavedEditCount > 5) {
+          badge.style.display = 'inline-flex';
+          badge.textContent = unsavedEditCount > 99 ? '99+' : String(unsavedEditCount);
+        } else {
+          badge.style.display = 'none';
+        }
       }
+      if (settingsBtn) {
+        settingsBtn.title = unsavedEditCount > 5
+          ? `Settings (${unsavedEditCount} unsaved edit(s) since last backup)`
+          : 'Settings';
+      }
+      updateSettingsGuidanceBanner();
+    }
+
+    function updateSettingsGuidanceBanner() {
+      const banner = document.getElementById('settings-guidance-banner');
+      if (!banner) return;
+      const titleEl = document.getElementById('settings-guidance-title');
+      const descEl = document.getElementById('settings-guidance-desc');
+      const backupNowBtn = document.getElementById('settings-guidance-backup-now-btn');
+      const jumpBackupBtn = document.getElementById('settings-guidance-jump-backup-btn');
+      const jumpSttBtn = document.getElementById('settings-guidance-jump-stt-btn');
+
+      const pendingSttCount = isSttFeatureEnabled() ? getPendingSttLogs().length : 0;
+      const showUnsaved = unsavedEditCount > 0;
+
+      if (!showUnsaved && pendingSttCount === 0) {
+        banner.style.display = 'none';
+        return;
+      }
+
+      banner.style.display = 'flex';
+      const parts = [];
+      if (showUnsaved) {
+        parts.push(`The badge on Settings tracks your <strong>${unsavedEditCount} unsaved change${unsavedEditCount === 1 ? '' : 's'}</strong> made since your last backup file.`);
+      }
+      if (pendingSttCount > 0) {
+        parts.push(`You also have <strong>${pendingSttCount} pending STT log${pendingSttCount === 1 ? '' : 's'}</strong> waiting for review.`);
+      }
+      if (titleEl) {
+        titleEl.textContent = showUnsaved
+          ? `💾 ${unsavedEditCount} Unsaved Change${unsavedEditCount === 1 ? '' : 's'} Pending Backup`
+          : `🔄 ${pendingSttCount} Pending STT Log${pendingSttCount === 1 ? '' : 's'}`;
+      }
+      if (descEl) descEl.innerHTML = parts.join(' ');
+      if (backupNowBtn) backupNowBtn.style.display = showUnsaved ? 'inline-flex' : 'none';
+      if (jumpBackupBtn) jumpBackupBtn.style.display = showUnsaved ? 'inline-flex' : 'none';
+      if (jumpSttBtn) jumpSttBtn.style.display = pendingSttCount > 0 ? 'inline-flex' : 'none';
+    }
+
+    function jumpToSettingsCard(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      setCollapsibleCardState(card, false);
+      card.scrollIntoView({behavior: 'smooth', block: 'center'});
+      card.classList.add('settings-card-highlight');
+      setTimeout(() => card.classList.remove('settings-card-highlight'), 1800);
     }
 
     function resetUnsavedBackupCounter() {
@@ -12086,7 +13302,6 @@ showToast("Folder/file unavailable — please pick again.");
       unsavedEditCount = 0;
       updateUnsavedBackupBadgeUI();
     }
-
     async function hydrateFromIndexedDBIfNeeded() {
       activeProfileId = getActiveProfileId();
       const localRaw = localStorage.getItem(getProfileStorageKey());
@@ -12106,8 +13321,10 @@ showToast("Folder/file unavailable — please pick again.");
       return val === null ? true : val === 'true';
     }
 
-function toggleFeatureToggle(key, state) {
+    function toggleFeatureToggle(key, state) {
       localStorage.setItem(`month_tracker_v12_feat_${key}`, state ? 'true' : 'false');
+      const lbl = document.getElementById(`lbl-${key}`);
+      if (lbl) lbl.textContent = state ? 'ON' : 'OFF';
       showToast(`Feature updated!`);
       renderAll();
     }
@@ -12185,6 +13402,7 @@ function toggleFeatureToggle(key, state) {
       }
 
       modal.classList.add('active');
+      syncModalBodyScrollLock();
       setTimeout(() => (mode === 'setup' && hasExisting ? curIn : mainIn)?.focus(), 60);
     }
 
@@ -12257,7 +13475,7 @@ function toggleFeatureToggle(key, state) {
       'client-detail': {selector: '#view-client-detail', skipIds: []},
       templates: {selector: '#view-templates', skipIds: []},
       drawer: {selector: '#side-drawer .sidebar-scroll', skipIds: []},
-      settings: {selector: '#view-settings', skipIds: []}
+      settings: {selector: '#view-settings', skipIds: ['settings-guidance-banner']}
     };
 
     function getProfileLayoutKey() {
@@ -12421,24 +13639,178 @@ applyLayoutForPage(pageId);
       showToast("Page layout reset to default!");
     }
 
+    /* ==========================================================================
+       UNIVERSAL COLLAPSIBLE CARDS CONTROLLER
+       ========================================================================== */
+    function getProfileCollapsedBlocksKey() {
+      return activeProfileId === 'default'
+        ? 'month_tracker_v12_collapsed_blocks'
+        : `month_tracker_v12_collapsed_blocks_${activeProfileId}`;
+    }
+
+    function getCollapsedBlocksMap() {
+      try {
+        return JSON.parse(localStorage.getItem(getProfileCollapsedBlocksKey()) || '{}') || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveCollapsedBlocksMap(map) {
+      localStorage.setItem(getProfileCollapsedBlocksKey(), JSON.stringify(map));
+    }
+
+    function setCollapsibleCardState(card, shouldCollapse) {
+      if (!card) return;
+      card.classList.toggle('is-collapsed', !!shouldCollapse);
+      const btn = card.querySelector('.card-collapse-btn');
+      if (btn) btn.setAttribute('aria-expanded', shouldCollapse ? 'false' : 'true');
+      const key = card.dataset.collapseKey;
+      if (key) {
+        const map = getCollapsedBlocksMap();
+        if (shouldCollapse) map[key] = true;
+        else delete map[key];
+        saveCollapsedBlocksMap(map);
+      }
+    }
+
+    function toggleCollapsibleCard(card) {
+      if (!card) return;
+      setCollapsibleCardState(card, !card.classList.contains('is-collapsed'));
+    }
+
+    function enhanceCollapsibleCards(root = document) {
+      const scope = root || document;
+      const savedMap = getCollapsedBlocksMap();
+      const cards = scope.querySelectorAll('main.main-content section .card, #view-client-detail .card, #view-matrix .card, #view-settings .card');
+      const seenKeys = new Set();
+
+      cards.forEach((card, idx) => {
+        if (card.dataset.noCollapse === 'true') return;
+        if (card.closest('#analytics-kpi-grid') || card.closest('#marks-kpi-grid') || card.closest('#marks-records-container')) return;
+        if (card.id === 'stt-eod-reminder-banner' || card.id === 'settings-guidance-banner') return;
+        if (card.children.length < 2) return;
+
+        const section = card.closest('section');
+        const sectionId = section ? section.id : 'main';
+
+        if (card.dataset.collapseBound === '1' && !card.querySelector('.card-collapse-btn')) {
+          delete card.dataset.collapseBound;
+        }
+
+        if (card.dataset.collapseBound !== '1') {
+          let headerEl = null;
+          let titleEl = null;
+          let isColumnWrap = false;
+          const firstChild = card.firstElementChild;
+          if (!firstChild) return;
+
+          if (firstChild.classList.contains('sticky-pivot-toolbar')) {
+            headerEl = firstChild.firstElementChild;
+            titleEl = headerEl ? headerEl.querySelector('h2, h3, h4, strong, span') : null;
+          } else if (/^H[2-4]$/.test(firstChild.tagName) || firstChild.tagName === 'STRONG') {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-collapse-header';
+            wrapper.style.marginBottom = firstChild.style.marginBottom || '0.45rem';
+            firstChild.style.marginBottom = '0';
+            card.insertBefore(wrapper, firstChild);
+            wrapper.appendChild(firstChild);
+            headerEl = wrapper;
+            titleEl = firstChild;
+          } else if (firstChild.tagName === 'DIV') {
+            const innerTitle = firstChild.querySelector('h2, h3, h4, strong, span');
+            if (!innerTitle) return;
+            if (firstChild.style.flexDirection === 'column' && firstChild.firstElementChild && firstChild.firstElementChild.querySelector('h2, h3, h4')) {
+              firstChild.classList.add('card-collapse-header-wrap');
+              headerEl = firstChild.firstElementChild;
+              titleEl = headerEl.querySelector('h2, h3, h4');
+              isColumnWrap = true;
+            } else {
+              headerEl = firstChild;
+              titleEl = innerTitle;
+            }
+          } else {
+            return;
+          }
+
+          if (!headerEl) return;
+
+          const rawTitle = (titleEl ? titleEl.textContent : `block_${idx}`)
+            .replace(/\(.*?\)/g, '')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .toLowerCase()
+            .slice(0, 40);
+
+          let key = card.dataset.collapseKey || card.id || (card.dataset.blockKey ? `${sectionId}::${card.dataset.blockKey}` : '');
+          if (!key) {
+            const extraScope = (card.closest('#client-months-accordion') && appState.selectedClientId) ? `::${appState.selectedClientId}` : '';
+            key = `${sectionId}${extraScope}::${rawTitle}`;
+          }
+          if (seenKeys.has(key)) key = `${key}_${idx}`;
+          seenKeys.add(key);
+          card.dataset.collapseKey = key;
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'card-collapse-btn';
+          btn.setAttribute('aria-label', 'Toggle section');
+          btn.setAttribute('aria-expanded', 'true');
+          btn.title = 'Collapse / Expand';
+          btn.textContent = '▾';
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleCollapsibleCard(card);
+          });
+
+          headerEl.classList.add('card-collapse-header');
+          if (headerEl.children.length === 2) {
+            headerEl.children[1].style.marginLeft = 'auto';
+          }
+          headerEl.appendChild(btn);
+
+          if (titleEl) {
+            titleEl.classList.add('card-collapse-trigger');
+            titleEl.addEventListener('click', (e) => {
+              if (e.target.closest('button, a, input, select')) return;
+              toggleCollapsibleCard(card);
+            });
+          }
+
+          card.dataset.collapseBound = '1';
+        }
+
+        const key = card.dataset.collapseKey;
+        if (key && savedMap[key]) {
+          card.classList.add('is-collapsed');
+          const btn = card.querySelector('.card-collapse-btn');
+          if (btn) btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
     async function bootAppAfterPinUnlock() {
       await hydrateFromIndexedDBIfNeeded();
       initData();
       initSidebarState();
       pruneOldLocalStorageBackups(false);
-      populateAllTimePickers();
+            populateAllTimePickers();
       setTimePickerValue('quicklog-time', getAppSettings().defaultTime);
       updateHeaderSttPillAndEodBanner();
       applyAllSavedLayouts();
 
-      showMainView('home', false);
+showMainView('home', false);
       renderAll();
       setupExitBackupGuards();
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          runDailyAutoBackupCheck(false);
+        }
+      });
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(() => { });
       }
     }
-
     window.addEventListener('DOMContentLoaded', async () => {
       initTheme();
       const savedPin = (localStorage.getItem('month_tracker_v12_app_pin') || '').trim();

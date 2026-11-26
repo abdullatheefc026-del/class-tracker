@@ -2139,6 +2139,115 @@ flex: 1;
       outline-offset: 2px;
       transition: outline-color 0.3s ease;
     }
+
+    /* PROFILE VISITING / ID CARD PREVIEW */
+    .pcard-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.75rem;
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+    }
+
+    .pcard-shell {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      color: #0f172a;
+      border: 1px solid rgba(15, 23, 42, 0.14);
+      box-shadow: 0 12px 26px -8px rgba(15, 23, 42, 0.25);
+    }
+
+    .pcard-visiting {
+      max-width: 400px;
+      min-height: 224px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pcard-id {
+      max-width: 270px;
+      min-height: 410px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .pcard-avatar {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    .pcard-id .pcard-avatar {
+      width: 82px;
+      height: 82px;
+      font-size: 1.5rem;
+      margin: 0 auto;
+    }
+
+    .pcard-color-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+
+    .pcard-color-dot.active {
+      border-color: var(--text-main);
+      transform: scale(1.14);
+      box-shadow: 0 0 0 2px var(--bg-surface);
+    }
+
+    .setup-step-dots {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.3rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .setup-step-pill {
+      padding: 0.3rem 0.4rem;
+      border-radius: 8px;
+      font-size: 0.64rem;
+      font-weight: 800;
+      text-align: center;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      border: 1.5px solid var(--border-color);
+    }
+
+    .setup-step-pill.active {
+      background: var(--brand-surface);
+      color: var(--brand-primary);
+      border-color: var(--brand-primary);
+    }
+
+    .setup-step-pill.done {
+      background: var(--success-surface);
+      color: var(--success);
+      border-color: var(--success);
+    }
   </style>
 </head>
 
@@ -3424,12 +3533,26 @@ flex: 1;
                 <button type="button" onclick="runDailyAutoBackupCheck(true, true, true)" class="btn btn-subtle"
                   style="font-size: 0.62rem; padding: 0.2rem 0.45rem; min-height: 26px;">🔄 Snapshot Now</button>
               </div>
-              <div id="settings-daily-backups-list"
+             <div id="settings-daily-backups-list"
                 style="display: flex; flex-direction: column; gap: 0.3rem; max-height: 210px; overflow-y: auto;">
                 <span style="font-size: 0.66rem; color: var(--text-muted); text-align: center; padding: 0.4rem;">Loading snapshots...</span>
               </div>
             </div>
           </details>
+
+          <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border-radius: 6px; border: 1.5px solid var(--border-color); flex-wrap: wrap;">
+            <div style="min-width: 0; flex: 1;">
+              <span style="font-weight: 800; display: block;">📁 Linked Backup Folder</span>
+              <span id="settings-backup-folder-status" style="font-size: 0.62rem; color: var(--text-muted);">Not linked (uses browser download)</span>
+            </div>
+            <div style="display: flex; gap: 0.25rem;">
+              <button type="button" onclick="pickAndRememberBackupFolder()" class="btn btn-subtle"
+                style="font-size: 0.64rem; padding: 0.25rem 0.5rem;">Choose Folder</button>
+              <button type="button" onclick="openFirstRunSetupModal(true)" class="btn btn-purple"
+                style="font-size: 0.64rem; padding: 0.25rem 0.5rem;">🚀 Setup Wizard</button>
+            </div>
+          </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;">
             <button type="button" onclick="promptSaveBackupFile('save')" class="btn btn-primary"
@@ -4848,38 +4971,84 @@ flex: 1;
     </div>
   </div>
 
-  <!-- STT SYNC & CHANGE REVIEW MODAL -->
+<!-- STT SYNC & CHANGE REVIEW MODAL -->
   <div id="modal-stt-sync" class="modal-overlay" style="z-index: 85;">
     <div class="modal-dialog modal-dialog-wide">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
         <div>
           <h3 style="font-size: 0.92rem; font-weight: 800; color: var(--brand-primary);">🔄 Sync from Simple Time
             Tracker</h3>
-          <p id="stt-sync-subtitle" style="font-size: 0.65rem; color: var(--text-muted);">Select your STT backup file to
-            scan for new entries.</p>
+          <p id="stt-sync-subtitle" style="font-size: 0.65rem; color: var(--text-muted);">Auto-captures the latest
+            backup file from your linked folder.</p>
         </div>
         <button type="button" onclick="closeModal('modal-stt-sync')" class="btn btn-subtle"
           style="padding: 0.2rem 0.45rem;">✕</button>
       </div>
 
-      <div style="display: flex; gap: 0.35rem; align-items: center; margin-bottom: 0.55rem; flex-wrap: wrap;">
-        <button type="button" id="btn-stt-quick-handle-sync" onclick="syncFromRememberedSttHandle()"
-          class="btn btn-success" style="display: none; flex: 1.2; padding: 0.5rem;">⚡ Quick Sync</button>
-        <button type="button" onclick="pickAndRememberSttFile()" class="btn btn-primary"
-          style="flex: 1; padding: 0.5rem;">📂 Pick File</button>
+      <div id="stt-linked-source-bar"
+        style="display: flex; justify-content: space-between; align-items: center; gap: 0.4rem; padding: 0.45rem 0.6rem; background: var(--brand-surface); border: 1.5px solid var(--brand-primary); border-radius: var(--radius-sm); margin-bottom: 0.45rem; flex-wrap: wrap;">
+        <div style="min-width: 0; flex: 1;">
+          <strong id="stt-linked-folder-name" style="font-size: 0.7rem; color: var(--brand-primary); display: block;">No
+            Sync Folder Linked Yet</strong>
+          <span id="stt-captured-file-meta" style="font-size: 0.62rem; color: var(--text-muted);">Link your Google Drive
+            synced folder once to auto-capture the newest file.</span>
+        </div>
+        <button type="button" id="btn-stt-quick-handle-sync" onclick="syncFromRememberedSttHandle(true)"
+          class="btn btn-success" style="display: none; font-size: 0.68rem; padding: 0.35rem 0.6rem;">⚡ Auto-Sync
+          Latest</button>
+      </div>
+
+      <div style="display: flex; gap: 0.35rem; align-items: center; margin-bottom: 0.45rem; flex-wrap: wrap;">
+        <button type="button" onclick="pickAndRememberSttFile('folder')" class="btn btn-primary"
+          style="flex: 1; padding: 0.45rem;">📁 Link Sync Folder</button>
+        <button type="button" onclick="pickAndRememberSttFile('file')" class="btn btn-subtle"
+          style="padding: 0.45rem 0.65rem; font-size: 0.68rem;">📄 Pick File</button>
         <input type="file" id="stt-sync-file-input" multiple onchange="handleSttSyncFileSelect(event)"
           style="display: none;">
+        <input type="file" id="stt-sync-folder-fallback" webkitdirectory multiple
+          onchange="handleSttSyncFileSelect(event)" style="display: none;">
         <button type="button" onclick="toggleAllSttDiffCheckboxes(true)" class="btn btn-subtle"
           style="font-size: 0.66rem;">All</button>
         <button type="button" onclick="toggleAllSttDiffCheckboxes(false)" class="btn btn-subtle"
           style="font-size: 0.66rem;">None</button>
       </div>
+
+      <details id="stt-gdrive-cloud-details" class="exam-details-dropdown" style="margin-bottom: 0.5rem;">
+        <summary style="color: var(--brand-primary);">
+          <span>☁️ Direct Google Drive Folder Link (Optional Cloud Mode)</span>
+          <span class="exam-dropdown-arrow">▾</span>
+        </summary>
+        <div
+          style="padding: 0.5rem 0.6rem; border-top: 1px solid var(--border-color); background: var(--bg-surface); display: flex; flex-direction: column; gap: 0.4rem;">
+          <p style="font-size: 0.62rem; color: var(--text-muted); line-height: 1.35;">
+            Paste a link-shared Google Drive folder URL (or Folder ID) + a free Google Drive API Key to pull the latest
+            file directly from Google Drive without local folder sync.
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+            <div>
+              <label style="font-size: 0.6rem; font-weight: 700; color: var(--text-muted);">GDrive Folder URL or
+                ID</label>
+              <input type="text" id="stt-gdrive-folder-input" placeholder="https://drive.google.com/drive/folders/...">
+            </div>
+            <div>
+              <label style="font-size: 0.6rem; font-weight: 700; color: var(--text-muted);">Google Drive API Key</label>
+              <input type="password" id="stt-gdrive-apikey-input" placeholder="AIza...">
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.35rem;">
+            <button type="button" onclick="saveGdriveSyncConfigFromModal()" class="btn btn-primary"
+              style="flex: 1; font-size: 0.66rem;">Save &amp; Auto-Sync GDrive</button>
+            <button type="button" onclick="clearGdriveSyncConfig()" class="btn btn-subtle"
+              style="font-size: 0.66rem; color: var(--danger);">Clear</button>
+          </div>
+        </div>
+      </details>
+
       <div id="stt-sync-summary-bar"
         style="display: none; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.4rem 0.6rem; margin-bottom: 0.5rem; font-size: 0.68rem; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.35rem;">
         <span id="stt-sync-stats-text" style="font-weight: 700;"></span>
         <span id="stt-last-sync-label" style="font-size: 0.62rem; color: var(--text-muted);"></span>
       </div>
-
       <div id="stt-sync-diff-container"
         style="max-height: 50vh; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.6rem;">
         <div style="text-align: center; padding: 1.5rem 0.5rem; color: var(--text-muted); font-size: 0.72rem;">
@@ -5057,7 +5226,7 @@ flex: 1;
             style="text-align: center; font-size: 1.15rem; letter-spacing: 0.4em;">
         </div>
         <p id="pin-modal-error" style="display: none; font-size: 0.68rem; font-weight: 700; color: var(--danger);"></p>
-        <div style="display: flex; gap: 0.35rem; margin-top: 0.2rem;">
+<div style="display: flex; gap: 0.35rem; margin-top: 0.2rem;">
           <button type="button" id="pin-modal-disable-btn" onclick="disableAppPinFromModal()" class="btn btn-danger"
             style="display: none; flex: 1;">Disable PIN</button>
           <button type="button" id="pin-modal-submit-btn" onclick="submitAppPinModal()" class="btn btn-primary"
@@ -5066,9 +5235,324 @@ flex: 1;
       </div>
     </div>
   </div>
+
+  <!-- USER PROFILE DETAILS & ID / VISITING CARD MODAL -->
+  <div id="modal-profile-card" class="modal-overlay" style="z-index: 115;">
+    <div class="modal-dialog modal-dialog-wide modal-dialog-fixed-layout">
+      <div class="modal-fixed-header">
+        <div>
+          <h3 id="pcard-modal-title" style="font-size: 0.92rem; font-weight: 800; color: var(--brand-primary);">🪪
+            Profile &amp; Visiting / ID Card</h3>
+          <p style="font-size: 0.62rem; color: var(--text-muted);">Edit front &amp; back card info, preview, save, or
+            share</p>
+        </div>
+        <button type="button" onclick="closeModal('modal-profile-card')" class="btn btn-subtle"
+          style="padding: 0.2rem 0.45rem;">✕</button>
+      </div>
+
+      <div class="modal-scroll-body">
+        <input type="hidden" id="pcard-profile-id">
+        <div class="segmented-group" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr;">
+          <button type="button" id="pcard-tab-edit-btn" onclick="switchProfileCardTab('edit')" class="btn btn-primary"
+            style="width: 100%;">✏️ Edit Details</button>
+          <button type="button" id="pcard-tab-preview-btn" onclick="switchProfileCardTab('preview')"
+            class="btn btn-subtle" style="width: 100%;">🪪 Preview &amp; Share</button>
+        </div>
+
+        <!-- TAB 1: EDIT PROFILE & FRONT/BACK DETAILS -->
+        <div id="pcard-pane-edit" style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div
+            style="display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0.6rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); flex-wrap: wrap;">
+            <div id="pcard-photo-thumb"
+              style="width: 52px; height: 52px; border-radius: 50%; background: var(--brand-gradient); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; overflow: hidden; flex-shrink: 0;">
+              U</div>
+            <div style="flex: 1; min-width: 140px;">
+              <strong style="font-size: 0.7rem; display: block;">Profile Photo / Logo</strong>
+              <span style="font-size: 0.6rem; color: var(--text-muted);">Shown on your ID &amp; Visiting Card</span>
+            </div>
+            <div style="display: flex; gap: 0.25rem;">
+              <label class="btn btn-subtle" style="cursor: pointer; font-size: 0.64rem; padding: 0.28rem 0.55rem;">
+                📷 Upload
+                <input type="file" id="pcard-photo-input" accept="image/*" onchange="handleProfilePhotoUpload(event)"
+                  style="display: none;">
+              </label>
+              <button type="button" onclick="clearProfilePhoto()" class="btn btn-subtle"
+                style="font-size: 0.64rem; padding: 0.28rem 0.45rem; color: var(--danger);">Clear</button>
+            </div>
+          </div>
+
+          <strong style="font-size: 0.68rem; color: var(--brand-primary); text-transform: uppercase;">Front Card
+            Details</strong>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Full Name *</label>
+              <input type="text" id="pcard-name" placeholder="e.g. Dr. Sarah Khan">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Role / Designation</label>
+              <input type="text" id="pcard-title" placeholder="e.g. Senior Math Tutor">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Academy / Brand
+                Name</label>
+              <input type="text" id="pcard-org" placeholder="e.g. Apex Learning">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">ID / License No.</label>
+              <input type="text" id="pcard-idnum" placeholder="e.g. TUT-2026-01">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Phone / WhatsApp</label>
+              <input type="tel" id="pcard-phone" placeholder="+971 50 123 4567">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Email</label>
+              <input type="email" id="pcard-email" placeholder="name@example.com">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Website / Social</label>
+              <input type="text" id="pcard-website" placeholder="e.g. apexlearning.ae">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Location / Address</label>
+              <input type="text" id="pcard-address" placeholder="e.g. Dubai, UAE">
+            </div>
+          </div>
+
+          <div>
+            <label
+              style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 0.25rem;">Card
+              Accent Theme</label>
+            <div id="pcard-accent-picker" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              <button type="button" data-color="#2563eb" onclick="selectProfileCardAccent('#2563eb')"
+                class="pcard-color-dot" style="background: #2563eb;"></button>
+              <button type="button" data-color="#0f172a" onclick="selectProfileCardAccent('#0f172a')"
+                class="pcard-color-dot" style="background: #0f172a;"></button>
+              <button type="button" data-color="#059669" onclick="selectProfileCardAccent('#059669')"
+                class="pcard-color-dot" style="background: #059669;"></button>
+              <button type="button" data-color="#6d28d9" onclick="selectProfileCardAccent('#6d28d9')"
+                class="pcard-color-dot" style="background: #6d28d9;"></button>
+              <button type="button" data-color="#be123c" onclick="selectProfileCardAccent('#be123c')"
+                class="pcard-color-dot" style="background: #be123c;"></button>
+              <button type="button" data-color="#b45309" onclick="selectProfileCardAccent('#b45309')"
+                class="pcard-color-dot" style="background: #b45309;"></button>
+              <button type="button" data-color="#0e7490" onclick="selectProfileCardAccent('#0e7490')"
+                class="pcard-color-dot" style="background: #0e7490;"></button>
+            </div>
+          </div>
+
+          <div style="height: 1px; background: var(--border-color); margin: 0.2rem 0;"></div>
+
+          <strong style="font-size: 0.68rem; color: var(--purple); text-transform: uppercase;">Back Card Details
+            (Shareable)</strong>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Back Heading</label>
+              <input type="text" id="pcard-back-headline" placeholder="e.g. Subjects &amp; Services">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Available Timings</label>
+              <input type="text" id="pcard-back-timings" placeholder="e.g. Mon–Sat • 4 PM – 9 PM">
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Subjects / Services
+              Offered</label>
+            <input type="text" id="pcard-back-subjects" placeholder="e.g. Grade 6–12 Math, Physics, SAT &amp; IB Prep">
+          </div>
+          <div>
+            <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Back Notes (Qualifications,
+              Emergency Contact, Payment / Mode)</label>
+            <textarea id="pcard-back-notes" rows="3"
+              placeholder="e.g. M.Sc Mathematics • 8+ yrs experience • Online &amp; In-Person 1-on-1 Classes"></textarea>
+          </div>
+          <div>
+            <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Footer Tagline</label>
+            <input type="text" id="pcard-back-tagline" placeholder="e.g. Scan or message on WhatsApp to book a trial!">
+          </div>
+        </div>
+
+        <!-- TAB 2: LIVE PREVIEW & SHARE -->
+        <div id="pcard-pane-preview" style="display: none; flex-direction: column; gap: 0.55rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.35rem; flex-wrap: wrap;">
+            <div class="segmented-group">
+              <button type="button" id="pcard-type-visiting" onclick="setProfileCardType('visiting')"
+                class="btn btn-primary" style="font-size: 0.66rem;">💼 Visiting Card</button>
+              <button type="button" id="pcard-type-id" onclick="setProfileCardType('id')" class="btn btn-subtle"
+                style="font-size: 0.66rem;">🪪 ID Card</button>
+            </div>
+            <div class="segmented-group">
+              <button type="button" id="pcard-side-front" onclick="setProfileCardSide('front')" class="btn btn-primary"
+                style="font-size: 0.64rem;">Front</button>
+              <button type="button" id="pcard-side-back" onclick="setProfileCardSide('back')" class="btn btn-subtle"
+                style="font-size: 0.64rem;">Back</button>
+              <button type="button" id="pcard-side-both" onclick="setProfileCardSide('both')" class="btn btn-subtle"
+                style="font-size: 0.64rem;">Both</button>
+            </div>
+          </div>
+
+          <div id="pcard-live-preview-stage" class="pcard-stage"></div>
+
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem;">
+            <button type="button" onclick="exportProfileCardImage('download')" class="btn btn-subtle"
+              style="font-size: 0.68rem;">📥 Save PNG</button>
+            <button type="button" onclick="exportProfileCardImage('share')" class="btn btn-primary"
+              style="font-size: 0.68rem;">📤 Share Card</button>
+            <button type="button" onclick="copyProfileCardText()" class="btn btn-whatsapp"
+              style="font-size: 0.68rem;">📋 Copy Text</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-fixed-footer">
+        <button type="button" onclick="closeModal('modal-profile-card')" class="btn btn-subtle"
+          style="flex: 1;">Close</button>
+        <button type="button" onclick="saveProfileCardDetails(true)" class="btn btn-purple" style="flex: 1;">Save &amp;
+          Preview</button>
+        <button type="button" onclick="saveProfileCardDetails(false)" class="btn btn-primary"
+          style="flex: 1;">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIRST-TIME WELCOME & SETUP WIZARD MODAL -->
+  <div id="modal-first-run-setup" class="modal-overlay" style="z-index: 165;">
+    <div class="modal-dialog modal-dialog-fixed-layout" style="max-width: 500px;">
+      <div class="modal-fixed-header">
+        <div>
+          <h3 style="font-size: 0.94rem; font-weight: 800; color: var(--brand-primary);">👋 Welcome to Class Tracker</h3>
+          <p style="font-size: 0.63rem; color: var(--text-muted);">Quick 1-minute setup (you can change anything later
+            in Settings)</p>
+        </div>
+        <button type="button" onclick="skipFirstRunSetup()" class="btn btn-subtle"
+          style="font-size: 0.64rem; padding: 0.22rem 0.5rem;">Skip</button>
+      </div>
+
+      <div class="modal-scroll-body">
+        <div class="setup-step-dots">
+          <div id="setup-pill-1" class="setup-step-pill active">1. Profile &amp; Defaults</div>
+          <div id="setup-pill-2" class="setup-step-pill">2. Backup Folder</div>
+          <div id="setup-pill-3" class="setup-step-pill">3. Sync Folder</div>
+        </div>
+
+        <!-- STEP 1: PROFILE & PREFERENCES -->
+        <div id="setup-step-1" style="display: flex; flex-direction: column; gap: 0.45rem;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Your Name *</label>
+              <input type="text" id="setup-prof-name" placeholder="e.g. Alex Morgan">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Title / Academy</label>
+              <input type="text" id="setup-prof-title" placeholder="e.g. Math Tutor">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Phone (Optional)</label>
+              <input type="tel" id="setup-prof-phone" placeholder="+971...">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Currency Code</label>
+              <input type="text" id="setup-currency" maxlength="6" placeholder="AED">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Default Quota
+                (Classes)</label>
+              <input type="number" id="setup-quota" min="1" value="4">
+            </div>
+            <div>
+              <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Default Monthly Fee</label>
+              <input type="number" id="setup-fee" min="0" value="500">
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 0.62rem; font-weight: 700; color: var(--text-muted);">Time Display Format</label>
+            <select id="setup-time-format">
+              <option value="24h">24-Hour (16:00)</option>
+              <option value="12h">12-Hour (04:00 PM)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- STEP 2: BACKUP FOLDER -->
+        <div id="setup-step-2" style="display: none; flex-direction: column; gap: 0.55rem;">
+          <div
+            style="padding: 0.65rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 0.45rem;">
+            <strong style="font-size: 0.76rem; color: var(--brand-primary);">💾 Choose a Backup Folder</strong>
+            <p style="font-size: 0.66rem; color: var(--text-muted); line-height: 1.4;">
+              Link a local or Google Drive synced folder on your device so tapping <strong>Backup Now</strong> saves
+              your <code>.json</code> backup directly into that folder automatically.
+            </p>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; flex-wrap: wrap;">
+              <span id="setup-backup-folder-status" style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted);">Not
+                linked yet</span>
+              <button type="button" onclick="pickAndRememberBackupFolder()" class="btn btn-primary"
+                style="font-size: 0.7rem;">📁 Select Backup Folder</button>
+            </div>
+          </div>
+
+          <label
+            style="display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.65rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer;">
+            <div>
+              <strong style="font-size: 0.72rem; display: block;">Daily In-App Auto-Backups</strong>
+              <span style="font-size: 0.62rem; color: var(--text-muted);">Automatically stores up to 14 daily
+                snapshots</span>
+            </div>
+            <input type="checkbox" id="setup-daily-backup" checked>
+          </label>
+        </div>
+
+        <!-- STEP 3: SYNC FOLDER -->
+        <div id="setup-step-3" style="display: none; flex-direction: column; gap: 0.55rem;">
+          <label
+            style="display: flex; align-items: center; justify-content: space-between; padding: 0.55rem 0.65rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); cursor: pointer;">
+            <div>
+              <strong style="font-size: 0.72rem; display: block;">Enable Top-Banner Sync (STT)</strong>
+              <span style="font-size: 0.62rem; color: var(--text-muted);">Show Sync button on top bar to auto-import
+                latest logs</span>
+            </div>
+            <input type="checkbox" id="setup-stt-enabled" checked>
+          </label>
+
+          <div
+            style="padding: 0.65rem; background: var(--bg-subtle); border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 0.45rem;">
+            <strong style="font-size: 0.76rem; color: var(--purple);">🔄 Choose Your Sync Folder (GDrive / STT)</strong>
+            <p style="font-size: 0.66rem; color: var(--text-muted); line-height: 1.4;">
+              Select the folder where your other app's nightly backup lands. Pressing <strong>Sync</strong> from the top
+              banner will automatically capture the newest file in this folder.
+            </p>
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; flex-wrap: wrap;">
+              <span id="setup-sync-folder-status" style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted);">Not
+                linked yet</span>
+              <button type="button" onclick="pickAndRememberSttFile('folder', true)" class="btn btn-purple"
+                style="font-size: 0.7rem;">📁 Select Sync Folder</button>
+            </div>
+          </div>
+
+          <div
+            style="padding: 0.55rem 0.65rem; background: var(--bg-subtle); border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); display: flex; flex-direction: column; gap: 0.35rem;">
+            <strong style="font-size: 0.66rem; color: var(--text-muted);">☁️ Optional: Direct Google Drive Folder URL +
+              API Key</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem;">
+              <input type="text" id="setup-gdrive-folder" placeholder="GDrive Folder URL / ID">
+              <input type="password" id="setup-gdrive-apikey" placeholder="Google API Key">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-fixed-footer">
+        <button type="button" id="setup-btn-back" onclick="navigateSetupWizard(-1)" class="btn btn-subtle"
+          style="display: none; flex: 0.7;">&larr; Back</button>
+        <button type="button" id="setup-btn-next" onclick="navigateSetupWizard(1)" class="btn btn-primary"
+          style="flex: 1;">Next &rarr;</button>
+        <button type="button" id="setup-btn-finish" onclick="finishFirstRunSetup()" class="btn btn-success"
+          style="display: none; flex: 1;">Finish Setup ✓</button>
+      </div>
+    </div>
+  </div>
   <!-- SCRIPT LOGIC -->
   <script>
-    const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
+      const PROFILES_INDEX_KEY = 'month_tracker_v12_profiles_index';
     const ACTIVE_PROFILE_KEY = 'month_tracker_v12_active_profile_id';
     const THEME_KEY = 'month_tracker_v12_theme';
         const DAILY_BACKUP_ENABLED_KEY = 'month_tracker_v12_daily_backup_enabled';
@@ -5488,24 +5972,34 @@ function saveAppSettings() {
       renderAll();
     }
 function renderSettingsScreen() {
-      const profilesContainer = document.getElementById('settings-profiles-list');
+const profilesContainer = document.getElementById('settings-profiles-list');
       if (profilesContainer) {
         const list = getUserProfilesList();
         profilesContainer.innerHTML = list.map(p => {
           const isCurrent = p.id === activeProfileId;
           const safeId = escapeJsStr(p.id);
+          const subtitleParts = [];
+          if (p.title) subtitleParts.push(escapeHtmlAttr(p.title));
+          if (p.organization) subtitleParts.push(escapeHtmlAttr(p.organization));
+          const subLine = subtitleParts.length > 0
+            ? `${subtitleParts.join(' • ')}${isCurrent ? ' • Active' : ''}`
+            : (isCurrent ? 'Active Now • Tap Card to add details' : 'Tap Switch to open');
+          const thumbHtml = p.photoDataUrl
+            ? `<img src="${escapeHtmlAttr(p.photoDataUrl)}" alt="" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:1.5px solid var(--border-strong); flex-shrink:0;">`
+            : `<span style="width:32px; height:32px; border-radius:50%; background:${escapeHtmlAttr(p.cardAccent || 'var(--brand-primary)')}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:0.74rem; font-weight:800; flex-shrink:0;">${escapeHtmlAttr((p.name || 'U').trim().charAt(0).toUpperCase())}</span>`;
           return `
-         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.45rem 0.6rem; background: ${isCurrent ? 'var(--brand-surface)' : 'var(--bg-subtle)'}; border: 1.5px solid ${isCurrent ? 'var(--brand-primary)' : 'var(--border-color)'}; border-radius: var(--radius-sm); gap: 0.35rem;">
-           <div style="display: flex; align-items: center; gap: 0.4rem; min-width: 0;">
-             <span style="font-size: 0.9rem;">👤</span>
+         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.48rem 0.6rem; background: ${isCurrent ? 'var(--brand-surface)' : 'var(--bg-subtle)'}; border: 1.5px solid ${isCurrent ? 'var(--brand-primary)' : 'var(--border-color)'}; border-radius: var(--radius-sm); gap: 0.35rem;">
+           <div style="display: flex; align-items: center; gap: 0.45rem; min-width: 0; flex: 1;">
+             ${thumbHtml}
              <div style="min-width: 0;">
-               <strong class="truncate-text" style="font-size: 0.75rem; display: block;">${escapeHtmlAttr(p.name)}</strong>
-               <span style="font-size: 0.6rem; color: ${isCurrent ? 'var(--brand-primary)' : 'var(--text-muted)'}; font-weight: 700;">${isCurrent ? 'Active Now' : 'Tap Switch to open'}</span>
+               <strong class="truncate-text" style="font-size: 0.76rem; display: block;">${escapeHtmlAttr(p.name)}</strong>
+               <span class="truncate-text" style="font-size: 0.6rem; color: ${isCurrent ? 'var(--brand-primary)' : 'var(--text-muted)'}; font-weight: 700; display: block;">${subLine}</span>
              </div>
            </div>
-           <div style="display: flex; gap: 0.25rem; flex-shrink: 0;">
+           <div style="display: flex; gap: 0.25rem; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end;">
              ${!isCurrent ? `<button type="button" onclick="switchUserProfile('${safeId}')" class="btn btn-primary" style="font-size: 0.62rem; padding: 0.2rem 0.45rem;">Switch</button>` : ''}
-             <button type="button" onclick="renameUserProfile('${safeId}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.2rem 0.4rem;">Rename</button>
+             <button type="button" onclick="openProfileCardModal('${safeId}', 'preview')" class="btn btn-purple" style="font-size: 0.62rem; padding: 0.2rem 0.45rem;">🪪 Card</button>
+             <button type="button" onclick="openProfileCardModal('${safeId}', 'edit')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.2rem 0.4rem;">Edit</button>
              ${list.length > 1 ? `<button type="button" onclick="deleteUserProfile('${safeId}')" class="btn btn-subtle" style="font-size: 0.62rem; padding: 0.2rem 0.4rem; color: var(--danger);">✕</button>` : ''}
            </div>
          </div>
@@ -5566,11 +6060,12 @@ const backupOn = isDailyBackupEnabled();
       if (fcCb) fcCb.checked = fcOn;
       if (fcLbl) fcLbl.textContent = fcOn ? 'ON' : 'OFF';
 
-     renderSettingsSttQueueTabs();
+    renderSettingsSttQueueTabs();
       updateStorageMeterUI();
       renderNotificationManagerSettingsUI();
       renderLayoutEditorList();
       updateSettingsGuidanceBanner();
+      refreshLinkedFoldersSettingsUI();
       enhanceCollapsibleCards(document.getElementById('view-settings'));
     }
     function confirmFactoryReset() {
@@ -6534,9 +7029,16 @@ return lastTime;
       }, null, 2);
     }
 
-    async function promptSaveBackupFile(mode) {
+   async function promptSaveBackupFile(mode) {
       const payload = buildFullBackupPayloadString();
       const fileName = `ClassTracker_Backup_${toLocalDateStr()}.json`;
+
+      const savedToLinkedFolder = await tryWriteBackupToLinkedFolder(fileName, payload);
+      if (savedToLinkedFolder) {
+        resetUnsavedBackupCounter();
+        showToast(`Saved "${fileName}" directly to linked Backup folder!`);
+        return;
+      }
 
       if ('showSaveFilePicker' in window) {
         try {
@@ -12174,7 +12676,7 @@ function savePendingSttLogs(list) {
         }
       }
 
-      if (banner) {
+if (banner) {
         const syncNotifsAllowed = getNotificationPrefs().categories.sync !== false;
         const shouldShowBanner = syncNotifsAllowed && ((currentHour >= 19 && !isSyncedToday) || pendingList.length > 0);
         banner.style.display = shouldShowBanner ? 'flex' : 'none';
@@ -12187,8 +12689,10 @@ function savePendingSttLogs(list) {
       const lastSync = localStorage.getItem(getSttLastSyncStorageKey());
       const lastSyncEl = document.getElementById('stt-last-sync-label');
       if (lastSyncEl) {
-                lastSyncEl.textContent = lastSync ? `Last synced: ${new Date(lastSync).toLocaleString()}` : 'Never synced yet';
+        lastSyncEl.textContent = lastSync ? `Last synced: ${new Date(lastSync).toLocaleString()}` : 'Never synced yet';
       }
+
+      populateGdriveSyncModalInputs();
 
       if (pending.length > 0) {
         currentSttDiffState = {
@@ -12202,14 +12706,20 @@ function savePendingSttLogs(list) {
         const diffContainer = document.getElementById('stt-sync-diff-container');
         if (summaryBar) summaryBar.style.display = 'none';
         if (diffContainer) {
-          diffContainer.innerHTML = `<div style="text-align: center; padding: 1.5rem 0.5rem; color: var(--text-muted); font-size: 0.72rem;">Tap <strong>📂 Pick File</strong> above to load your latest backup from Android storage.</div>`;
+          diffContainer.innerHTML = `<div style="text-align: center; padding: 1.5rem 0.5rem; color: var(--text-muted); font-size: 0.72rem;">Link your Google Drive synced folder above to automatically capture the latest backup file.</div>`;
         }
       }
       openModal('modal-stt-sync');
       await refreshSttQuickHandleButton();
-      const handle = await idbGet(getSttHandleIdbKey());
-      if (handle) {
-        await syncFromRememberedSttHandle();
+
+      const gdriveCfg = getGdriveSyncConfig();
+      const handle = cachedSttDirHandle || await idbGet(getSttHandleIdbKey());
+      if (handle) cachedSttDirHandle = handle;
+
+      if (gdriveCfg.folderId && gdriveCfg.apiKey) {
+        await syncFromGoogleDriveCloud(false);
+      } else if (handle) {
+        await syncFromRememberedSttHandle(false);
       }
     }
 
@@ -12218,7 +12728,6 @@ function savePendingSttLogs(list) {
       if (files.length === 0) return;
       files.sort((a, b) => b.lastModified - a.lastModified);
       const newestFile = files[0];
-
       const reader = new FileReader();
       reader.onload = ev => {
         try {
@@ -13073,62 +13582,118 @@ saveRejectedSttLogs([]);
         const db = await openCtIndexedDB();
         return new Promise((resolve, reject) => {
           const tx = db.transaction(CT_IDB_STORE, 'readonly');
-          const req = tx.objectStore(CT_IDB_STORE).get(key);
+        const req = tx.objectStore(CT_IDB_STORE).get(key);
           req.onsuccess = () => resolve(req.result);
           req.onerror = () => reject(req.error);
         });
       } catch (e) {return null;}
     }
 
+    let cachedSttDirHandle = null;
+    let cachedBackupDirHandle = null;
+
     function getSttHandleIdbKey() {
       return `stt_file_handle_${activeProfileId}`;
     }
 
+    function getBackupDirHandleIdbKey() {
+      return `backup_dir_handle_${activeProfileId}`;
+    }
+
+    async function hydrateLinkedDirectoryHandles() {
+      try {
+        cachedSttDirHandle = await idbGet(getSttHandleIdbKey()) || null;
+        cachedBackupDirHandle = await idbGet(getBackupDirHandleIdbKey()) || null;
+      } catch (e) {
+        cachedSttDirHandle = null;
+        cachedBackupDirHandle = null;
+      }
+      refreshLinkedFoldersSettingsUI();
+    }
+
     async function refreshSttQuickHandleButton() {
       const btn = document.getElementById('btn-stt-quick-handle-sync');
-      if (!btn) return;
-      const handle = await idbGet(getSttHandleIdbKey());
-      if (handle) {
-        btn.style.display = 'inline-flex';
-        btn.title = handle.kind === 'directory'
-          ? `Auto-load newest backup from folder "${handle.name}"`
-          : `Quick reload "${handle.name}"`;
+      const nameEl = document.getElementById('stt-linked-folder-name');
+      const metaEl = document.getElementById('stt-captured-file-meta');
+      const gdriveCfg = getGdriveSyncConfig();
+      const handle = cachedSttDirHandle || await idbGet(getSttHandleIdbKey());
+      if (handle) cachedSttDirHandle = handle;
+
+      if (gdriveCfg.folderId && gdriveCfg.apiKey) {
+        if (nameEl) nameEl.textContent = `☁️ Linked GDrive Folder (${gdriveCfg.folderId.slice(0, 14)}...)`;
+        if (btn) {
+          btn.style.display = 'inline-flex';
+          btn.textContent = '⚡ Sync GDrive Latest';
+          btn.onclick = () => syncFromGoogleDriveCloud(true);
+        }
+      } else if (handle) {
+        if (nameEl) {
+          nameEl.textContent = handle.kind === 'directory'
+            ? `📁 Linked Folder: ${handle.name}`
+            : `📄 Linked File: ${handle.name}`;
+        }
+        if (btn) {
+          btn.style.display = 'inline-flex';
+          btn.textContent = '⚡ Auto-Sync Latest';
+          btn.onclick = () => syncFromRememberedSttHandle(true);
+          btn.title = handle.kind === 'directory'
+            ? `Auto-capture newest file in "${handle.name}"`
+            : `Reload "${handle.name}"`;
+        }
       } else {
-        btn.style.display = 'none';
+        if (nameEl) nameEl.textContent = 'No Sync Folder Linked Yet';
+        if (metaEl) metaEl.textContent = 'Link your Google Drive synced folder once to auto-capture the newest file.';
+        if (btn) btn.style.display = 'none';
       }
+      refreshLinkedFoldersSettingsUI();
     }
 
     async function getLatestBackupFromDirectory(dirHandle) {
-      let newestFile = null;
-      let newestTime = -1;
+      let newestMatching = null;
+      let newestMatchingTime = -1;
+      let newestAny = null;
+      let newestAnyTime = -1;
 
       for await (const entry of dirHandle.values()) {
-        if (entry.kind === 'file' && (entry.name.endsWith('.backup') || entry.name.startsWith('stt_'))) {
-          const f = await entry.getFile();
-          if (f.lastModified > newestTime) {
-            newestTime = f.lastModified;
-            newestFile = f;
-          }
+        if (entry.kind !== 'file') continue;
+        if (entry.name.startsWith('.')) continue;
+        const f = await entry.getFile();
+        const lower = entry.name.toLowerCase();
+        const isPreferred = lower.endsWith('.backup') || lower.startsWith('stt_') || lower.endsWith('.txt') || lower.endsWith('.tsv');
+        if (isPreferred && f.lastModified > newestMatchingTime) {
+          newestMatchingTime = f.lastModified;
+          newestMatching = f;
+        }
+        if (f.lastModified > newestAnyTime) {
+          newestAnyTime = f.lastModified;
+          newestAny = f;
         }
       }
-      return newestFile;
+      return newestMatching || newestAny;
     }
 
-    async function pickAndRememberSttFile() {
-      if ('showDirectoryPicker' in window) {
+    async function pickAndRememberSttFile(preferredMode = 'folder', skipParse = false) {
+      if (preferredMode === 'folder' && 'showDirectoryPicker' in window) {
         try {
           const dirHandle = await window.showDirectoryPicker({mode: 'read'});
           if (dirHandle) {
-            const latestFile = await getLatestBackupFromDirectory(dirHandle);
-            if (!latestFile) {
-              showToast("No .backup files found in that folder.");
-              return;
-            }
+            cachedSttDirHandle = dirHandle;
             await idbSet(getSttHandleIdbKey(), dirHandle);
             await refreshSttQuickHandleButton();
+            if (skipParse) {
+              showToast(`Linked Sync folder "${dirHandle.name}"!`);
+              return;
+            }
+            const latestFile = await getLatestBackupFromDirectory(dirHandle);
+            if (!latestFile) {
+              showToast(`Folder "${dirHandle.name}" linked, but no backup files were found yet.`);
+              return;
+            }
+            const metaEl = document.getElementById('stt-captured-file-meta');
+            if (metaEl) metaEl.textContent = `Auto-captured: ${latestFile.name} (${new Date(latestFile.lastModified).toLocaleString()})`;
             const text = await latestFile.text();
             parseAndCompareSttBackup(text);
-            showToast(`Linked folder & loaded "${latestFile.name}"!`);
+            showToast(`Linked "${dirHandle.name}" & captured "${latestFile.name}"!`);
             return;
           }
         } catch (err) {
@@ -13136,13 +13701,16 @@ saveRejectedSttLogs([]);
         }
       }
 
-      if ('showOpenFilePicker' in window) {
+      if (preferredMode === 'file' && 'showOpenFilePicker' in window) {
         try {
           const [fileHandle] = await window.showOpenFilePicker({multiple: false});
           if (fileHandle) {
+            cachedSttDirHandle = fileHandle;
             await idbSet(getSttHandleIdbKey(), fileHandle);
             await refreshSttQuickHandleButton();
             const file = await fileHandle.getFile();
+            const metaEl = document.getElementById('stt-captured-file-meta');
+            if (metaEl) metaEl.textContent = `Loaded: ${file.name} (${new Date(file.lastModified).toLocaleString()})`;
             const text = await file.text();
             parseAndCompareSttBackup(text);
             showToast(`Linked file & loaded "${file.name}"!`);
@@ -13153,15 +13721,21 @@ saveRejectedSttLogs([]);
         }
       }
 
-      const input = document.getElementById('stt-sync-file-input');
+      const fallbackId = preferredMode === 'folder' ? 'stt-sync-folder-fallback' : 'stt-sync-file-input';
+      const input = document.getElementById(fallbackId) || document.getElementById('stt-sync-file-input');
       if (input) input.click();
     }
-    async function syncFromRememberedSttHandle() {
-      const handle = await idbGet(getSttHandleIdbKey());
+
+    async function syncFromRememberedSttHandle(userTriggered = false) {
+      const handle = cachedSttDirHandle || await idbGet(getSttHandleIdbKey());
       if (!handle) {
-        pickAndRememberSttFile();
+        if (userTriggered) pickAndRememberSttFile('folder');
         return;
       }
+      cachedSttDirHandle = handle;
+      const metaEl = document.getElementById('stt-captured-file-meta');
+      if (metaEl) metaEl.textContent = `Scanning "${handle.name}" for latest file...`;
+
       try {
         if (handle.queryPermission) {
           let perm = await handle.queryPermission({mode: 'read'});
@@ -13169,8 +13743,9 @@ saveRejectedSttLogs([]);
             perm = await handle.requestPermission({mode: 'read'});
           }
           if (perm !== 'granted') {
-            showToast("Permission needed — select your STT folder/file once.");
-            pickAndRememberSttFile();
+            if (metaEl) {
+              metaEl.innerHTML = `<span style="color:var(--warning); font-weight:700;">Tap "⚡ Auto-Sync Latest" once to grant folder read access.</span>`;
+            }
             return;
           }
         }
@@ -13178,21 +13753,33 @@ saveRejectedSttLogs([]);
         if (handle.kind === 'directory') {
           const latestFile = await getLatestBackupFromDirectory(handle);
           if (!latestFile) {
-            showToast("No .backup file found in linked folder.");
+            if (metaEl) metaEl.textContent = `No backup files found in "${handle.name}".`;
+            showToast(`No backup file found in "${handle.name}".`);
             return;
+          }
+          if (metaEl) {
+            metaEl.textContent = `✓ Latest captured: ${latestFile.name} • ${new Date(latestFile.lastModified).toLocaleString()}`;
           }
           const text = await latestFile.text();
           parseAndCompareSttBackup(text);
-          showToast(`Synced newest: "${latestFile.name}"!`);
+          showToast(`Auto-captured "${latestFile.name}"!`);
         } else {
           const file = await handle.getFile();
+          if (metaEl) {
+            metaEl.textContent = `✓ Loaded: ${file.name} • ${new Date(file.lastModified).toLocaleString()}`;
+          }
           const text = await file.text();
           parseAndCompareSttBackup(text);
           showToast(`Synced from "${file.name}"!`);
         }
       } catch (err) {
-showToast("Folder/file unavailable — please pick again.");
-        pickAndRememberSttFile();
+        if (metaEl) {
+          metaEl.innerHTML = `<span style="color:var(--danger); font-weight:700;">Folder access expired — tap "📁 Link Sync Folder" to reconnect.</span>`;
+        }
+        if (userTriggered) {
+          showToast("Folder unavailable — please link it again.");
+          pickAndRememberSttFile('folder');
+        }
       }
     }
 
@@ -13796,18 +14383,20 @@ applyLayoutForPage(pageId);
       pruneOldLocalStorageBackups(false);
             populateAllTimePickers();
       setTimePickerValue('quicklog-time', getAppSettings().defaultTime);
-      updateHeaderSttPillAndEodBanner();
+updateHeaderSttPillAndEodBanner();
       applyAllSavedLayouts();
 
-showMainView('home', false);
+      showMainView('home', false);
       renderAll();
+      await hydrateLinkedDirectoryHandles();
       setupExitBackupGuards();
+      checkAndShowFirstRunSetup();
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
           runDailyAutoBackupCheck(false);
         }
       });
-      if ('serviceWorker' in navigator) {
+            if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(() => { });
       }
     }
@@ -14265,6 +14854,927 @@ const sortedExams = [...exams].sort((a, b) => new Date(b.examDate) - new Date(a.
         if (document.getElementById('view-marks')?.style.display === 'flex') renderMarksView();
         showToast("School exam record deleted.");
       });
+    }
+
+    /* ==========================================================================
+       LINKED BACKUP FOLDER & DIRECT GOOGLE DRIVE CLOUD FOLDER SYNC
+       ========================================================================== */
+    function getGdriveSyncConfigKey() {
+      return `month_tracker_v12_gdrive_sync_${activeProfileId}`;
+    }
+
+    function getGdriveSyncConfig() {
+      try {
+        return JSON.parse(localStorage.getItem(getGdriveSyncConfigKey()) || '{}') || {};
+      } catch (e) {return {};}
+    }
+
+    function extractGdriveFolderId(raw) {
+      const str = String(raw || '').trim();
+      if (!str) return '';
+      const m1 = str.match(/\/folders\/([a-zA-Z0-9_-]+)/);
+      if (m1) return m1[1];
+      const m2 = str.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (m2) return m2[1];
+      return str.replace(/[^a-zA-Z0-9_-]/g, '');
+    }
+
+    function populateGdriveSyncModalInputs() {
+      const cfg = getGdriveSyncConfig();
+      const fIn = document.getElementById('stt-gdrive-folder-input');
+      const kIn = document.getElementById('stt-gdrive-apikey-input');
+      if (fIn) fIn.value = cfg.folderId || '';
+      if (kIn) kIn.value = cfg.apiKey || '';
+    }
+
+    async function saveGdriveSyncConfigFromModal() {
+      const folderId = extractGdriveFolderId(document.getElementById('stt-gdrive-folder-input')?.value);
+      const apiKey = (document.getElementById('stt-gdrive-apikey-input')?.value || '').trim();
+      if (!folderId || !apiKey) {
+        showToast("Enter both the Google Drive Folder URL/ID and API Key.");
+        return;
+      }
+      localStorage.setItem(getGdriveSyncConfigKey(), JSON.stringify({folderId, apiKey}));
+      await refreshSttQuickHandleButton();
+      await syncFromGoogleDriveCloud(true);
+    }
+
+    async function clearGdriveSyncConfig() {
+      localStorage.removeItem(getGdriveSyncConfigKey());
+      populateGdriveSyncModalInputs();
+      await refreshSttQuickHandleButton();
+      showToast("Cleared Google Drive cloud sync settings.");
+    }
+
+    async function syncFromGoogleDriveCloud(userTriggered = false) {
+      const cfg = getGdriveSyncConfig();
+      if (!cfg.folderId || !cfg.apiKey) return;
+      const metaEl = document.getElementById('stt-captured-file-meta');
+      if (metaEl) metaEl.textContent = '☁️ Checking Google Drive folder for latest file...';
+
+      try {
+        const q = encodeURIComponent(`'${cfg.folderId}' in parents and trashed=false`);
+        const listUrl = `https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime%20desc&pageSize=1&fields=files(id,name,modifiedTime)&key=${encodeURIComponent(cfg.apiKey)}`;
+        const listRes = await fetch(listUrl);
+        if (!listRes.ok) throw new Error(`HTTP ${listRes.status}`);
+        const listData = await listRes.json();
+        const latest = (listData.files || [])[0];
+        if (!latest) {
+          if (metaEl) metaEl.textContent = 'No files found in that Google Drive folder.';
+          if (userTriggered) showToast("No files found in the Google Drive folder.");
+          return;
+        }
+
+        const dlUrl = `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(latest.id)}?alt=media&key=${encodeURIComponent(cfg.apiKey)}`;
+        const dlRes = await fetch(dlUrl);
+        if (!dlRes.ok) throw new Error(`Download HTTP ${dlRes.status}`);
+        const text = await dlRes.text();
+
+        if (metaEl) {
+          metaEl.textContent = `✓ Latest GDrive file: ${latest.name} • ${new Date(latest.modifiedTime).toLocaleString()}`;
+        }
+        parseAndCompareSttBackup(text);
+        showToast(`Auto-captured "${latest.name}" from Google Drive!`);
+      } catch (err) {
+        if (metaEl) {
+          metaEl.innerHTML = `<span style="color:var(--danger); font-weight:700;">Could not fetch from Google Drive (check folder link sharing &amp; API key).</span>`;
+        }
+        if (userTriggered) showToast("Google Drive fetch failed — verify folder sharing & API key.");
+      }
+    }
+
+    async function pickAndRememberBackupFolder() {
+      if (!('showDirectoryPicker' in window)) {
+        showToast("Direct folder linking requires Chrome/Edge; browser download will be used.");
+        return;
+      }
+      try {
+        const dirHandle = await window.showDirectoryPicker({mode: 'readwrite'});
+        if (!dirHandle) return;
+        cachedBackupDirHandle = dirHandle;
+        await idbSet(getBackupDirHandleIdbKey(), dirHandle);
+        refreshLinkedFoldersSettingsUI();
+        showToast(`Linked Backup folder "${dirHandle.name}"!`);
+      } catch (err) {
+        if (err.name !== 'AbortError') showToast("Could not link backup folder.");
+      }
+    }
+
+    async function tryWriteBackupToLinkedFolder(fileName, contentStr) {
+      const dirHandle = cachedBackupDirHandle || await idbGet(getBackupDirHandleIdbKey());
+      if (!dirHandle || dirHandle.kind !== 'directory') return false;
+      cachedBackupDirHandle = dirHandle;
+      try {
+        if (dirHandle.queryPermission) {
+          let perm = await dirHandle.queryPermission({mode: 'readwrite'});
+          if (perm !== 'granted' && dirHandle.requestPermission) {
+            perm = await dirHandle.requestPermission({mode: 'readwrite'});
+          }
+          if (perm !== 'granted') return false;
+        }
+        const fileHandle = await dirHandle.getFileHandle(fileName, {create: true});
+        const writable = await fileHandle.createWritable();
+        await writable.write(contentStr);
+        await writable.close();
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function refreshLinkedFoldersSettingsUI() {
+      const bStat = document.getElementById('settings-backup-folder-status');
+      const setupBStat = document.getElementById('setup-backup-folder-status');
+      const setupSStat = document.getElementById('setup-sync-folder-status');
+
+      if (cachedBackupDirHandle) {
+        const txt = `✓ Linked: "${cachedBackupDirHandle.name}"`;
+        if (bStat) {bStat.textContent = txt; bStat.style.color = 'var(--success)';}
+        if (setupBStat) {setupBStat.textContent = txt; setupBStat.style.color = 'var(--success)';}
+      } else {
+        if (bStat) {bStat.textContent = 'Not linked (uses browser download)'; bStat.style.color = 'var(--text-muted)';}
+        if (setupBStat) {setupBStat.textContent = 'Not linked yet'; setupBStat.style.color = 'var(--text-muted)';}
+      }
+
+      const gdriveCfg = getGdriveSyncConfig();
+      if (setupSStat) {
+        if (cachedSttDirHandle) {
+          setupSStat.textContent = `✓ Linked: "${cachedSttDirHandle.name}"`;
+          setupSStat.style.color = 'var(--success)';
+        } else if (gdriveCfg.folderId && gdriveCfg.apiKey) {
+          setupSStat.textContent = `✓ GDrive Cloud Linked`;
+          setupSStat.style.color = 'var(--success)';
+        } else {
+          setupSStat.textContent = 'Not linked yet';
+          setupSStat.style.color = 'var(--text-muted)';
+        }
+      }
+    }
+
+    /* ==========================================================================
+       USER PROFILE DETAILS + FRONT / BACK VISITING & ID CARD STUDIO
+       ========================================================================== */
+    let activeProfileCardAccent = '#2563eb';
+    let activeProfileCardPhoto = '';
+    let activeProfileCardType = 'visiting'; // 'visiting' | 'id'
+    let activeProfileCardSide = 'both';     // 'front' | 'back' | 'both'
+
+    function openProfileCardModal(profileId = null, initialTab = 'edit') {
+      const list = getUserProfilesList();
+      const targetId = profileId || activeProfileId;
+      const prof = list.find(p => p.id === targetId) || list[0];
+      if (!prof) return;
+
+      document.getElementById('pcard-profile-id').value = prof.id;
+      document.getElementById('pcard-name').value = prof.name || '';
+      document.getElementById('pcard-title').value = prof.title || '';
+      document.getElementById('pcard-org').value = prof.organization || '';
+      document.getElementById('pcard-idnum').value = prof.idNumber || '';
+      document.getElementById('pcard-phone').value = prof.phone || '';
+      document.getElementById('pcard-email').value = prof.email || '';
+      document.getElementById('pcard-website').value = prof.website || '';
+      document.getElementById('pcard-address').value = prof.address || '';
+      document.getElementById('pcard-back-headline').value = prof.backHeadline || 'Subjects & Services';
+      document.getElementById('pcard-back-timings').value = prof.timings || '';
+      document.getElementById('pcard-back-subjects').value = prof.subjects || '';
+      document.getElementById('pcard-back-notes').value = prof.backNotes || '';
+      document.getElementById('pcard-back-tagline').value = prof.tagline || '';
+
+      activeProfileCardPhoto = prof.photoDataUrl || '';
+      selectProfileCardAccent(prof.cardAccent || '#2563eb');
+      renderProfilePhotoThumb(prof.name || 'U');
+
+      switchProfileCardTab(initialTab);
+      openModal('modal-profile-card');
+    }
+
+    function renderProfilePhotoThumb(fallbackName = 'U') {
+      const thumb = document.getElementById('pcard-photo-thumb');
+      if (!thumb) return;
+      if (activeProfileCardPhoto) {
+        thumb.innerHTML = `<img src="${escapeHtmlAttr(activeProfileCardPhoto)}" alt="" style="width:100%; height:100%; object-fit:cover;">`;
+      } else {
+        thumb.style.background = activeProfileCardAccent;
+        thumb.textContent = (fallbackName || 'U').trim().charAt(0).toUpperCase() || 'U';
+      }
+    }
+
+    function handleProfilePhotoUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const size = 180;
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          const minSide = Math.min(img.width, img.height);
+          const sx = (img.width - minSide) / 2;
+          const sy = (img.height - minSide) / 2;
+          ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+          activeProfileCardPhoto = canvas.toDataURL('image/jpeg', 0.82);
+          renderProfilePhotoThumb(document.getElementById('pcard-name')?.value || 'U');
+          if (document.getElementById('pcard-pane-preview')?.style.display === 'flex') renderProfileCardLivePreview();
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    function clearProfilePhoto() {
+      activeProfileCardPhoto = '';
+      renderProfilePhotoThumb(document.getElementById('pcard-name')?.value || 'U');
+      if (document.getElementById('pcard-pane-preview')?.style.display === 'flex') renderProfileCardLivePreview();
+    }
+
+    function selectProfileCardAccent(hex) {
+      activeProfileCardAccent = hex || '#2563eb';
+      document.querySelectorAll('#pcard-accent-picker .pcard-color-dot').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-color') === activeProfileCardAccent);
+      });
+      if (!activeProfileCardPhoto) {
+        renderProfilePhotoThumb(document.getElementById('pcard-name')?.value || 'U');
+      }
+    }
+
+    function readProfileCardFormObj() {
+      return {
+        id: document.getElementById('pcard-profile-id')?.value || activeProfileId,
+        name: (document.getElementById('pcard-name')?.value || '').trim() || 'Main User',
+        title: (document.getElementById('pcard-title')?.value || '').trim(),
+        organization: (document.getElementById('pcard-org')?.value || '').trim(),
+        idNumber: (document.getElementById('pcard-idnum')?.value || '').trim(),
+        phone: (document.getElementById('pcard-phone')?.value || '').trim(),
+        email: (document.getElementById('pcard-email')?.value || '').trim(),
+        website: (document.getElementById('pcard-website')?.value || '').trim(),
+        address: (document.getElementById('pcard-address')?.value || '').trim(),
+        backHeadline: (document.getElementById('pcard-back-headline')?.value || '').trim(),
+        timings: (document.getElementById('pcard-back-timings')?.value || '').trim(),
+        subjects: (document.getElementById('pcard-back-subjects')?.value || '').trim(),
+        backNotes: (document.getElementById('pcard-back-notes')?.value || '').trim(),
+        tagline: (document.getElementById('pcard-back-tagline')?.value || '').trim(),
+        cardAccent: activeProfileCardAccent,
+        photoDataUrl: activeProfileCardPhoto
+      };
+    }
+
+    function saveProfileCardDetails(openPreviewAfter = false) {
+      const data = readProfileCardFormObj();
+      if (!data.name) {
+        showToast("Please enter a profile name.");
+        return;
+      }
+      const list = getUserProfilesList();
+      const idx = list.findIndex(p => p.id === data.id);
+      if (idx !== -1) {
+        list[idx] = {...list[idx], ...data};
+        saveUserProfilesList(list);
+      }
+      if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
+      showToast("Profile details saved!");
+      if (openPreviewAfter) {
+        switchProfileCardTab('preview');
+      } else {
+        closeModal('modal-profile-card');
+      }
+    }
+
+    function switchProfileCardTab(tab) {
+      const editPane = document.getElementById('pcard-pane-edit');
+      const prevPane = document.getElementById('pcard-pane-preview');
+      const editBtn = document.getElementById('pcard-tab-edit-btn');
+      const prevBtn = document.getElementById('pcard-tab-preview-btn');
+      const isPreview = tab === 'preview';
+      if (editPane) editPane.style.display = isPreview ? 'none' : 'flex';
+      if (prevPane) prevPane.style.display = isPreview ? 'flex' : 'none';
+      if (editBtn) editBtn.className = isPreview ? 'btn btn-subtle' : 'btn btn-primary';
+      if (prevBtn) prevBtn.className = isPreview ? 'btn btn-primary' : 'btn btn-subtle';
+      if (isPreview) renderProfileCardLivePreview();
+    }
+
+    function setProfileCardType(type) {
+      activeProfileCardType = type === 'id' ? 'id' : 'visiting';
+      document.getElementById('pcard-type-visiting').className = activeProfileCardType === 'visiting' ? 'btn btn-primary' : 'btn btn-subtle';
+      document.getElementById('pcard-type-id').className = activeProfileCardType === 'id' ? 'btn btn-primary' : 'btn btn-subtle';
+      renderProfileCardLivePreview();
+    }
+
+    function setProfileCardSide(side) {
+      activeProfileCardSide = side;
+      ['front', 'back', 'both'].forEach(s => {
+        const b = document.getElementById(`pcard-side-${s}`);
+        if (b) b.className = activeProfileCardSide === s ? 'btn btn-primary' : 'btn btn-subtle';
+      });
+      renderProfileCardLivePreview();
+    }
+
+    function renderProfileCardLivePreview() {
+      const stage = document.getElementById('pcard-live-preview-stage');
+      if (!stage) return;
+      const d = readProfileCardFormObj();
+      const accent = d.cardAccent || '#2563eb';
+      const initial = (d.name || 'U').trim().charAt(0).toUpperCase();
+      const avatarHtml = d.photoDataUrl
+        ? `<img src="${escapeHtmlAttr(d.photoDataUrl)}" class="pcard-avatar" alt="">`
+        : `<div class="pcard-avatar" style="background: rgba(255,255,255,0.22);">${escapeHtmlAttr(initial)}</div>`;
+
+      const showFront = activeProfileCardSide === 'front' || activeProfileCardSide === 'both';
+      const showBack = activeProfileCardSide === 'back' || activeProfileCardSide === 'both';
+      let html = '';
+
+      if (activeProfileCardType === 'visiting') {
+        if (showFront) {
+          html += `
+            <div style="width:100%; max-width:400px;">
+              <div style="font-size:0.6rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Front Side</div>
+              <div class="pcard-shell pcard-visiting">
+                <div style="background:linear-gradient(135deg, ${accent} 0%, #0f172a 135%); color:#fff; padding:16px 18px; display:flex; align-items:center; gap:14px;">
+                  ${avatarHtml}
+                  <div style="min-width:0; flex:1;">
+                    ${d.organization ? `<div style="font-size:0.62rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase; opacity:0.85;">${escapeHtmlAttr(d.organization)}</div>` : ''}
+                    <div style="font-size:1.05rem; font-weight:800; line-height:1.2;">${escapeHtmlAttr(d.name)}</div>
+                    ${d.title ? `<div style="font-size:0.74rem; font-weight:600; opacity:0.9; margin-top:2px;">${escapeHtmlAttr(d.title)}</div>` : ''}
+                  </div>
+                </div>
+                <div style="padding:14px 18px; display:grid; grid-template-columns:1fr 1fr; gap:7px 10px; font-size:0.7rem; color:#334155;">
+                  ${d.phone ? `<div>📞 <strong>${escapeHtmlAttr(d.phone)}</strong></div>` : ''}
+                  ${d.email ? `<div class="truncate-text">✉️ ${escapeHtmlAttr(d.email)}</div>` : ''}
+                  ${d.website ? `<div class="truncate-text">🌐 ${escapeHtmlAttr(d.website)}</div>` : ''}
+                  ${d.address ? `<div class="truncate-text">📍 ${escapeHtmlAttr(d.address)}</div>` : ''}
+                  ${d.idNumber ? `<div class="num-tabular" style="grid-column:span 2; font-size:0.64rem; color:#64748b;">ID: ${escapeHtmlAttr(d.idNumber)}</div>` : ''}
+                </div>
+                <div style="height:6px; background:${accent};"></div>
+              </div>
+            </div>
+          `;
+        }
+        if (showBack) {
+          html += `
+            <div style="width:100%; max-width:400px;">
+              <div style="font-size:0.6rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px;">Back Side</div>
+              <div class="pcard-shell pcard-visiting" style="background:#f8fafc;">
+                <div style="height:8px; background:${accent};"></div>
+                <div style="padding:16px 18px; flex:1; display:flex; flex-direction:column; gap:8px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1.5px solid #e2e8f0; padding-bottom:6px;">
+                    <strong style="font-size:0.84rem; color:${accent};">${escapeHtmlAttr(d.backHeadline || 'Subjects & Services')}</strong>
+                    ${d.organization ? `<span style="font-size:0.62rem; font-weight:800; color:#64748b;">${escapeHtmlAttr(d.organization)}</span>` : ''}
+                  </div>
+                  ${d.subjects ? `<div style="font-size:0.72rem; font-weight:700; color:#0f172a;">📚 ${escapeHtmlAttr(d.subjects)}</div>` : ''}
+                  ${d.timings ? `<div style="font-size:0.7rem; color:#334155;">🕒 ${escapeHtmlAttr(d.timings)}</div>` : ''}
+                  ${d.backNotes ? `<div style="font-size:0.68rem; color:#475569; white-space:pre-wrap; line-height:1.38;">${escapeHtmlAttr(d.backNotes)}</div>` : `<div style="font-size:0.68rem; color:#94a3b8;">Add back details in the Edit Details tab.</div>`}
+                </div>
+                <div style="padding:8px 18px; background:${accent}; color:#fff; font-size:0.64rem; font-weight:700; text-align:center;">
+                  ${escapeHtmlAttr(d.tagline || d.phone || d.name)}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      } else {
+        // ID CARD (Portrait)
+        if (showFront) {
+          html += `
+            <div style="width:100%; max-width:270px;">
+              <div style="font-size:0.6rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px; text-align:center;">ID Card • Front</div>
+              <div class="pcard-shell pcard-id">
+                <div style="background:linear-gradient(160deg, ${accent} 0%, #0f172a 140%); color:#fff; padding:14px 16px 20px; text-align:center;">
+                  <div style="width:44px; height:6px; border-radius:999px; background:rgba(255,255,255,0.45); margin:0 auto 10px;"></div>
+                  <div style="font-size:0.64rem; font-weight:800; letter-spacing:0.09em; text-transform:uppercase; opacity:0.9; margin-bottom:10px;">${escapeHtmlAttr(d.organization || 'OFFICIAL ID CARD')}</div>
+                  ${avatarHtml}
+                  <div style="font-size:1.02rem; font-weight:800; margin-top:10px;">${escapeHtmlAttr(d.name)}</div>
+                  ${d.title ? `<div style="font-size:0.72rem; opacity:0.9; margin-top:2px;">${escapeHtmlAttr(d.title)}</div>` : ''}
+                </div>
+                <div style="padding:14px 16px; display:flex; flex-direction:column; gap:7px; font-size:0.7rem; color:#334155; flex:1;">
+                  ${d.idNumber ? `<div class="num-tabular" style="text-align:center; background:#f1f5f9; border:1px solid #cbd5e1; padding:4px 8px; border-radius:6px; font-weight:800; color:${accent};">ID: ${escapeHtmlAttr(d.idNumber)}</div>` : ''}
+                  ${d.phone ? `<div>📞 <strong>${escapeHtmlAttr(d.phone)}</strong></div>` : ''}
+                  ${d.email ? `<div class="truncate-text">✉️ ${escapeHtmlAttr(d.email)}</div>` : ''}
+                  ${d.website ? `<div class="truncate-text">🌐 ${escapeHtmlAttr(d.website)}</div>` : ''}
+                  ${d.address ? `<div>📍 ${escapeHtmlAttr(d.address)}</div>` : ''}
+                </div>
+                <div style="padding:8px; background:${accent}; color:#fff; font-size:0.62rem; font-weight:800; text-align:center; letter-spacing:0.06em;">VERIFIED PROFILE</div>
+              </div>
+            </div>
+          `;
+        }
+        if (showBack) {
+          html += `
+            <div style="width:100%; max-width:270px;">
+              <div style="font-size:0.6rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:4px; text-align:center;">ID Card • Back</div>
+              <div class="pcard-shell pcard-id" style="background:#f8fafc;">
+                <div style="background:${accent}; color:#fff; padding:12px 14px; text-align:center;">
+                  <div style="width:44px; height:6px; border-radius:999px; background:rgba(255,255,255,0.45); margin:0 auto 8px;"></div>
+                  <strong style="font-size:0.78rem; letter-spacing:0.04em;">${escapeHtmlAttr(d.backHeadline || 'Details & Information')}</strong>
+                </div>
+                <div style="padding:14px 16px; flex:1; display:flex; flex-direction:column; gap:9px; font-size:0.7rem; color:#334155;">
+                  ${d.subjects ? `<div><strong style="color:${accent}; display:block; font-size:0.62rem; text-transform:uppercase;">Subjects / Services</strong>${escapeHtmlAttr(d.subjects)}</div>` : ''}
+                  ${d.timings ? `<div><strong style="color:${accent}; display:block; font-size:0.62rem; text-transform:uppercase;">Timings</strong>${escapeHtmlAttr(d.timings)}</div>` : ''}
+                  ${d.backNotes ? `<div><strong style="color:${accent}; display:block; font-size:0.62rem; text-transform:uppercase;">Additional Info</strong><span style="white-space:pre-wrap; line-height:1.38;">${escapeHtmlAttr(d.backNotes)}</span></div>` : `<div style="color:#94a3b8;">Add back details in the Edit Details tab.</div>`}
+                </div>
+                <div style="padding:9px 12px; background:#0f172a; color:#fff; font-size:0.62rem; font-weight:700; text-align:center;">
+                  ${escapeHtmlAttr(d.tagline || d.phone || d.name)}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      stage.innerHTML = html;
+    }
+
+    function drawWrappedCanvasText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 6) {
+      const paragraphs = String(text || '').split('\n');
+      let curY = y;
+      let linesDrawn = 0;
+      for (const para of paragraphs) {
+        const words = para.split(/\s+/);
+        let line = '';
+        for (let i = 0; i < words.length; i++) {
+          const testLine = line ? `${line} ${words[i]}` : words[i];
+          if (ctx.measureText(testLine).width > maxWidth && line) {
+            ctx.fillText(line, x, curY);
+            curY += lineHeight;
+            linesDrawn++;
+            line = words[i];
+            if (linesDrawn >= maxLines) return curY;
+          } else {
+            line = testLine;
+          }
+        }
+        if (line && linesDrawn < maxLines) {
+          ctx.fillText(line, x, curY);
+          curY += lineHeight;
+          linesDrawn++;
+        }
+        if (linesDrawn >= maxLines) return curY;
+      }
+      return curY;
+    }
+
+    function drawRoundedRectPath(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function loadImageAsync(src) {
+      return new Promise((resolve) => {
+        if (!src) return resolve(null);
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    async function renderProfileCardToCanvasBlob() {
+      const d = readProfileCardFormObj();
+      const accent = d.cardAccent || '#2563eb';
+      const photoImg = await loadImageAsync(d.photoDataUrl);
+      const isVisiting = activeProfileCardType === 'visiting';
+      const cardW = isVisiting ? 960 : 620;
+      const cardH = isVisiting ? 540 : 940;
+      const pad = 40;
+      const gap = 46;
+      const includeFront = activeProfileCardSide === 'front' || activeProfileCardSide === 'both';
+      const includeBack = activeProfileCardSide === 'back' || activeProfileCardSide === 'both';
+      const count = (includeFront ? 1 : 0) + (includeBack ? 1 : 0);
+
+      const canvas = document.createElement('canvas');
+      if (isVisiting) {
+        canvas.width = cardW + pad * 2;
+        canvas.height = pad * 2 + cardH * count + (count > 1 ? gap : 0);
+      } else {
+        canvas.width = pad * 2 + cardW * count + (count > 1 ? gap : 0);
+        canvas.height = cardH + pad * 2;
+      }
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const drawAvatar = (cx, cy, radius) => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255,255,255,0.22)';
+        ctx.fill();
+        ctx.clip();
+        if (photoImg) {
+          ctx.drawImage(photoImg, cx - radius, cy - radius, radius * 2, radius * 2);
+        } else {
+          ctx.fillStyle = '#ffffff';
+          ctx.font = `bold ${Math.round(radius * 0.9)}px 'Plus Jakarta Sans', sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText((d.name || 'U').trim().charAt(0).toUpperCase(), cx, cy + 2);
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
+        }
+        ctx.restore();
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.88)';
+        ctx.lineWidth = 5;
+        ctx.stroke();
+      };
+
+      const drawCard = (ox, oy, side) => {
+        ctx.save();
+        drawRoundedRectPath(ctx, ox, oy, cardW, cardH, 28);
+        ctx.fillStyle = side === 'back' ? '#f8fafc' : '#ffffff';
+        ctx.fill();
+        ctx.clip();
+
+        if (isVisiting && side === 'front') {
+          const grad = ctx.createLinearGradient(ox, oy, ox + cardW, oy + 240);
+          grad.addColorStop(0, accent);
+          grad.addColorStop(1, '#0f172a');
+          ctx.fillStyle = grad;
+          ctx.fillRect(ox, oy, cardW, 235);
+
+          drawAvatar(ox + 108, oy + 118, 64);
+
+          ctx.fillStyle = 'rgba(255,255,255,0.82)';
+          ctx.font = "bold 20px 'Plus Jakarta Sans', sans-serif";
+          if (d.organization) ctx.fillText(d.organization.toUpperCase(), ox + 198, oy + 82);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = "800 42px 'Plus Jakarta Sans', sans-serif";
+          ctx.fillText(d.name, ox + 198, oy + 134);
+
+          ctx.fillStyle = 'rgba(255,255,255,0.92)';
+          ctx.font = "600 26px 'Plus Jakarta Sans', sans-serif";
+          if (d.title) ctx.fillText(d.title, ox + 198, oy + 176);
+
+          const items = [
+            d.phone ? `Phone: ${d.phone}` : '',
+            d.email ? `Email: ${d.email}` : '',
+            d.website ? `Web: ${d.website}` : '',
+            d.address ? `Location: ${d.address}` : '',
+            d.idNumber ? `ID: ${d.idNumber}` : ''
+          ].filter(Boolean);
+
+          ctx.fillStyle = '#1e293b';
+          ctx.font = "600 24px 'Plus Jakarta Sans', sans-serif";
+          items.forEach((line, idx) => {
+            const col = idx % 2;
+            const row = Math.floor(idx / 2);
+            ctx.fillText(line.slice(0, 34), ox + 48 + col * 440, oy + 310 + row * 62);
+          });
+
+          ctx.fillStyle = accent;
+          ctx.fillRect(ox, oy + cardH - 18, cardW, 18);
+        } else if (isVisiting && side === 'back') {
+          ctx.fillStyle = accent;
+          ctx.fillRect(ox, oy, cardW, 22);
+
+          ctx.fillStyle = accent;
+          ctx.font = "800 32px 'Plus Jakarta Sans', sans-serif";
+          ctx.fillText(d.backHeadline || 'Subjects & Services', ox + 48, oy + 86);
+
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(ox + 48, oy + 108);
+          ctx.lineTo(ox + cardW - 48, oy + 108);
+          ctx.stroke();
+
+          let curY = oy + 158;
+          if (d.subjects) {
+            ctx.fillStyle = '#0f172a';
+            ctx.font = "700 26px 'Plus Jakarta Sans', sans-serif";
+            curY = drawWrappedCanvasText(ctx, `Subjects: ${d.subjects}`, ox + 48, curY, cardW - 96, 36, 3) + 12;
+          }
+          if (d.timings) {
+            ctx.fillStyle = '#334155';
+            ctx.font = "600 24px 'Plus Jakarta Sans', sans-serif";
+            curY = drawWrappedCanvasText(ctx, `Timings: ${d.timings}`, ox + 48, curY, cardW - 96, 34, 2) + 12;
+          }
+          if (d.backNotes) {
+            ctx.fillStyle = '#475569';
+            ctx.font = "500 23px 'Plus Jakarta Sans', sans-serif";
+            drawWrappedCanvasText(ctx, d.backNotes, ox + 48, curY, cardW - 96, 34, 5);
+          }
+
+          ctx.fillStyle = accent;
+          ctx.fillRect(ox, oy + cardH - 64, cardW, 64);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = "700 22px 'Plus Jakarta Sans', sans-serif";
+          ctx.textAlign = 'center';
+          ctx.fillText(d.tagline || d.phone || d.name, ox + cardW / 2, oy + cardH - 24);
+          ctx.textAlign = 'left';
+        } else if (!isVisiting && side === 'front') {
+          const grad = ctx.createLinearGradient(ox, oy, ox + cardW, oy + 440);
+          grad.addColorStop(0, accent);
+          grad.addColorStop(1, '#0f172a');
+          ctx.fillStyle = grad;
+          ctx.fillRect(ox, oy, cardW, 435);
+
+          ctx.fillStyle = 'rgba(255,255,255,0.45)';
+          drawRoundedRectPath(ctx, ox + cardW / 2 - 52, oy + 26, 104, 14, 7);
+          ctx.fill();
+
+          ctx.fillStyle = 'rgba(255,255,255,0.9)';
+          ctx.font = "800 22px 'Plus Jakarta Sans', sans-serif";
+          ctx.textAlign = 'center';
+          ctx.fillText((d.organization || 'OFFICIAL ID CARD').toUpperCase(), ox + cardW / 2, oy + 82);
+
+          drawAvatar(ox + cardW / 2, oy + 198, 86);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = "800 38px 'Plus Jakarta Sans', sans-serif";
+          ctx.fillText(d.name, ox + cardW / 2, oy + 340);
+
+          if (d.title) {
+            ctx.fillStyle = 'rgba(255,255,255,0.9)';
+            ctx.font = "600 25px 'Plus Jakarta Sans', sans-serif";
+            ctx.fillText(d.title, ox + cardW / 2, oy + 382);
+          }
+          ctx.textAlign = 'left';
+
+          let curY = oy + 505;
+          if (d.idNumber) {
+            ctx.fillStyle = '#f1f5f9';
+            drawRoundedRectPath(ctx, ox + 52, curY - 40, cardW - 104, 54, 12);
+            ctx.fill();
+            ctx.fillStyle = accent;
+            ctx.font = "800 26px 'JetBrains Mono', monospace";
+            ctx.textAlign = 'center';
+            ctx.fillText(`ID: ${d.idNumber}`, ox + cardW / 2, curY - 4);
+            ctx.textAlign = 'left';
+            curY += 54;
+          }
+
+          const infoLines = [
+            d.phone ? `Phone: ${d.phone}` : '',
+            d.email ? `Email: ${d.email}` : '',
+            d.website ? `Web: ${d.website}` : '',
+            d.address ? `Location: ${d.address}` : ''
+          ].filter(Boolean);
+          ctx.fillStyle = '#1e293b';
+          ctx.font = "600 24px 'Plus Jakarta Sans', sans-serif";
+          infoLines.forEach(line => {
+            curY = drawWrappedCanvasText(ctx, line, ox + 52, curY, cardW - 104, 34, 2) + 18;
+          });
+
+          ctx.fillStyle = accent;
+          ctx.fillRect(ox, oy + cardH - 64, cardW, 64);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = "800 22px 'Plus Jakarta Sans', sans-serif";
+          ctx.textAlign = 'center';
+          ctx.fillText('VERIFIED PROFILE', ox + cardW / 2, oy + cardH - 24);
+          ctx.textAlign = 'left';
+        } else {
+          ctx.fillStyle = accent;
+          ctx.fillRect(ox, oy, cardW, 126);
+          ctx.fillStyle = 'rgba(255,255,255,0.45)';
+          drawRoundedRectPath(ctx, ox + cardW / 2 - 52, oy + 26, 104, 14, 7);
+          ctx.fill();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = "800 28px 'Plus Jakarta Sans', sans-serif";
+          ctx.textAlign = 'center';
+          ctx.fillText(d.backHeadline || 'Details & Information', ox + cardW / 2, oy + 94);
+          ctx.textAlign = 'left';
+
+          let curY = oy + 190;
+          if (d.subjects) {
+            ctx.fillStyle = accent;
+            ctx.font = "800 20px 'Plus Jakarta Sans', sans-serif";
+            ctx.fillText('SUBJECTS / SERVICES', ox + 48, curY);
+            curY += 34;
+            ctx.fillStyle = '#0f172a';
+            ctx.font = "600 24px 'Plus Jakarta Sans', sans-serif";
+            curY = drawWrappedCanvasText(ctx, d.subjects, ox + 48, curY, cardW - 96, 34, 4) + 28;
+          }
+          if (d.timings) {
+            ctx.fillStyle = accent;
+            ctx.font = "800 20px 'Plus Jakarta Sans', sans-serif";
+            ctx.fillText('TIMINGS', ox + 48, curY);
+            curY += 34;
+            ctx.fillStyle = '#334155';
+            ctx.font = "600 24px 'Plus Jakarta Sans', sans-serif";
+            curY = drawWrappedCanvasText(ctx, d.timings, ox + 48, curY, cardW - 96, 34, 2) + 28;
+          }
+          if (d.backNotes) {
+            ctx.fillStyle = accent;
+            ctx.font = "800 20px 'Plus Jakarta Sans', sans-serif";
+            ctx.fillText('ADDITIONAL INFO', ox + 48, curY);
+            curY += 34;
+            ctx.fillStyle = '#475569';
+            ctx.font = "500 23px 'Plus Jakarta Sans', sans-serif";
+            drawWrappedCanvasText(ctx, d.backNotes, ox + 48, curY, cardW - 96, 34, 8);
+          }
+
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(ox, oy + cardH - 68, cardW, 68);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = "700 21px 'Plus Jakarta Sans', sans-serif";
+          ctx.textAlign = 'center';
+          ctx.fillText(d.tagline || d.phone || d.name, ox + cardW / 2, oy + cardH - 26);
+          ctx.textAlign = 'left';
+        }
+
+        ctx.restore();
+        drawRoundedRectPath(ctx, ox, oy, cardW, cardH, 28);
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.16)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      };
+
+      let slot = 0;
+      if (includeFront) {
+        drawCard(isVisiting ? pad : pad + slot * (cardW + gap), isVisiting ? pad + slot * (cardH + gap) : pad, 'front');
+        slot++;
+      }
+      if (includeBack) {
+        drawCard(isVisiting ? pad : pad + slot * (cardW + gap), isVisiting ? pad + slot * (cardH + gap) : pad, 'back');
+      }
+
+      return new Promise(resolve => canvas.toBlob(blob => resolve(blob), 'image/png'));
+    }
+
+    async function exportProfileCardImage(mode = 'download') {
+      const d = readProfileCardFormObj();
+      const blob = await renderProfileCardToCanvasBlob();
+      if (!blob) {
+        showToast("Could not generate card image.");
+        return;
+      }
+      const safeName = (d.name || 'Profile').replace(/[^a-zA-Z0-9]+/g, '_');
+      const fileName = `${safeName}_${activeProfileCardType === 'id' ? 'ID_Card' : 'Visiting_Card'}_${activeProfileCardSide}.png`;
+
+      if (mode === 'share' && navigator.canShare) {
+        const file = new File([blob], fileName, {type: 'image/png'});
+        if (navigator.canShare({files: [file]})) {
+          try {
+            await navigator.share({
+              title: `${d.name} — ${activeProfileCardType === 'id' ? 'ID Card' : 'Visiting Card'}`,
+              text: buildProfileCardShareText(d),
+              files: [file]
+            });
+            showToast("Card shared!");
+            return;
+          } catch (err) {
+            if (err.name === 'AbortError') return;
+          }
+        }
+      }
+
+      const a = document.createElement('a');
+      a.download = fileName;
+      a.href = URL.createObjectURL(blob);
+      a.click();
+      showToast("Card PNG saved!");
+    }
+
+    function buildProfileCardShareText(d) {
+      const lines = [`*${d.name}*`];
+      if (d.title || d.organization) lines.push([d.title, d.organization].filter(Boolean).join(' | '));
+      if (d.idNumber) lines.push(`ID: ${d.idNumber}`);
+      if (d.phone) lines.push(`Phone: ${d.phone}`);
+      if (d.email) lines.push(`Email: ${d.email}`);
+      if (d.website) lines.push(`Website: ${d.website}`);
+      if (d.address) lines.push(`Location: ${d.address}`);
+      if (d.subjects || d.timings || d.backNotes) {
+        lines.push('---');
+        if (d.backHeadline) lines.push(`*${d.backHeadline}*`);
+        if (d.subjects) lines.push(`Subjects: ${d.subjects}`);
+        if (d.timings) lines.push(`Timings: ${d.timings}`);
+        if (d.backNotes) lines.push(d.backNotes);
+      }
+      if (d.tagline) lines.push(d.tagline);
+      return lines.join('\n');
+    }
+
+    async function copyProfileCardText() {
+      const txt = buildProfileCardShareText(readProfileCardFormObj());
+      try {
+        await navigator.clipboard.writeText(txt);
+        showToast("Card details copied to clipboard!");
+      } catch (e) {
+        prompt("Copy your card text:", txt);
+      }
+    }
+
+    /* ==========================================================================
+       FIRST-TIME ONBOARDING SETUP WIZARD
+       ========================================================================== */
+    const ONBOARDING_DONE_KEY = 'month_tracker_v12_onboarding_done';
+    let currentSetupWizardStep = 1;
+
+    function checkAndShowFirstRunSetup() {
+      if (localStorage.getItem(ONBOARDING_DONE_KEY) === 'true') return;
+      openFirstRunSetupModal(false);
+    }
+
+    function openFirstRunSetupModal(manualReopen = false) {
+      const list = getUserProfilesList();
+      const prof = list.find(p => p.id === activeProfileId) || list[0] || {name: 'Main User'};
+      const s = getAppSettings();
+      const gdriveCfg = getGdriveSyncConfig();
+
+      document.getElementById('setup-prof-name').value = prof.name === 'Main User' && !manualReopen ? '' : (prof.name || '');
+      document.getElementById('setup-prof-title').value = prof.title || '';
+      document.getElementById('setup-prof-phone').value = prof.phone || '';
+      document.getElementById('setup-currency').value = s.currency || 'AED';
+      document.getElementById('setup-quota').value = s.defaultQuota || 4;
+      document.getElementById('setup-fee').value = s.defaultFee ?? 500;
+      document.getElementById('setup-time-format').value = s.timeFormat || '24h';
+      document.getElementById('setup-daily-backup').checked = isDailyBackupEnabled();
+      document.getElementById('setup-stt-enabled').checked = manualReopen ? isSttFeatureEnabled() : true;
+      document.getElementById('setup-gdrive-folder').value = gdriveCfg.folderId || '';
+      document.getElementById('setup-gdrive-apikey').value = gdriveCfg.apiKey || '';
+
+      refreshLinkedFoldersSettingsUI();
+      setSetupWizardStep(1);
+      openModal('modal-first-run-setup');
+    }
+
+    function setSetupWizardStep(step) {
+      currentSetupWizardStep = Math.max(1, Math.min(3, step));
+      [1, 2, 3].forEach(n => {
+        const pane = document.getElementById(`setup-step-${n}`);
+        const pill = document.getElementById(`setup-pill-${n}`);
+        if (pane) pane.style.display = n === currentSetupWizardStep ? 'flex' : 'none';
+        if (pill) {
+          pill.className = 'setup-step-pill ' + (n === currentSetupWizardStep ? 'active' : (n < currentSetupWizardStep ? 'done' : ''));
+        }
+      });
+      const backBtn = document.getElementById('setup-btn-back');
+      const nextBtn = document.getElementById('setup-btn-next');
+      const finBtn = document.getElementById('setup-btn-finish');
+      if (backBtn) backBtn.style.display = currentSetupWizardStep > 1 ? 'inline-flex' : 'none';
+      if (nextBtn) nextBtn.style.display = currentSetupWizardStep < 3 ? 'inline-flex' : 'none';
+      if (finBtn) finBtn.style.display = currentSetupWizardStep === 3 ? 'inline-flex' : 'none';
+    }
+
+    function navigateSetupWizard(delta) {
+      setSetupWizardStep(currentSetupWizardStep + delta);
+    }
+
+    function skipFirstRunSetup() {
+      localStorage.setItem(ONBOARDING_DONE_KEY, 'true');
+      closeModal('modal-first-run-setup');
+    }
+
+    function finishFirstRunSetup() {
+      const nameVal = (document.getElementById('setup-prof-name')?.value || '').trim();
+      const titleVal = (document.getElementById('setup-prof-title')?.value || '').trim();
+      const phoneVal = (document.getElementById('setup-prof-phone')?.value || '').trim();
+      const currency = (document.getElementById('setup-currency')?.value || 'AED').trim().toUpperCase() || 'AED';
+      const quota = Number(document.getElementById('setup-quota')?.value) || 4;
+      const feeRaw = document.getElementById('setup-fee')?.value;
+      const fee = (feeRaw !== '' && !isNaN(Number(feeRaw))) ? Math.max(0, Number(feeRaw)) : 500;
+      const timeFormat = document.getElementById('setup-time-format')?.value || '24h';
+      const dailyBackupOn = document.getElementById('setup-daily-backup')?.checked ?? true;
+      const sttOn = document.getElementById('setup-stt-enabled')?.checked ?? false;
+      const gFolderId = extractGdriveFolderId(document.getElementById('setup-gdrive-folder')?.value);
+      const gApiKey = (document.getElementById('setup-gdrive-apikey')?.value || '').trim();
+
+      // 1. Update Active Profile Info
+      const list = getUserProfilesList();
+      const prof = list.find(p => p.id === activeProfileId);
+      if (prof) {
+        if (nameVal) prof.name = nameVal;
+        if (titleVal) prof.title = titleVal;
+        if (phoneVal) prof.phone = phoneVal;
+        saveUserProfilesList(list);
+      }
+
+      // 2. Save App Settings
+      const prevSettings = getAppSettings();
+      localStorage.setItem(getProfileSettingsKey(), JSON.stringify({
+        ...prevSettings,
+        currency,
+        timeFormat,
+        defaultQuota: quota,
+        defaultFee: fee
+      }));
+
+      // 3. Save Backup & Sync Preferences
+      localStorage.setItem(DAILY_BACKUP_ENABLED_KEY, dailyBackupOn ? 'true' : 'false');
+      localStorage.setItem(STT_FEATURE_ENABLED_KEY, sttOn ? 'true' : 'false');
+      if (gFolderId && gApiKey) {
+        localStorage.setItem(getGdriveSyncConfigKey(), JSON.stringify({folderId: gFolderId, apiKey: gApiKey}));
+      }
+
+      localStorage.setItem(ONBOARDING_DONE_KEY, 'true');
+      closeModal('modal-first-run-setup');
+      populateAllTimePickers();
+      updateHeaderSttPillAndEodBanner();
+      renderAll();
+      if (document.getElementById('view-settings')?.style.display === 'flex') renderSettingsScreen();
+      showToast("Setup complete! You're ready to go.");
     }
   </script>
 </body>
